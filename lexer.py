@@ -7,6 +7,7 @@ reserved = {
     'elif' : 'ELIF',
     'else' : 'ELSE',
     'int' : 'INT',
+    'bool' : 'BOOL',
     'float' : 'FLOAT',
     'char' : 'CHAR',
     'string' : 'STRING',
@@ -29,7 +30,7 @@ tokens = [
     'RELOP', 'PLUS', 'MINUS', 'DIVIDE', 'TIMES',
     'EQUAL', 'TWOPOINTS', 'SEMICOLON', 'COMMA',
     'LPAREN', 'RPAREN', 'LBRACKET', 'RBRACKET',
-    'LBRACES', 'RBRACES'
+    'LBRACE', 'RBRACE'
 ] + list(reserved.values())
 
 # Regular expression rules
@@ -50,8 +51,8 @@ t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_LBRACKET = r'\['
 t_RBRACKET = r'\]'
-t_LBRACES = r'\{'
-t_RBRACES = r'\}'
+t_LBRACE = r'\{'
+t_RBRACE = r'\}'
 
 # Ignore Characters
 t_ignore =' \t\n'
