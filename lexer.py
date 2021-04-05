@@ -21,7 +21,10 @@ reserved = {
     'write' : 'WRITE',
     'read' : 'READ',
     'class' : 'CLASS',
-    'return' : 'RETURN'
+    'return' : 'RETURN',
+    'and' : 'AND',
+    'or' : 'OR',
+    'main' : 'MAIN'
 }
 
 # Tokens
@@ -30,7 +33,7 @@ tokens = [
     'RELOP', 'PLUS', 'MINUS', 'DIVIDE', 'TIMES',
     'EQUAL', 'TWOPOINTS', 'SEMICOLON', 'COMMA',
     'LPAREN', 'RPAREN', 'LBRACKET', 'RBRACKET',
-    'LBRACE', 'RBRACE'
+    'LBRACE', 'RBRACE', 'POINT'
 ] + list(reserved.values())
 
 # Regular expression rules
@@ -45,6 +48,7 @@ t_DIVIDE = r'/'
 t_TIMES = r'\*'
 t_EQUAL = r'='
 t_TWOPOINTS = r'\:'
+t_POINT = r'\.'
 t_SEMICOLON = r'\;'
 t_COMMA = r','
 t_LPAREN = r'\('
@@ -70,8 +74,8 @@ def t_error(t):
 # Build lexer
 lexer = lex.lex()
 
-""" # Test 
-data = ''' > + 4.5 * "abc" 3 , : ; 'a' int = -20 -709.89 ({)} A00821971 if do then # array[] inherits class $ .'''
+# Test 
+data = ''' > + 4.5 * "abc" 3 , . : ; 'a' int = -20 -709.89 ({)} A00821971 if do then # array[] inherits class $ . and or alan'''
  
 # Give the lexer some input
 lexer.input(data)
@@ -81,4 +85,4 @@ while True:
     tok = lexer.token()
     if not tok: 
         break # No more input
-    print(tok)  """
+    print(tok) 
