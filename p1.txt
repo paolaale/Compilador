@@ -1,0 +1,7 @@
+program p1 :
+
+    main {
+        bool flag;
+        
+        flag = "hola";
+    }
