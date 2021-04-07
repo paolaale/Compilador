@@ -1,7 +1,15 @@
 program p1 :
-    
+    var int a;
+
     main {
-        bool flag;
+        var int p;
+
+        write("hola");
+
+        while (p < 7) do {
+            write("adios");
+        }
         
-        flag = "hola";
     }
+   
+end

@@ -10,11 +10,11 @@ reserved = {
     'bool' : 'BOOL',
     'float' : 'FLOAT',
     'char' : 'CHAR',
-    'string' : 'STRING',
     'void' : 'VOID',
     'program' : 'PROGRAM',
     'while' : 'WHILE',
     'do': 'DO',
+    'end' : 'END',
     'from' : 'FROM',
     'until' : 'UNTIL',
     'inherits' : 'INHERITS',
@@ -25,8 +25,10 @@ reserved = {
     'and' : 'AND',
     'or' : 'OR',
     'main' : 'MAIN',
-    'func' : 'FUNC',
-    'var' : 'VAR'
+    'funct' : 'FUNCT',
+    'var' : 'VAR',
+    'true' : 'TRUE',
+    'false' : 'FALSE'
 }
 
 # Tokens

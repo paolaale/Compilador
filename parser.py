@@ -2,218 +2,247 @@ import ply.yacc as yacc
 from lexer import tokens # Get the token list from the lexer
 
 def p_program(p):
-    'program : PROGRAM ID TWOPOINTS program_aux main'
-    p.type = 'program'
+    'program : PROGRAM ID TWOPOINTS program_body main END'
+    p[0] = 'program'
 
-def p_program_aux(p):
-    'program_aux : dec_vars class_aux functions_aux'
-    p.type = 'program'
+def p_program_body(p):
+    'program_body : program_body_vars program_body_class program_body_funct'
+    p[0] = 'program'
 
-def p_class_aux(p):
-    '''class_aux : class 
-                | class class_aux
-                | empty'''
-    p.type = 'class'
+def p_program_body_vars(p):
+    '''program_body_vars : dec_vars 
+                        | empty'''
+    p[0] = 'program'
 
-def p_functions_aux(p):
-    '''functions_aux : functions 
-                     | empty'''
-    p.type = 'function'
+def p_program_body_class(p):
+    '''program_body_class : classes 
+                        | empty'''
+    p[0] = 'program'
+
+def p_program_body_funct(p):
+    '''program_body_funct : functions 
+                        | empty'''
+    p[0] = 'program'
 
 def p_dec_vars(p):
-    '''dec_vars : type_vars dec_vars_aux SEMICOLON 
-                | type_vars dec_vars_aux SEMICOLON dec_vars
-                | empty'''
-    p.type = 'dec_var'
-
-def p_type_vars(p):
-    '''type_vars : type_aux
-                | type_aux LBRACKET exp RBRACKET
-                | type_aux LBRACKET exp RBRACKET LBRACKET exp RBRACKET'''
-    p.type = 'type'
+    '''dec_vars : VAR dec_vars_aux'''
+    p[0] = 'program'
 
 def p_dec_vars_aux(p):
-    '''dec_vars_aux : ID
-                    | ID COMMA dec_vars_aux'''
-    p.type = 'dec_var'
+    '''dec_vars_aux : simple_type vars_simple_type SEMICOLON
+                    | simple_type vars_simple_type SEMICOLON dec_vars_aux
+                    | complex_type vars_complex_type SEMICOLON
+                    | complex_type vars_complex_type SEMICOLON dec_vars_aux'''
+    p[0] = 'program'
+
+def p_vars_complex_type(p):
+    '''vars_complex_type : ID 
+                        | ID COMMA vars_complex_type'''
+    p[0] = 'program'
+
+def p_vars_simple_type(p):
+    '''vars_simple_type : ID 
+                        | ID COMMA vars_simple_type
+                        | ID vars_simple_type_aux
+                        | ID vars_simple_type_aux COMMA vars_simple_type'''
+    p[0] = 'program'
+
+def p_vars_simple_type_aux(p):
+    '''vars_simple_type_aux : LBRACKET CTEI RBRACKET
+                            | LBRACKET CTEI RBRACKET LBRACKET CTEI RBRACKET'''
+    p[0] = 'program'
+
+def p_simple_type(p):
+    '''simple_type : INT 
+                    | FLOAT 
+                    | CHAR 
+                    | BOOL'''
+    p[0] = 'program'
+
+def p_complex_type(p):
+    'complex_type : ID'
+    p[0] = 'program'
+
+def p_classes(p):
+    '''classes : CLASS ID classes_aux 
+                | CLASS ID classes_aux classes'''
+    p[0] = 'program'
+
+def p_classes_aux(p):
+    '''classes_aux : LBRACE dec_vars functions RBRACE
+                    | LBRACE functions RBRACE
+                    | INHERITS ID LBRACE dec_vars functions RBRACE
+                    | INHERITS ID LBRACE functions RBRACE'''
+    p[0] = 'program'
 
 def p_functions(p):
-    '''functions : functType ID LPAREN RPAREN LBRACE functBody return RBRACE 
-                 | functType ID LPAREN params RPAREN LBRACE functBody return RBRACE
-                 | functType ID LPAREN RPAREN LBRACE functBody return RBRACE functions
-                 | functType ID LPAREN params RPAREN LBRACE functBody return RBRACE functions'''
-    p.type = 'function'
+    '''functions : FUNCT functions_aux
+                | FUNCT functions_aux functions'''
+    p[0] = 'program'
 
-def p_functType(p):
-    '''functType : VOID 
-                | type'''
-    p.type = 'function'
+def p_functions_aux(p):
+    '''functions_aux : VOID ID LPAREN params RPAREN body
+                    | VOID ID LPAREN RPAREN body
+                    | simple_type ID LPAREN RPAREN body
+                    | simple_type ID LPAREN params RPAREN body'''
+    p[0] = 'program'
 
 def p_params(p):
-    '''params : type ID
-              | type ID COMMA params'''
-    p.type = 'params'
+    '''params : simple_type ID
+            | simple_type ID COMMA params'''
+    p[0] = 'program'
 
-def p_type(p):
-    '''type : type_aux
-            | type_aux LBRACKET RBRACKET
-            | type_aux LBRACKET RBRACKET LBRACKET RBRACKET'''
-    p.type = 'type'
-
-def p_type_aux(p):
-    '''type_aux : INT
-                | FLOAT
-                | CHAR
-                | STRING
-                | BOOL
-                | ID'''
-    p.type = 'type'
-
-def p_functBody(p):
-    '''functBody : statutes_aux
-                | dec_vars statutes_aux'''
-    p.type = 'function'
-
-def p_return(p): 
-    '''return : RETURN expression SEMICOLON
-              | empty'''
-    p.type = 'function'
+def p_body(p):
+    '''body : LBRACE dec_vars statutes_aux RBRACE
+            | LBRACE statutes_aux RBRACE
+            | LBRACE statutes_aux RETURN ID RBRACE
+            | LBRACE dec_vars statutes_aux RETURN ID RBRACE'''
+    p[0] = 'program'
 
 def p_statutes(p):
-    '''statutes : assignation 
-                | call SEMICOLON
+    '''statutes : call SEMICOLON
+                | assignation 
                 | read
                 | write
                 | condition
                 | while
                 | for'''
-    p.type = 'statute'
+    p[0] = 'program'
+
+def p_statutes_aux(p):
+    '''statutes_aux : statutes
+                    | statutes statutes_aux'''
+    p[0] = 'program'
 
 def p_assignation(p):
-    'assignation : vars EQUAL expression SEMICOLON'
-    p.type = 'assignation'
+    'assignation : var EQUAL exp SEMICOLON'
+    p[0] = 'program'
 
-def p_write(p):
-    'write : WRITE LPAREN write_aux RPAREN SEMICOLON'
-    p.type = 'write'
+def p_var(p):
+    '''var : ID
+            | ID var_aux'''
+    p[0] = 'program'
 
-def p_write_aux(p):
-    '''write_aux : expression
-                | expression COMMA write_aux'''
-    p.type = 'write'
+def p_var_aux(p):
+    '''var_aux : POINT ID 
+            |  POINT ID var_aux_2
+            |  var_aux_2'''
+    p[0] = 'program'
+
+def p_var_aux_2(p):
+    '''var_aux_2 : LBRACKET exp RBRACKET
+            |  LBRACKET exp RBRACKET LBRACKET exp RBRACKET'''
+    p[0] = 'program'
+
+def p_call(p):
+    '''call : ID LPAREN RPAREN
+            | ID POINT ID LPAREN RPAREN
+            | ID LPAREN call_aux RPAREN
+            | ID POINT ID LPAREN call_aux RPAREN'''
+    p[0] = 'program'
+
+def p_call_aux(p):
+    '''call_aux : exp
+                | exp COMMA call_aux'''
+    p[0] = 'program'
 
 def p_condition(p):
     'condition : IF condition_aux'
-    p.type = 'condition'
+    p[0] = 'condition'
 
 def p_condition_aux(p):
-    '''condition_aux : LPAREN expression RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_2
-                    | LPAREN expression RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_2 ELSE LBRACE statutes_aux RBRACE'''
-    p.type = 'condition'
-
-def p_statutes_aux(p):
-    '''statutes_aux : statutes 
-                    | statutes statutes_aux'''
-    p.type = 'statute'
+    '''condition_aux : LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_2
+                    | LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_2 ELSE LBRACE statutes_aux RBRACE'''
+    p[0] = 'condition'
 
 def p_condition_aux_2(p): 
     '''condition_aux_2 : ELIF condition_aux
                         | empty'''
-    p.type = 'condition'
+    p[0] = 'condition'
+
+def p_read(p):
+    'read : READ LPAREN var RPAREN SEMICOLON'
+    p[0] = 'program'
+
+def p_write(p):
+    '''write : WRITE LPAREN write_aux RPAREN SEMICOLON'''
+    p[0] = 'program'
+
+def p_write_aux(p):
+    '''write_aux : exp
+                | exp COMMA write_aux
+                | CTESTRING
+                | CTESTRING COMMA write_aux'''
+    p[0] = 'program'
 
 def p_while(p):
-    'while : WHILE LPAREN expression RPAREN DO LBRACE statutes_aux RBRACE'
-    p.type = 'while'
+    'while : WHILE LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE'
+    p[0] = 'program'
 
 def p_for(p):
-    'for : FROM assignation UNTIL expression DO LBRACE statutes_aux RBRACE'
-    p.type = 'for'
+    'for : FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE'
+    p[0] = 'program'
 
-def p_class(p):
-    '''class : CLASS ID LBRACE dec_vars functions RBRACE
-               | CLASS ID INHERITS ID LBRACE dec_vars functions RBRACE'''
-    p.type = 'class'
+def p_exp(p):
+    '''exp : n_exp
+            | n_exp OR exp'''   
+    p[0] = 'program'
+
+def p_n_exp(p):
+    '''n_exp : l_exp
+            | l_exp AND n_exp'''  
+    p[0] = 'program'
+
+def p_l_exp(p):
+    '''l_exp : a_exp
+            | a_exp RELOP a_exp''' 
+    p[0] = 'program'
+
+def p_a_exp(p):
+    '''a_exp : term
+            | term PLUS a_exp
+            | term MINUS a_exp'''
+    p[0] = 'program'
+
+def p_term(p):
+    '''term : factor
+            | factor TIMES term
+            | factor DIVIDE term'''
+    p[0] = 'program'
+
+def p_factor(p):
+    '''factor : LPAREN exp RPAREN
+            | var
+            | call
+            | factor_aux'''
+    p[0] = 'program'
+
+def p_factor_aux(p):
+    '''factor_aux : cte
+                | PLUS cte
+                | MINUS cte'''
+    p[0] = 'program'
+
+def p_cte(p):
+    '''cte : ID
+        | CTEI
+        | CTEF
+        | CTECHAR
+        | bool'''
+    p[0] = 'program'
+
+def p_bool(p):
+    '''bool : TRUE
+        | FALSE'''
+    p[0] = 'program'
 
 def p_main(p):
     '''main : MAIN LBRACE statutes_aux RBRACE
             | MAIN LBRACE dec_vars statutes_aux RBRACE'''
-    p.type = 'main'
-
-def p_expression(p):
-    '''expression : expression_aux 
-                    | expression_aux RELOP expression_aux
-                    | expression_aux AND expression_aux
-                    | expression_aux OR expression_aux'''
-    p.type = 'expression'
-
-def p_expression_aux(p):
-    '''expression_aux : call
-                        | exp'''
-    p.type = 'expression'
-
-def p_call(p):
-    '''call : ID LPAREN call_aux RPAREN
-            | ID POINT ID LPAREN call_aux RPAREN'''
-    p.type = 'call'
-
-def p_call_aux(p):
-    '''call_aux : call_aux_2 
-                | empty'''
-    p.type = 'call'
-
-def p_call_aux_2(p):
-    '''call_aux_2 : exp 
-                | exp COMMA call_aux_2'''
-    p.type = 'call'
-
-def p_read(p):
-    'read : READ LPAREN read_aux RPAREN SEMICOLON'
-    p.type = 'read'
-
-def p_read_aux(p):
-    '''read_aux : vars
-                | vars COMMA read_aux'''
-    p.type = 'read'
-
-def p_vars(p):
-    '''vars : ID 
-            | ID vars_aux'''
-    p.type = 'vars'
-
-def p_vars_aux(p): 
-    '''vars_aux : LBRACKET exp RBRACKET 
-                | LBRACKET exp RBRACKET LBRACKET exp RBRACKET'''
-    p.type = 'vars'
-
-def p_exp(p):
-    '''exp : term 
-            | term PLUS exp
-            | term MINUS exp'''
-    p.type = 'exp'
-
-def p_term(p):
-    '''term : factor
-                | factor TIMES term
-                | factor DIVIDE term'''
-    p.type = 'term'
-
-def p_factor(p):
-    '''factor :  PLUS cte 
-            | MINUS cte 
-            | cte 
-            | LPAREN expression RPAREN'''
-    p.type = 'factor'
-
-def p_cte(p):
-    '''cte : ID
-            | CTEI
-            | CTEF
-            | CTESTRING
-            | CTECHAR'''
-    p.type = 'cte'
+    p[0] = 'program'
 
 def p_empty(p):
-    'empty :  '
+    'empty :'
     pass 
 
 def p_error(p):
