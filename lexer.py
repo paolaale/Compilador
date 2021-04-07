@@ -24,7 +24,9 @@ reserved = {
     'return' : 'RETURN',
     'and' : 'AND',
     'or' : 'OR',
-    'main' : 'MAIN'
+    'main' : 'MAIN',
+    'func' : 'FUNC',
+    'var' : 'VAR'
 }
 
 # Tokens
