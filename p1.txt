@@ -3,7 +3,8 @@ program p1 :
 
     main {
         var int p;
-
+        
+        alan = 10;
         write("hola");
 
         while (p < 7) do {

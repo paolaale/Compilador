@@ -1,3 +1,9 @@
+# Proyecto compiladores, orientado a objetos
+# Equipo 6 grupo 2
+# Paola Villarreal 
+# Alan Zavala
+#Fecha: 07/04/2021
+
 import ply.yacc as yacc
 from lexer import tokens # Get the token list from the lexer
 
