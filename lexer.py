@@ -28,7 +28,9 @@ reserved = {
     'funct' : 'FUNCT',
     'var' : 'VAR',
     'true' : 'TRUE',
-    'false' : 'FALSE'
+    'false' : 'FALSE',
+    'assign' : 'ASSIGN',
+    'call' : 'CALL'
 }
 
 # Tokens

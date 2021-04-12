@@ -100,8 +100,8 @@ def p_body(p):
     p[0] = 'program'
 
 def p_statutes(p):
-    '''statutes : call SEMICOLON
-                | assignation 
+    '''statutes : ASSIGN assignation
+                | CALL call SEMICOLON
                 | read
                 | write
                 | condition
@@ -148,17 +148,21 @@ def p_call_aux(p):
 
 def p_condition(p):
     'condition : IF condition_aux'
-    p[0] = 'condition'
+    p[0] = 'program'
 
 def p_condition_aux(p):
-    '''condition_aux : LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_2
-                    | LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_2 ELSE LBRACE statutes_aux RBRACE'''
-    p[0] = 'condition'
+    '''condition_aux : LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3
+                    | condition_aux_2'''
+    p[0] = 'program'
 
 def p_condition_aux_2(p): 
-    '''condition_aux_2 : ELIF condition_aux
+    '''condition_aux_2 : LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux'''
+    p[0] = 'program'
+
+def p_condition_aux_3(p):
+    '''condition_aux_3 : ELSE LBRACE statutes_aux RBRACE
                         | empty'''
-    p[0] = 'condition'
+    p[0] = 'program'
 
 def p_read(p):
     'read : READ LPAREN var RPAREN SEMICOLON'

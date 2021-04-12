@@ -3,10 +3,25 @@ program p1 :
 
     main {
         var int p;
-
+        
+        call func1();
+        assign p = 0;
         write("hola");
 
         while (p < 7) do {
+            write("adios");
+        }
+
+        if (p < 7) then {
+            write("adios");
+        } 
+        elif (p == 7) then {
+            write("adios");
+        }
+        elif (p > 7) then {
+            write("adios");
+        }
+        else {
             write("adios");
         }
         
