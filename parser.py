@@ -101,12 +101,12 @@ def p_params(p):
 def p_body(p):
     '''body : LBRACE dec_vars statutes_aux RBRACE
             | LBRACE statutes_aux RBRACE
-            | LBRACE statutes_aux RETURN ID RBRACE
-            | LBRACE dec_vars statutes_aux RETURN ID RBRACE'''
+            | LBRACE statutes_aux RETURN ID SEMICOLON RBRACE
+            | LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE'''
     p[0] = 'program'
 
 def p_statutes(p):
-    '''statutes : ASSIGN assignation
+    '''statutes : ASSIGN assignation SEMICOLON
                 | CALL call SEMICOLON
                 | read
                 | write
@@ -121,7 +121,7 @@ def p_statutes_aux(p):
     p[0] = 'program'
 
 def p_assignation(p):
-    'assignation : var EQUAL exp SEMICOLON'
+    'assignation : var EQUAL exp'
     p[0] = 'program'
 
 def p_var(p):
@@ -190,7 +190,7 @@ def p_while(p):
     p[0] = 'program'
 
 def p_for(p):
-    'for : FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE'
+    'for : FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE'
     p[0] = 'program'
 
 def p_exp(p):

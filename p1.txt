@@ -1,59 +1,24 @@
 program p1 :
     var int a;
 
-    class Animal{
-        var int a;
+    class perro inherits animal {
+        var float b[2][3];
 
-        funct int getEdad() {
-            var int j[8][8];
-
-            write("hola");
-
-            while (p < 7) do {
-                write("adios");
-            }
-
-            return alan
+        funct bool getName() {
+            read(b);
+            return name;
         }
     }
 
-    class Gato inherits Animal{
-        var int a;
-            Gato gato;
-
-        funct int getEdad() {
-            var int j[8][8];
-
-            assign a = gato.getEdad();
-
-            write("hola");
-
-            while (p < 7) do {
+    funct void func1(int al, int bl) {
+        from (i = 0) until (i < 3) do {
+            assign r = 9;
+            write(i);
+            if (p < 7) then {
                 write("adios");
-            }
-
-            return alan
-        }
-    }
-
-    class Perro inherits Animal{
-        var int a;
-
-        funct void getEdad() {
-            var int j;
-
-            write("hola");
-
-            while (p < 7) do {
-                write("adios");
-            }
-        }
-    }
-
-    funct void getTotal() {
-        var int rubs;
-
-        write("pepepe");
+            } 
+            write(i);
+        } 
     }
 
     main {
