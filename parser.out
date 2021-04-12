@@ -45,9 +45,9 @@ Rule 39    params -> simple_type ID
 Rule 40    params -> simple_type ID COMMA params
 Rule 41    body -> LBRACE dec_vars statutes_aux RBRACE
 Rule 42    body -> LBRACE statutes_aux RBRACE
-Rule 43    body -> LBRACE statutes_aux RETURN ID RBRACE
-Rule 44    body -> LBRACE dec_vars statutes_aux RETURN ID RBRACE
-Rule 45    statutes -> ASSIGN assignation
+Rule 43    body -> LBRACE statutes_aux RETURN ID SEMICOLON RBRACE
+Rule 44    body -> LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE
+Rule 45    statutes -> ASSIGN assignation SEMICOLON
 Rule 46    statutes -> CALL call SEMICOLON
 Rule 47    statutes -> read
 Rule 48    statutes -> write
@@ -56,7 +56,7 @@ Rule 50    statutes -> while
 Rule 51    statutes -> for
 Rule 52    statutes_aux -> statutes
 Rule 53    statutes_aux -> statutes statutes_aux
-Rule 54    assignation -> var EQUAL exp SEMICOLON
+Rule 54    assignation -> var EQUAL exp
 Rule 55    var -> ID
 Rule 56    var -> ID var_aux
 Rule 57    var_aux -> POINT ID
@@ -83,7 +83,7 @@ Rule 77    write_aux -> exp COMMA write_aux
 Rule 78    write_aux -> CTESTRING
 Rule 79    write_aux -> CTESTRING COMMA write_aux
 Rule 80    while -> WHILE LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
-Rule 81    for -> FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+Rule 81    for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
 Rule 82    exp -> n_exp
 Rule 83    exp -> n_exp OR exp
 Rule 84    n_exp -> l_exp
@@ -156,7 +156,7 @@ READ                 : 74
 RELOP                : 87
 RETURN               : 43 44
 RPAREN               : 35 36 37 38 62 63 64 65 69 71 74 75 80 81 81 94
-SEMICOLON            : 10 11 12 13 46 54 74 75
+SEMICOLON            : 10 11 12 13 43 44 45 46 74 75
 THEN                 : 69 71
 TIMES                : 92
 TRUE                 : 106
@@ -171,7 +171,7 @@ error                :
 Nonterminals, with rules where they appear
 
 a_exp                : 86 87 87 89 90
-assignation          : 45
+assignation          : 45 81
 body                 : 35 36 37 38
 bool                 : 105
 call                 : 46 96
@@ -187,7 +187,7 @@ cte                  : 98 99 100
 dec_vars             : 3 29 31 41 44 109
 dec_vars_aux         : 9 11 13
 empty                : 4 6 8 73
-exp                  : 54 60 61 61 66 67 69 71 76 77 80 81 81 83 94
+exp                  : 54 60 61 61 66 67 69 71 76 77 80 81 83 94
 factor               : 91 92 93
 factor_aux           : 97
 for                  : 51
@@ -479,7 +479,7 @@ state 25
     (52) statutes_aux -> . statutes
     (53) statutes_aux -> . statutes statutes_aux
     (9) dec_vars -> . VAR dec_vars_aux
-    (45) statutes -> . ASSIGN assignation
+    (45) statutes -> . ASSIGN assignation SEMICOLON
     (46) statutes -> . CALL call SEMICOLON
     (47) statutes -> . read
     (48) statutes -> . write
@@ -490,7 +490,7 @@ state 25
     (75) write -> . WRITE LPAREN write_aux RPAREN SEMICOLON
     (68) condition -> . IF condition_aux
     (80) while -> . WHILE LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
-    (81) for -> . FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+    (81) for -> . FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
 
     VAR             shift and go to state 9
     ASSIGN          shift and go to state 38
@@ -619,7 +619,7 @@ state 36
     (109) main -> MAIN LBRACE dec_vars . statutes_aux RBRACE
     (52) statutes_aux -> . statutes
     (53) statutes_aux -> . statutes statutes_aux
-    (45) statutes -> . ASSIGN assignation
+    (45) statutes -> . ASSIGN assignation SEMICOLON
     (46) statutes -> . CALL call SEMICOLON
     (47) statutes -> . read
     (48) statutes -> . write
@@ -630,7 +630,7 @@ state 36
     (75) write -> . WRITE LPAREN write_aux RPAREN SEMICOLON
     (68) condition -> . IF condition_aux
     (80) while -> . WHILE LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
-    (81) for -> . FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+    (81) for -> . FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
 
     ASSIGN          shift and go to state 38
     CALL            shift and go to state 39
@@ -654,7 +654,7 @@ state 37
     (53) statutes_aux -> statutes . statutes_aux
     (52) statutes_aux -> . statutes
     (53) statutes_aux -> . statutes statutes_aux
-    (45) statutes -> . ASSIGN assignation
+    (45) statutes -> . ASSIGN assignation SEMICOLON
     (46) statutes -> . CALL call SEMICOLON
     (47) statutes -> . read
     (48) statutes -> . write
@@ -665,7 +665,7 @@ state 37
     (75) write -> . WRITE LPAREN write_aux RPAREN SEMICOLON
     (68) condition -> . IF condition_aux
     (80) while -> . WHILE LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
-    (81) for -> . FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+    (81) for -> . FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
 
     RBRACE          reduce using rule 52 (statutes_aux -> statutes .)
     RETURN          reduce using rule 52 (statutes_aux -> statutes .)
@@ -687,8 +687,8 @@ state 37
 
 state 38
 
-    (45) statutes -> ASSIGN . assignation
-    (54) assignation -> . var EQUAL exp SEMICOLON
+    (45) statutes -> ASSIGN . assignation SEMICOLON
+    (54) assignation -> . var EQUAL exp
     (55) var -> . ID
     (56) var -> . ID var_aux
 
@@ -819,7 +819,7 @@ state 48
 
 state 49
 
-    (81) for -> FROM . LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+    (81) for -> FROM . LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
 
     LPAREN          shift and go to state 76
 
@@ -1019,24 +1019,16 @@ state 64
 
 state 65
 
-    (45) statutes -> ASSIGN assignation .
+    (45) statutes -> ASSIGN assignation . SEMICOLON
 
-    ASSIGN          reduce using rule 45 (statutes -> ASSIGN assignation .)
-    CALL            reduce using rule 45 (statutes -> ASSIGN assignation .)
-    READ            reduce using rule 45 (statutes -> ASSIGN assignation .)
-    WRITE           reduce using rule 45 (statutes -> ASSIGN assignation .)
-    IF              reduce using rule 45 (statutes -> ASSIGN assignation .)
-    WHILE           reduce using rule 45 (statutes -> ASSIGN assignation .)
-    FROM            reduce using rule 45 (statutes -> ASSIGN assignation .)
-    RBRACE          reduce using rule 45 (statutes -> ASSIGN assignation .)
-    RETURN          reduce using rule 45 (statutes -> ASSIGN assignation .)
+    SEMICOLON       shift and go to state 91
 
 
 state 66
 
-    (54) assignation -> var . EQUAL exp SEMICOLON
+    (54) assignation -> var . EQUAL exp
 
-    EQUAL           shift and go to state 91
+    EQUAL           shift and go to state 92
 
 
 state 67
@@ -1051,17 +1043,17 @@ state 67
 
     EQUAL           reduce using rule 55 (var -> ID .)
     RPAREN          reduce using rule 55 (var -> ID .)
-    POINT           shift and go to state 93
-    LBRACKET        shift and go to state 95
+    POINT           shift and go to state 94
+    LBRACKET        shift and go to state 96
 
-    var_aux                        shift and go to state 92
-    var_aux_2                      shift and go to state 94
+    var_aux                        shift and go to state 93
+    var_aux_2                      shift and go to state 95
 
 state 68
 
     (46) statutes -> CALL call . SEMICOLON
 
-    SEMICOLON       shift and go to state 96
+    SEMICOLON       shift and go to state 97
 
 
 state 69
@@ -1071,8 +1063,8 @@ state 69
     (64) call -> ID . LPAREN call_aux RPAREN
     (65) call -> ID . POINT ID LPAREN call_aux RPAREN
 
-    LPAREN          shift and go to state 97
-    POINT           shift and go to state 98
+    LPAREN          shift and go to state 98
+    POINT           shift and go to state 99
 
 
 state 70
@@ -1083,7 +1075,7 @@ state 70
 
     ID              shift and go to state 67
 
-    var                            shift and go to state 99
+    var                            shift and go to state 100
 
 state 71
 
@@ -1125,29 +1117,29 @@ state 71
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    CTESTRING       shift and go to state 103
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    CTESTRING       shift and go to state 104
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
-    write_aux                      shift and go to state 101
-    exp                            shift and go to state 102
-    n_exp                          shift and go to state 104
-    l_exp                          shift and go to state 105
-    a_exp                          shift and go to state 106
-    term                           shift and go to state 107
-    factor                         shift and go to state 110
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    write_aux                      shift and go to state 102
+    exp                            shift and go to state 103
+    n_exp                          shift and go to state 105
+    l_exp                          shift and go to state 106
+    a_exp                          shift and go to state 107
+    term                           shift and go to state 108
+    factor                         shift and go to state 111
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
 state 72
 
@@ -1201,27 +1193,27 @@ state 73
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
-    exp                            shift and go to state 122
-    n_exp                          shift and go to state 104
-    l_exp                          shift and go to state 105
-    a_exp                          shift and go to state 106
-    term                           shift and go to state 107
-    factor                         shift and go to state 110
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    exp                            shift and go to state 123
+    n_exp                          shift and go to state 105
+    l_exp                          shift and go to state 106
+    a_exp                          shift and go to state 107
+    term                           shift and go to state 108
+    factor                         shift and go to state 111
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
 state 74
 
@@ -1274,85 +1266,39 @@ state 75
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
-    exp                            shift and go to state 123
-    n_exp                          shift and go to state 104
-    l_exp                          shift and go to state 105
-    a_exp                          shift and go to state 106
-    term                           shift and go to state 107
-    factor                         shift and go to state 110
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    exp                            shift and go to state 124
+    n_exp                          shift and go to state 105
+    l_exp                          shift and go to state 106
+    a_exp                          shift and go to state 107
+    term                           shift and go to state 108
+    factor                         shift and go to state 111
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
 state 76
 
-    (81) for -> FROM LPAREN . exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
-    (82) exp -> . n_exp
-    (83) exp -> . n_exp OR exp
-    (84) n_exp -> . l_exp
-    (85) n_exp -> . l_exp AND n_exp
-    (86) l_exp -> . a_exp
-    (87) l_exp -> . a_exp RELOP a_exp
-    (88) a_exp -> . term
-    (89) a_exp -> . term PLUS a_exp
-    (90) a_exp -> . term MINUS a_exp
-    (91) term -> . factor
-    (92) term -> . factor TIMES term
-    (93) term -> . factor DIVIDE term
-    (94) factor -> . LPAREN exp RPAREN
-    (95) factor -> . var
-    (96) factor -> . call
-    (97) factor -> . factor_aux
+    (81) for -> FROM LPAREN . assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+    (54) assignation -> . var EQUAL exp
     (55) var -> . ID
     (56) var -> . ID var_aux
-    (62) call -> . ID LPAREN RPAREN
-    (63) call -> . ID POINT ID LPAREN RPAREN
-    (64) call -> . ID LPAREN call_aux RPAREN
-    (65) call -> . ID POINT ID LPAREN call_aux RPAREN
-    (98) factor_aux -> . cte
-    (99) factor_aux -> . PLUS cte
-    (100) factor_aux -> . MINUS cte
-    (101) cte -> . ID
-    (102) cte -> . CTEI
-    (103) cte -> . CTEF
-    (104) cte -> . CTECHAR
-    (105) cte -> . bool
-    (106) bool -> . TRUE
-    (107) bool -> . FALSE
 
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    ID              shift and go to state 67
 
-    exp                            shift and go to state 124
-    n_exp                          shift and go to state 104
-    l_exp                          shift and go to state 105
-    a_exp                          shift and go to state 106
-    term                           shift and go to state 107
-    factor                         shift and go to state 110
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    assignation                    shift and go to state 125
+    var                            shift and go to state 66
 
 state 77
 
@@ -1367,7 +1313,7 @@ state 78
     (35) functions_aux -> VOID ID . LPAREN params RPAREN body
     (36) functions_aux -> VOID ID . LPAREN RPAREN body
 
-    LPAREN          shift and go to state 125
+    LPAREN          shift and go to state 126
 
 
 state 79
@@ -1375,7 +1321,7 @@ state 79
     (37) functions_aux -> simple_type ID . LPAREN RPAREN body
     (38) functions_aux -> simple_type ID . LPAREN params RPAREN body
 
-    LPAREN          shift and go to state 126
+    LPAREN          shift and go to state 127
 
 
 state 80
@@ -1394,13 +1340,13 @@ state 81
 
     FUNCT           shift and go to state 29
 
-    functions                      shift and go to state 127
+    functions                      shift and go to state 128
 
 state 82
 
     (30) classes_aux -> LBRACE functions . RBRACE
 
-    RBRACE          shift and go to state 128
+    RBRACE          shift and go to state 129
 
 
 state 83
@@ -1408,7 +1354,7 @@ state 83
     (31) classes_aux -> INHERITS ID . LBRACE dec_vars functions RBRACE
     (32) classes_aux -> INHERITS ID . LBRACE functions RBRACE
 
-    LBRACE          shift and go to state 129
+    LBRACE          shift and go to state 130
 
 
 state 84
@@ -1444,14 +1390,14 @@ state 86
 
     ID              shift and go to state 32
 
-    vars_simple_type               shift and go to state 130
+    vars_simple_type               shift and go to state 131
 
 state 87
 
     (20) vars_simple_type_aux -> LBRACKET CTEI . RBRACKET
     (21) vars_simple_type_aux -> LBRACKET CTEI . RBRACKET LBRACKET CTEI RBRACKET
 
-    RBRACKET        shift and go to state 131
+    RBRACKET        shift and go to state 132
 
 
 state 88
@@ -1486,7 +1432,22 @@ state 90
 
 state 91
 
-    (54) assignation -> var EQUAL . exp SEMICOLON
+    (45) statutes -> ASSIGN assignation SEMICOLON .
+
+    ASSIGN          reduce using rule 45 (statutes -> ASSIGN assignation SEMICOLON .)
+    CALL            reduce using rule 45 (statutes -> ASSIGN assignation SEMICOLON .)
+    READ            reduce using rule 45 (statutes -> ASSIGN assignation SEMICOLON .)
+    WRITE           reduce using rule 45 (statutes -> ASSIGN assignation SEMICOLON .)
+    IF              reduce using rule 45 (statutes -> ASSIGN assignation SEMICOLON .)
+    WHILE           reduce using rule 45 (statutes -> ASSIGN assignation SEMICOLON .)
+    FROM            reduce using rule 45 (statutes -> ASSIGN assignation SEMICOLON .)
+    RBRACE          reduce using rule 45 (statutes -> ASSIGN assignation SEMICOLON .)
+    RETURN          reduce using rule 45 (statutes -> ASSIGN assignation SEMICOLON .)
+
+
+state 92
+
+    (54) assignation -> var EQUAL . exp
     (82) exp -> . n_exp
     (83) exp -> . n_exp OR exp
     (84) n_exp -> . l_exp
@@ -1520,29 +1481,29 @@ state 91
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
-    var                            shift and go to state 111
-    exp                            shift and go to state 132
-    n_exp                          shift and go to state 104
-    l_exp                          shift and go to state 105
-    a_exp                          shift and go to state 106
-    term                           shift and go to state 107
-    factor                         shift and go to state 110
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    var                            shift and go to state 112
+    exp                            shift and go to state 133
+    n_exp                          shift and go to state 105
+    l_exp                          shift and go to state 106
+    a_exp                          shift and go to state 107
+    term                           shift and go to state 108
+    factor                         shift and go to state 111
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
-state 92
+state 93
 
     (56) var -> ID var_aux .
 
@@ -1560,15 +1521,15 @@ state 92
     RBRACKET        reduce using rule 56 (var -> ID var_aux .)
 
 
-state 93
+state 94
 
     (57) var_aux -> POINT . ID
     (58) var_aux -> POINT . ID var_aux_2
 
-    ID              shift and go to state 133
+    ID              shift and go to state 134
 
 
-state 94
+state 95
 
     (59) var_aux -> var_aux_2 .
 
@@ -1586,7 +1547,7 @@ state 94
     RBRACKET        reduce using rule 59 (var_aux -> var_aux_2 .)
 
 
-state 95
+state 96
 
     (60) var_aux_2 -> LBRACKET . exp RBRACKET
     (61) var_aux_2 -> LBRACKET . exp RBRACKET LBRACKET exp RBRACKET
@@ -1623,29 +1584,29 @@ state 95
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
-    exp                            shift and go to state 134
-    n_exp                          shift and go to state 104
-    l_exp                          shift and go to state 105
-    a_exp                          shift and go to state 106
-    term                           shift and go to state 107
-    factor                         shift and go to state 110
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    exp                            shift and go to state 135
+    n_exp                          shift and go to state 105
+    l_exp                          shift and go to state 106
+    a_exp                          shift and go to state 107
+    term                           shift and go to state 108
+    factor                         shift and go to state 111
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
-state 96
+state 97
 
     (46) statutes -> CALL call SEMICOLON .
 
@@ -1660,7 +1621,7 @@ state 96
     RETURN          reduce using rule 46 (statutes -> CALL call SEMICOLON .)
 
 
-state 97
+state 98
 
     (62) call -> ID LPAREN . RPAREN
     (64) call -> ID LPAREN . call_aux RPAREN
@@ -1699,46 +1660,46 @@ state 97
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    RPAREN          shift and go to state 135
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    RPAREN          shift and go to state 136
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
-    call_aux                       shift and go to state 136
-    exp                            shift and go to state 137
-    n_exp                          shift and go to state 104
-    l_exp                          shift and go to state 105
-    a_exp                          shift and go to state 106
-    term                           shift and go to state 107
-    factor                         shift and go to state 110
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    call_aux                       shift and go to state 137
+    exp                            shift and go to state 138
+    n_exp                          shift and go to state 105
+    l_exp                          shift and go to state 106
+    a_exp                          shift and go to state 107
+    term                           shift and go to state 108
+    factor                         shift and go to state 111
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
-state 98
+state 99
 
     (63) call -> ID POINT . ID LPAREN RPAREN
     (65) call -> ID POINT . ID LPAREN call_aux RPAREN
 
-    ID              shift and go to state 138
-
-
-state 99
-
-    (74) read -> READ LPAREN var . RPAREN SEMICOLON
-
-    RPAREN          shift and go to state 139
+    ID              shift and go to state 139
 
 
 state 100
+
+    (74) read -> READ LPAREN var . RPAREN SEMICOLON
+
+    RPAREN          shift and go to state 140
+
+
+state 101
 
     (94) factor -> LPAREN . exp RPAREN
     (82) exp -> . n_exp
@@ -1774,54 +1735,54 @@ state 100
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
-    exp                            shift and go to state 140
-    n_exp                          shift and go to state 104
-    l_exp                          shift and go to state 105
-    a_exp                          shift and go to state 106
-    term                           shift and go to state 107
-    factor                         shift and go to state 110
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    exp                            shift and go to state 141
+    n_exp                          shift and go to state 105
+    l_exp                          shift and go to state 106
+    a_exp                          shift and go to state 107
+    term                           shift and go to state 108
+    factor                         shift and go to state 111
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
-state 101
+state 102
 
     (75) write -> WRITE LPAREN write_aux . RPAREN SEMICOLON
 
-    RPAREN          shift and go to state 141
+    RPAREN          shift and go to state 142
 
 
-state 102
+state 103
 
     (76) write_aux -> exp .
     (77) write_aux -> exp . COMMA write_aux
 
     RPAREN          reduce using rule 76 (write_aux -> exp .)
-    COMMA           shift and go to state 142
+    COMMA           shift and go to state 143
 
 
-state 103
+state 104
 
     (78) write_aux -> CTESTRING .
     (79) write_aux -> CTESTRING . COMMA write_aux
 
     RPAREN          reduce using rule 78 (write_aux -> CTESTRING .)
-    COMMA           shift and go to state 143
+    COMMA           shift and go to state 144
 
 
-state 104
+state 105
 
     (82) exp -> n_exp .
     (83) exp -> n_exp . OR exp
@@ -1830,10 +1791,10 @@ state 104
     RPAREN          reduce using rule 82 (exp -> n_exp .)
     SEMICOLON       reduce using rule 82 (exp -> n_exp .)
     RBRACKET        reduce using rule 82 (exp -> n_exp .)
-    OR              shift and go to state 144
+    OR              shift and go to state 145
 
 
-state 105
+state 106
 
     (84) n_exp -> l_exp .
     (85) n_exp -> l_exp . AND n_exp
@@ -1843,10 +1804,10 @@ state 105
     RPAREN          reduce using rule 84 (n_exp -> l_exp .)
     SEMICOLON       reduce using rule 84 (n_exp -> l_exp .)
     RBRACKET        reduce using rule 84 (n_exp -> l_exp .)
-    AND             shift and go to state 145
+    AND             shift and go to state 146
 
 
-state 106
+state 107
 
     (86) l_exp -> a_exp .
     (87) l_exp -> a_exp . RELOP a_exp
@@ -1857,10 +1818,10 @@ state 106
     RPAREN          reduce using rule 86 (l_exp -> a_exp .)
     SEMICOLON       reduce using rule 86 (l_exp -> a_exp .)
     RBRACKET        reduce using rule 86 (l_exp -> a_exp .)
-    RELOP           shift and go to state 146
+    RELOP           shift and go to state 147
 
 
-state 107
+state 108
 
     (88) a_exp -> term .
     (89) a_exp -> term . PLUS a_exp
@@ -1873,11 +1834,11 @@ state 107
     RPAREN          reduce using rule 88 (a_exp -> term .)
     SEMICOLON       reduce using rule 88 (a_exp -> term .)
     RBRACKET        reduce using rule 88 (a_exp -> term .)
-    PLUS            shift and go to state 147
-    MINUS           shift and go to state 148
+    PLUS            shift and go to state 148
+    MINUS           shift and go to state 149
 
 
-state 108
+state 109
 
     (99) factor_aux -> PLUS . cte
     (101) cte -> . ID
@@ -1888,17 +1849,17 @@ state 108
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    ID              shift and go to state 150
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    ID              shift and go to state 151
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
-    cte                            shift and go to state 149
-    bool                           shift and go to state 119
+    cte                            shift and go to state 150
+    bool                           shift and go to state 120
 
-state 109
+state 110
 
     (100) factor_aux -> MINUS . cte
     (101) cte -> . ID
@@ -1909,17 +1870,17 @@ state 109
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    ID              shift and go to state 150
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    ID              shift and go to state 151
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
-    cte                            shift and go to state 151
-    bool                           shift and go to state 119
+    cte                            shift and go to state 152
+    bool                           shift and go to state 120
 
-state 110
+state 111
 
     (91) term -> factor .
     (92) term -> factor . TIMES term
@@ -1934,11 +1895,11 @@ state 110
     RPAREN          reduce using rule 91 (term -> factor .)
     SEMICOLON       reduce using rule 91 (term -> factor .)
     RBRACKET        reduce using rule 91 (term -> factor .)
-    TIMES           shift and go to state 152
-    DIVIDE          shift and go to state 153
+    TIMES           shift and go to state 153
+    DIVIDE          shift and go to state 154
 
 
-state 111
+state 112
 
     (95) factor -> var .
 
@@ -1955,7 +1916,7 @@ state 111
     RBRACKET        reduce using rule 95 (factor -> var .)
 
 
-state 112
+state 113
 
     (96) factor -> call .
 
@@ -1972,7 +1933,7 @@ state 112
     RBRACKET        reduce using rule 96 (factor -> call .)
 
 
-state 113
+state 114
 
     (97) factor -> factor_aux .
 
@@ -1989,7 +1950,7 @@ state 113
     RBRACKET        reduce using rule 97 (factor -> factor_aux .)
 
 
-state 114
+state 115
 
     (55) var -> ID .
     (56) var -> ID . var_aux
@@ -2026,9 +1987,9 @@ state 114
     RPAREN          reduce using rule 55 (var -> ID .)
     SEMICOLON       reduce using rule 55 (var -> ID .)
     RBRACKET        reduce using rule 55 (var -> ID .)
-    LPAREN          shift and go to state 97
-    POINT           shift and go to state 154
-    LBRACKET        shift and go to state 95
+    LPAREN          shift and go to state 98
+    POINT           shift and go to state 155
+    LBRACKET        shift and go to state 96
 
   ! TIMES           [ reduce using rule 101 (cte -> ID .) ]
   ! DIVIDE          [ reduce using rule 101 (cte -> ID .) ]
@@ -2042,10 +2003,10 @@ state 114
   ! SEMICOLON       [ reduce using rule 101 (cte -> ID .) ]
   ! RBRACKET        [ reduce using rule 101 (cte -> ID .) ]
 
-    var_aux                        shift and go to state 92
-    var_aux_2                      shift and go to state 94
+    var_aux                        shift and go to state 93
+    var_aux_2                      shift and go to state 95
 
-state 115
+state 116
 
     (98) factor_aux -> cte .
 
@@ -2062,7 +2023,7 @@ state 115
     RBRACKET        reduce using rule 98 (factor_aux -> cte .)
 
 
-state 116
+state 117
 
     (102) cte -> CTEI .
 
@@ -2079,7 +2040,7 @@ state 116
     RBRACKET        reduce using rule 102 (cte -> CTEI .)
 
 
-state 117
+state 118
 
     (103) cte -> CTEF .
 
@@ -2096,7 +2057,7 @@ state 117
     RBRACKET        reduce using rule 103 (cte -> CTEF .)
 
 
-state 118
+state 119
 
     (104) cte -> CTECHAR .
 
@@ -2113,7 +2074,7 @@ state 118
     RBRACKET        reduce using rule 104 (cte -> CTECHAR .)
 
 
-state 119
+state 120
 
     (105) cte -> bool .
 
@@ -2130,7 +2091,7 @@ state 119
     RBRACKET        reduce using rule 105 (cte -> bool .)
 
 
-state 120
+state 121
 
     (106) bool -> TRUE .
 
@@ -2147,7 +2108,7 @@ state 120
     RBRACKET        reduce using rule 106 (bool -> TRUE .)
 
 
-state 121
+state 122
 
     (107) bool -> FALSE .
 
@@ -2164,29 +2125,29 @@ state 121
     RBRACKET        reduce using rule 107 (bool -> FALSE .)
 
 
-state 122
+state 123
 
     (69) condition_aux -> LPAREN exp . RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3
     (71) condition_aux_2 -> LPAREN exp . RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux
-
-    RPAREN          shift and go to state 155
-
-
-state 123
-
-    (80) while -> WHILE LPAREN exp . RPAREN DO LBRACE statutes_aux RBRACE
 
     RPAREN          shift and go to state 156
 
 
 state 124
 
-    (81) for -> FROM LPAREN exp . RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+    (80) while -> WHILE LPAREN exp . RPAREN DO LBRACE statutes_aux RBRACE
 
     RPAREN          shift and go to state 157
 
 
 state 125
+
+    (81) for -> FROM LPAREN assignation . RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+
+    RPAREN          shift and go to state 158
+
+
+state 126
 
     (35) functions_aux -> VOID ID LPAREN . params RPAREN body
     (36) functions_aux -> VOID ID LPAREN . RPAREN body
@@ -2197,16 +2158,16 @@ state 125
     (24) simple_type -> . CHAR
     (25) simple_type -> . BOOL
 
-    RPAREN          shift and go to state 159
+    RPAREN          shift and go to state 160
     INT             shift and go to state 19
     FLOAT           shift and go to state 20
     CHAR            shift and go to state 21
     BOOL            shift and go to state 22
 
-    params                         shift and go to state 158
-    simple_type                    shift and go to state 160
+    params                         shift and go to state 159
+    simple_type                    shift and go to state 161
 
-state 126
+state 127
 
     (37) functions_aux -> simple_type ID LPAREN . RPAREN body
     (38) functions_aux -> simple_type ID LPAREN . params RPAREN body
@@ -2217,23 +2178,23 @@ state 126
     (24) simple_type -> . CHAR
     (25) simple_type -> . BOOL
 
-    RPAREN          shift and go to state 161
+    RPAREN          shift and go to state 162
     INT             shift and go to state 19
     FLOAT           shift and go to state 20
     CHAR            shift and go to state 21
     BOOL            shift and go to state 22
 
-    simple_type                    shift and go to state 160
-    params                         shift and go to state 162
+    simple_type                    shift and go to state 161
+    params                         shift and go to state 163
 
-state 127
+state 128
 
     (29) classes_aux -> LBRACE dec_vars functions . RBRACE
 
-    RBRACE          shift and go to state 163
+    RBRACE          shift and go to state 164
 
 
-state 128
+state 129
 
     (30) classes_aux -> LBRACE functions RBRACE .
 
@@ -2242,7 +2203,7 @@ state 128
     MAIN            reduce using rule 30 (classes_aux -> LBRACE functions RBRACE .)
 
 
-state 129
+state 130
 
     (31) classes_aux -> INHERITS ID LBRACE . dec_vars functions RBRACE
     (32) classes_aux -> INHERITS ID LBRACE . functions RBRACE
@@ -2253,34 +2214,35 @@ state 129
     VAR             shift and go to state 9
     FUNCT           shift and go to state 29
 
-    dec_vars                       shift and go to state 164
-    functions                      shift and go to state 165
+    dec_vars                       shift and go to state 165
+    functions                      shift and go to state 166
 
-state 130
+state 131
 
     (19) vars_simple_type -> ID vars_simple_type_aux COMMA vars_simple_type .
 
     SEMICOLON       reduce using rule 19 (vars_simple_type -> ID vars_simple_type_aux COMMA vars_simple_type .)
 
 
-state 131
+state 132
 
     (20) vars_simple_type_aux -> LBRACKET CTEI RBRACKET .
     (21) vars_simple_type_aux -> LBRACKET CTEI RBRACKET . LBRACKET CTEI RBRACKET
 
     COMMA           reduce using rule 20 (vars_simple_type_aux -> LBRACKET CTEI RBRACKET .)
     SEMICOLON       reduce using rule 20 (vars_simple_type_aux -> LBRACKET CTEI RBRACKET .)
-    LBRACKET        shift and go to state 166
-
-
-state 132
-
-    (54) assignation -> var EQUAL exp . SEMICOLON
-
-    SEMICOLON       shift and go to state 167
+    LBRACKET        shift and go to state 167
 
 
 state 133
+
+    (54) assignation -> var EQUAL exp .
+
+    SEMICOLON       reduce using rule 54 (assignation -> var EQUAL exp .)
+    RPAREN          reduce using rule 54 (assignation -> var EQUAL exp .)
+
+
+state 134
 
     (57) var_aux -> POINT ID .
     (58) var_aux -> POINT ID . var_aux_2
@@ -2289,11 +2251,11 @@ state 133
 
     EQUAL           reduce using rule 57 (var_aux -> POINT ID .)
     RPAREN          reduce using rule 57 (var_aux -> POINT ID .)
-    LBRACKET        shift and go to state 95
+    LBRACKET        shift and go to state 96
 
     var_aux_2                      shift and go to state 168
 
-state 134
+state 135
 
     (60) var_aux_2 -> LBRACKET exp . RBRACKET
     (61) var_aux_2 -> LBRACKET exp . RBRACKET LBRACKET exp RBRACKET
@@ -2301,7 +2263,7 @@ state 134
     RBRACKET        shift and go to state 169
 
 
-state 135
+state 136
 
     (62) call -> ID LPAREN RPAREN .
 
@@ -2318,14 +2280,14 @@ state 135
     RBRACKET        reduce using rule 62 (call -> ID LPAREN RPAREN .)
 
 
-state 136
+state 137
 
     (64) call -> ID LPAREN call_aux . RPAREN
 
     RPAREN          shift and go to state 170
 
 
-state 137
+state 138
 
     (66) call_aux -> exp .
     (67) call_aux -> exp . COMMA call_aux
@@ -2334,7 +2296,7 @@ state 137
     COMMA           shift and go to state 171
 
 
-state 138
+state 139
 
     (63) call -> ID POINT ID . LPAREN RPAREN
     (65) call -> ID POINT ID . LPAREN call_aux RPAREN
@@ -2342,28 +2304,28 @@ state 138
     LPAREN          shift and go to state 172
 
 
-state 139
+state 140
 
     (74) read -> READ LPAREN var RPAREN . SEMICOLON
 
     SEMICOLON       shift and go to state 173
 
 
-state 140
+state 141
 
     (94) factor -> LPAREN exp . RPAREN
 
     RPAREN          shift and go to state 174
 
 
-state 141
+state 142
 
     (75) write -> WRITE LPAREN write_aux RPAREN . SEMICOLON
 
     SEMICOLON       shift and go to state 175
 
 
-state 142
+state 143
 
     (77) write_aux -> exp COMMA . write_aux
     (76) write_aux -> . exp
@@ -2403,31 +2365,31 @@ state 142
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    CTESTRING       shift and go to state 103
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    CTESTRING       shift and go to state 104
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
-    exp                            shift and go to state 102
+    exp                            shift and go to state 103
     write_aux                      shift and go to state 176
-    n_exp                          shift and go to state 104
-    l_exp                          shift and go to state 105
-    a_exp                          shift and go to state 106
-    term                           shift and go to state 107
-    factor                         shift and go to state 110
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    n_exp                          shift and go to state 105
+    l_exp                          shift and go to state 106
+    a_exp                          shift and go to state 107
+    term                           shift and go to state 108
+    factor                         shift and go to state 111
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
-state 143
+state 144
 
     (79) write_aux -> CTESTRING COMMA . write_aux
     (76) write_aux -> . exp
@@ -2467,31 +2429,31 @@ state 143
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    CTESTRING       shift and go to state 103
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    CTESTRING       shift and go to state 104
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
     write_aux                      shift and go to state 177
-    exp                            shift and go to state 102
-    n_exp                          shift and go to state 104
-    l_exp                          shift and go to state 105
-    a_exp                          shift and go to state 106
-    term                           shift and go to state 107
-    factor                         shift and go to state 110
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    exp                            shift and go to state 103
+    n_exp                          shift and go to state 105
+    l_exp                          shift and go to state 106
+    a_exp                          shift and go to state 107
+    term                           shift and go to state 108
+    factor                         shift and go to state 111
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
-state 144
+state 145
 
     (83) exp -> n_exp OR . exp
     (82) exp -> . n_exp
@@ -2527,29 +2489,29 @@ state 144
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
-    n_exp                          shift and go to state 104
+    n_exp                          shift and go to state 105
     exp                            shift and go to state 178
-    l_exp                          shift and go to state 105
-    a_exp                          shift and go to state 106
-    term                           shift and go to state 107
-    factor                         shift and go to state 110
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    l_exp                          shift and go to state 106
+    a_exp                          shift and go to state 107
+    term                           shift and go to state 108
+    factor                         shift and go to state 111
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
-state 145
+state 146
 
     (85) n_exp -> l_exp AND . n_exp
     (84) n_exp -> . l_exp
@@ -2583,28 +2545,28 @@ state 145
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
-    l_exp                          shift and go to state 105
+    l_exp                          shift and go to state 106
     n_exp                          shift and go to state 179
-    a_exp                          shift and go to state 106
-    term                           shift and go to state 107
-    factor                         shift and go to state 110
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    a_exp                          shift and go to state 107
+    term                           shift and go to state 108
+    factor                         shift and go to state 111
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
-state 146
+state 147
 
     (87) l_exp -> a_exp RELOP . a_exp
     (88) a_exp -> . term
@@ -2634,26 +2596,26 @@ state 146
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
     a_exp                          shift and go to state 180
-    term                           shift and go to state 107
-    factor                         shift and go to state 110
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    term                           shift and go to state 108
+    factor                         shift and go to state 111
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
-state 147
+state 148
 
     (89) a_exp -> term PLUS . a_exp
     (88) a_exp -> . term
@@ -2683,26 +2645,26 @@ state 147
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
-    term                           shift and go to state 107
+    term                           shift and go to state 108
     a_exp                          shift and go to state 181
-    factor                         shift and go to state 110
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    factor                         shift and go to state 111
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
-state 148
+state 149
 
     (90) a_exp -> term MINUS . a_exp
     (88) a_exp -> . term
@@ -2732,26 +2694,26 @@ state 148
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
-    term                           shift and go to state 107
+    term                           shift and go to state 108
     a_exp                          shift and go to state 182
-    factor                         shift and go to state 110
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    factor                         shift and go to state 111
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
-state 149
+state 150
 
     (99) factor_aux -> PLUS cte .
 
@@ -2768,7 +2730,7 @@ state 149
     RBRACKET        reduce using rule 99 (factor_aux -> PLUS cte .)
 
 
-state 150
+state 151
 
     (101) cte -> ID .
 
@@ -2785,7 +2747,7 @@ state 150
     RBRACKET        reduce using rule 101 (cte -> ID .)
 
 
-state 151
+state 152
 
     (100) factor_aux -> MINUS cte .
 
@@ -2802,7 +2764,7 @@ state 151
     RBRACKET        reduce using rule 100 (factor_aux -> MINUS cte .)
 
 
-state 152
+state 153
 
     (92) term -> factor TIMES . term
     (91) term -> . factor
@@ -2829,25 +2791,25 @@ state 152
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
-    factor                         shift and go to state 110
+    factor                         shift and go to state 111
     term                           shift and go to state 183
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
-state 153
+state 154
 
     (93) term -> factor DIVIDE . term
     (91) term -> . factor
@@ -2874,25 +2836,25 @@ state 153
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
-    factor                         shift and go to state 110
+    factor                         shift and go to state 111
     term                           shift and go to state 184
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
-state 154
+state 155
 
     (63) call -> ID POINT . ID LPAREN RPAREN
     (65) call -> ID POINT . ID LPAREN call_aux RPAREN
@@ -2902,7 +2864,7 @@ state 154
     ID              shift and go to state 185
 
 
-state 155
+state 156
 
     (69) condition_aux -> LPAREN exp RPAREN . THEN LBRACE statutes_aux RBRACE condition_aux_3
     (71) condition_aux_2 -> LPAREN exp RPAREN . THEN LBRACE statutes_aux RBRACE ELIF condition_aux
@@ -2910,40 +2872,40 @@ state 155
     THEN            shift and go to state 186
 
 
-state 156
+state 157
 
     (80) while -> WHILE LPAREN exp RPAREN . DO LBRACE statutes_aux RBRACE
 
     DO              shift and go to state 187
 
 
-state 157
+state 158
 
-    (81) for -> FROM LPAREN exp RPAREN . UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+    (81) for -> FROM LPAREN assignation RPAREN . UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
 
     UNTIL           shift and go to state 188
 
 
-state 158
+state 159
 
     (35) functions_aux -> VOID ID LPAREN params . RPAREN body
 
     RPAREN          shift and go to state 189
 
 
-state 159
+state 160
 
     (36) functions_aux -> VOID ID LPAREN RPAREN . body
     (41) body -> . LBRACE dec_vars statutes_aux RBRACE
     (42) body -> . LBRACE statutes_aux RBRACE
-    (43) body -> . LBRACE statutes_aux RETURN ID RBRACE
-    (44) body -> . LBRACE dec_vars statutes_aux RETURN ID RBRACE
+    (43) body -> . LBRACE statutes_aux RETURN ID SEMICOLON RBRACE
+    (44) body -> . LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE
 
     LBRACE          shift and go to state 191
 
     body                           shift and go to state 190
 
-state 160
+state 161
 
     (39) params -> simple_type . ID
     (40) params -> simple_type . ID COMMA params
@@ -2951,26 +2913,26 @@ state 160
     ID              shift and go to state 192
 
 
-state 161
+state 162
 
     (37) functions_aux -> simple_type ID LPAREN RPAREN . body
     (41) body -> . LBRACE dec_vars statutes_aux RBRACE
     (42) body -> . LBRACE statutes_aux RBRACE
-    (43) body -> . LBRACE statutes_aux RETURN ID RBRACE
-    (44) body -> . LBRACE dec_vars statutes_aux RETURN ID RBRACE
+    (43) body -> . LBRACE statutes_aux RETURN ID SEMICOLON RBRACE
+    (44) body -> . LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE
 
     LBRACE          shift and go to state 191
 
     body                           shift and go to state 193
 
-state 162
+state 163
 
     (38) functions_aux -> simple_type ID LPAREN params . RPAREN body
 
     RPAREN          shift and go to state 194
 
 
-state 163
+state 164
 
     (29) classes_aux -> LBRACE dec_vars functions RBRACE .
 
@@ -2979,7 +2941,7 @@ state 163
     MAIN            reduce using rule 29 (classes_aux -> LBRACE dec_vars functions RBRACE .)
 
 
-state 164
+state 165
 
     (31) classes_aux -> INHERITS ID LBRACE dec_vars . functions RBRACE
     (33) functions -> . FUNCT functions_aux
@@ -2989,33 +2951,18 @@ state 164
 
     functions                      shift and go to state 195
 
-state 165
+state 166
 
     (32) classes_aux -> INHERITS ID LBRACE functions . RBRACE
 
     RBRACE          shift and go to state 196
 
 
-state 166
+state 167
 
     (21) vars_simple_type_aux -> LBRACKET CTEI RBRACKET LBRACKET . CTEI RBRACKET
 
     CTEI            shift and go to state 197
-
-
-state 167
-
-    (54) assignation -> var EQUAL exp SEMICOLON .
-
-    ASSIGN          reduce using rule 54 (assignation -> var EQUAL exp SEMICOLON .)
-    CALL            reduce using rule 54 (assignation -> var EQUAL exp SEMICOLON .)
-    READ            reduce using rule 54 (assignation -> var EQUAL exp SEMICOLON .)
-    WRITE           reduce using rule 54 (assignation -> var EQUAL exp SEMICOLON .)
-    IF              reduce using rule 54 (assignation -> var EQUAL exp SEMICOLON .)
-    WHILE           reduce using rule 54 (assignation -> var EQUAL exp SEMICOLON .)
-    FROM            reduce using rule 54 (assignation -> var EQUAL exp SEMICOLON .)
-    RBRACE          reduce using rule 54 (assignation -> var EQUAL exp SEMICOLON .)
-    RETURN          reduce using rule 54 (assignation -> var EQUAL exp SEMICOLON .)
 
 
 state 168
@@ -3111,28 +3058,28 @@ state 171
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
-    exp                            shift and go to state 137
+    exp                            shift and go to state 138
     call_aux                       shift and go to state 199
-    n_exp                          shift and go to state 104
-    l_exp                          shift and go to state 105
-    a_exp                          shift and go to state 106
-    term                           shift and go to state 107
-    factor                         shift and go to state 110
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    n_exp                          shift and go to state 105
+    l_exp                          shift and go to state 106
+    a_exp                          shift and go to state 107
+    term                           shift and go to state 108
+    factor                         shift and go to state 111
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
 state 172
 
@@ -3174,28 +3121,28 @@ state 172
     (107) bool -> . FALSE
 
     RPAREN          shift and go to state 200
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
     call_aux                       shift and go to state 201
-    exp                            shift and go to state 137
-    n_exp                          shift and go to state 104
-    l_exp                          shift and go to state 105
-    a_exp                          shift and go to state 106
-    term                           shift and go to state 107
-    factor                         shift and go to state 110
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    exp                            shift and go to state 138
+    n_exp                          shift and go to state 105
+    l_exp                          shift and go to state 106
+    a_exp                          shift and go to state 107
+    term                           shift and go to state 108
+    factor                         shift and go to state 111
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
 state 173
 
@@ -3368,7 +3315,7 @@ state 185
     RPAREN          reduce using rule 57 (var_aux -> POINT ID .)
     SEMICOLON       reduce using rule 57 (var_aux -> POINT ID .)
     RBRACKET        reduce using rule 57 (var_aux -> POINT ID .)
-    LBRACKET        shift and go to state 95
+    LBRACKET        shift and go to state 96
 
     var_aux_2                      shift and go to state 168
 
@@ -3389,7 +3336,7 @@ state 187
 
 state 188
 
-    (81) for -> FROM LPAREN exp RPAREN UNTIL . LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+    (81) for -> FROM LPAREN assignation RPAREN UNTIL . LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
 
     LPAREN          shift and go to state 204
 
@@ -3399,8 +3346,8 @@ state 189
     (35) functions_aux -> VOID ID LPAREN params RPAREN . body
     (41) body -> . LBRACE dec_vars statutes_aux RBRACE
     (42) body -> . LBRACE statutes_aux RBRACE
-    (43) body -> . LBRACE statutes_aux RETURN ID RBRACE
-    (44) body -> . LBRACE dec_vars statutes_aux RETURN ID RBRACE
+    (43) body -> . LBRACE statutes_aux RETURN ID SEMICOLON RBRACE
+    (44) body -> . LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE
 
     LBRACE          shift and go to state 191
 
@@ -3419,12 +3366,12 @@ state 191
 
     (41) body -> LBRACE . dec_vars statutes_aux RBRACE
     (42) body -> LBRACE . statutes_aux RBRACE
-    (43) body -> LBRACE . statutes_aux RETURN ID RBRACE
-    (44) body -> LBRACE . dec_vars statutes_aux RETURN ID RBRACE
+    (43) body -> LBRACE . statutes_aux RETURN ID SEMICOLON RBRACE
+    (44) body -> LBRACE . dec_vars statutes_aux RETURN ID SEMICOLON RBRACE
     (9) dec_vars -> . VAR dec_vars_aux
     (52) statutes_aux -> . statutes
     (53) statutes_aux -> . statutes statutes_aux
-    (45) statutes -> . ASSIGN assignation
+    (45) statutes -> . ASSIGN assignation SEMICOLON
     (46) statutes -> . CALL call SEMICOLON
     (47) statutes -> . read
     (48) statutes -> . write
@@ -3435,7 +3382,7 @@ state 191
     (75) write -> . WRITE LPAREN write_aux RPAREN SEMICOLON
     (68) condition -> . IF condition_aux
     (80) while -> . WHILE LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
-    (81) for -> . FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+    (81) for -> . FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
 
     VAR             shift and go to state 9
     ASSIGN          shift and go to state 38
@@ -3478,8 +3425,8 @@ state 194
     (38) functions_aux -> simple_type ID LPAREN params RPAREN . body
     (41) body -> . LBRACE dec_vars statutes_aux RBRACE
     (42) body -> . LBRACE statutes_aux RBRACE
-    (43) body -> . LBRACE statutes_aux RETURN ID RBRACE
-    (44) body -> . LBRACE dec_vars statutes_aux RETURN ID RBRACE
+    (43) body -> . LBRACE statutes_aux RETURN ID SEMICOLON RBRACE
+    (44) body -> . LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE
 
     LBRACE          shift and go to state 191
 
@@ -3544,27 +3491,27 @@ state 198
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
     exp                            shift and go to state 212
-    n_exp                          shift and go to state 104
-    l_exp                          shift and go to state 105
-    a_exp                          shift and go to state 106
-    term                           shift and go to state 107
-    factor                         shift and go to state 110
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    n_exp                          shift and go to state 105
+    l_exp                          shift and go to state 106
+    a_exp                          shift and go to state 107
+    term                           shift and go to state 108
+    factor                         shift and go to state 111
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
 state 199
 
@@ -3603,7 +3550,7 @@ state 202
     (71) condition_aux_2 -> LPAREN exp RPAREN THEN LBRACE . statutes_aux RBRACE ELIF condition_aux
     (52) statutes_aux -> . statutes
     (53) statutes_aux -> . statutes statutes_aux
-    (45) statutes -> . ASSIGN assignation
+    (45) statutes -> . ASSIGN assignation SEMICOLON
     (46) statutes -> . CALL call SEMICOLON
     (47) statutes -> . read
     (48) statutes -> . write
@@ -3614,7 +3561,7 @@ state 202
     (75) write -> . WRITE LPAREN write_aux RPAREN SEMICOLON
     (68) condition -> . IF condition_aux
     (80) while -> . WHILE LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
-    (81) for -> . FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+    (81) for -> . FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
 
     ASSIGN          shift and go to state 38
     CALL            shift and go to state 39
@@ -3637,7 +3584,7 @@ state 203
     (80) while -> WHILE LPAREN exp RPAREN DO LBRACE . statutes_aux RBRACE
     (52) statutes_aux -> . statutes
     (53) statutes_aux -> . statutes statutes_aux
-    (45) statutes -> . ASSIGN assignation
+    (45) statutes -> . ASSIGN assignation SEMICOLON
     (46) statutes -> . CALL call SEMICOLON
     (47) statutes -> . read
     (48) statutes -> . write
@@ -3648,7 +3595,7 @@ state 203
     (75) write -> . WRITE LPAREN write_aux RPAREN SEMICOLON
     (68) condition -> . IF condition_aux
     (80) while -> . WHILE LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
-    (81) for -> . FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+    (81) for -> . FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
 
     ASSIGN          shift and go to state 38
     CALL            shift and go to state 39
@@ -3668,7 +3615,7 @@ state 203
 
 state 204
 
-    (81) for -> FROM LPAREN exp RPAREN UNTIL LPAREN . exp RPAREN DO LBRACE statutes_aux RBRACE
+    (81) for -> FROM LPAREN assignation RPAREN UNTIL LPAREN . exp RPAREN DO LBRACE statutes_aux RBRACE
     (82) exp -> . n_exp
     (83) exp -> . n_exp OR exp
     (84) n_exp -> . l_exp
@@ -3702,27 +3649,27 @@ state 204
     (106) bool -> . TRUE
     (107) bool -> . FALSE
 
-    LPAREN          shift and go to state 100
-    ID              shift and go to state 114
-    PLUS            shift and go to state 108
-    MINUS           shift and go to state 109
-    CTEI            shift and go to state 116
-    CTEF            shift and go to state 117
-    CTECHAR         shift and go to state 118
-    TRUE            shift and go to state 120
-    FALSE           shift and go to state 121
+    LPAREN          shift and go to state 101
+    ID              shift and go to state 115
+    PLUS            shift and go to state 109
+    MINUS           shift and go to state 110
+    CTEI            shift and go to state 117
+    CTEF            shift and go to state 118
+    CTECHAR         shift and go to state 119
+    TRUE            shift and go to state 121
+    FALSE           shift and go to state 122
 
     exp                            shift and go to state 216
-    n_exp                          shift and go to state 104
-    l_exp                          shift and go to state 105
-    a_exp                          shift and go to state 106
-    term                           shift and go to state 107
-    factor                         shift and go to state 110
-    var                            shift and go to state 111
-    call                           shift and go to state 112
-    factor_aux                     shift and go to state 113
-    cte                            shift and go to state 115
-    bool                           shift and go to state 119
+    n_exp                          shift and go to state 105
+    l_exp                          shift and go to state 106
+    a_exp                          shift and go to state 107
+    term                           shift and go to state 108
+    factor                         shift and go to state 111
+    var                            shift and go to state 112
+    call                           shift and go to state 113
+    factor_aux                     shift and go to state 114
+    cte                            shift and go to state 116
+    bool                           shift and go to state 120
 
 state 205
 
@@ -3736,10 +3683,10 @@ state 205
 state 206
 
     (41) body -> LBRACE dec_vars . statutes_aux RBRACE
-    (44) body -> LBRACE dec_vars . statutes_aux RETURN ID RBRACE
+    (44) body -> LBRACE dec_vars . statutes_aux RETURN ID SEMICOLON RBRACE
     (52) statutes_aux -> . statutes
     (53) statutes_aux -> . statutes statutes_aux
-    (45) statutes -> . ASSIGN assignation
+    (45) statutes -> . ASSIGN assignation SEMICOLON
     (46) statutes -> . CALL call SEMICOLON
     (47) statutes -> . read
     (48) statutes -> . write
@@ -3750,7 +3697,7 @@ state 206
     (75) write -> . WRITE LPAREN write_aux RPAREN SEMICOLON
     (68) condition -> . IF condition_aux
     (80) while -> . WHILE LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
-    (81) for -> . FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+    (81) for -> . FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
 
     ASSIGN          shift and go to state 38
     CALL            shift and go to state 39
@@ -3771,7 +3718,7 @@ state 206
 state 207
 
     (42) body -> LBRACE statutes_aux . RBRACE
-    (43) body -> LBRACE statutes_aux . RETURN ID RBRACE
+    (43) body -> LBRACE statutes_aux . RETURN ID SEMICOLON RBRACE
 
     RBRACE          shift and go to state 218
     RETURN          shift and go to state 219
@@ -3792,7 +3739,7 @@ state 208
     CHAR            shift and go to state 21
     BOOL            shift and go to state 22
 
-    simple_type                    shift and go to state 160
+    simple_type                    shift and go to state 161
     params                         shift and go to state 220
 
 state 209
@@ -3862,7 +3809,7 @@ state 215
 
 state 216
 
-    (81) for -> FROM LPAREN exp RPAREN UNTIL LPAREN exp . RPAREN DO LBRACE statutes_aux RBRACE
+    (81) for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp . RPAREN DO LBRACE statutes_aux RBRACE
 
     RPAREN          shift and go to state 224
 
@@ -3870,7 +3817,7 @@ state 216
 state 217
 
     (41) body -> LBRACE dec_vars statutes_aux . RBRACE
-    (44) body -> LBRACE dec_vars statutes_aux . RETURN ID RBRACE
+    (44) body -> LBRACE dec_vars statutes_aux . RETURN ID SEMICOLON RBRACE
 
     RBRACE          shift and go to state 225
     RETURN          shift and go to state 226
@@ -3887,7 +3834,7 @@ state 218
 
 state 219
 
-    (43) body -> LBRACE statutes_aux RETURN . ID RBRACE
+    (43) body -> LBRACE statutes_aux RETURN . ID SEMICOLON RBRACE
 
     ID              shift and go to state 227
 
@@ -3957,7 +3904,7 @@ state 223
 
 state 224
 
-    (81) for -> FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN . DO LBRACE statutes_aux RBRACE
+    (81) for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN . DO LBRACE statutes_aux RBRACE
 
     DO              shift and go to state 232
 
@@ -3973,16 +3920,16 @@ state 225
 
 state 226
 
-    (44) body -> LBRACE dec_vars statutes_aux RETURN . ID RBRACE
+    (44) body -> LBRACE dec_vars statutes_aux RETURN . ID SEMICOLON RBRACE
 
     ID              shift and go to state 233
 
 
 state 227
 
-    (43) body -> LBRACE statutes_aux RETURN ID . RBRACE
+    (43) body -> LBRACE statutes_aux RETURN ID . SEMICOLON RBRACE
 
-    RBRACE          shift and go to state 234
+    SEMICOLON       shift and go to state 234
 
 
 state 228
@@ -4036,25 +3983,23 @@ state 231
 
 state 232
 
-    (81) for -> FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO . LBRACE statutes_aux RBRACE
+    (81) for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO . LBRACE statutes_aux RBRACE
 
     LBRACE          shift and go to state 237
 
 
 state 233
 
-    (44) body -> LBRACE dec_vars statutes_aux RETURN ID . RBRACE
+    (44) body -> LBRACE dec_vars statutes_aux RETURN ID . SEMICOLON RBRACE
 
-    RBRACE          shift and go to state 238
+    SEMICOLON       shift and go to state 238
 
 
 state 234
 
-    (43) body -> LBRACE statutes_aux RETURN ID RBRACE .
+    (43) body -> LBRACE statutes_aux RETURN ID SEMICOLON . RBRACE
 
-    FUNCT           reduce using rule 43 (body -> LBRACE statutes_aux RETURN ID RBRACE .)
-    MAIN            reduce using rule 43 (body -> LBRACE statutes_aux RETURN ID RBRACE .)
-    RBRACE          reduce using rule 43 (body -> LBRACE statutes_aux RETURN ID RBRACE .)
+    RBRACE          shift and go to state 239
 
 
 state 235
@@ -4077,7 +4022,7 @@ state 236
     (72) condition_aux_3 -> ELSE LBRACE . statutes_aux RBRACE
     (52) statutes_aux -> . statutes
     (53) statutes_aux -> . statutes statutes_aux
-    (45) statutes -> . ASSIGN assignation
+    (45) statutes -> . ASSIGN assignation SEMICOLON
     (46) statutes -> . CALL call SEMICOLON
     (47) statutes -> . read
     (48) statutes -> . write
@@ -4088,41 +4033,7 @@ state 236
     (75) write -> . WRITE LPAREN write_aux RPAREN SEMICOLON
     (68) condition -> . IF condition_aux
     (80) while -> . WHILE LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
-    (81) for -> . FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
-
-    ASSIGN          shift and go to state 38
-    CALL            shift and go to state 39
-    READ            shift and go to state 45
-    WRITE           shift and go to state 46
-    IF              shift and go to state 47
-    WHILE           shift and go to state 48
-    FROM            shift and go to state 49
-
-    statutes_aux                   shift and go to state 239
-    statutes                       shift and go to state 37
-    read                           shift and go to state 40
-    write                          shift and go to state 41
-    condition                      shift and go to state 42
-    while                          shift and go to state 43
-    for                            shift and go to state 44
-
-state 237
-
-    (81) for -> FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE . statutes_aux RBRACE
-    (52) statutes_aux -> . statutes
-    (53) statutes_aux -> . statutes statutes_aux
-    (45) statutes -> . ASSIGN assignation
-    (46) statutes -> . CALL call SEMICOLON
-    (47) statutes -> . read
-    (48) statutes -> . write
-    (49) statutes -> . condition
-    (50) statutes -> . while
-    (51) statutes -> . for
-    (74) read -> . READ LPAREN var RPAREN SEMICOLON
-    (75) write -> . WRITE LPAREN write_aux RPAREN SEMICOLON
-    (68) condition -> . IF condition_aux
-    (80) while -> . WHILE LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
-    (81) for -> . FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+    (81) for -> . FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
 
     ASSIGN          shift and go to state 38
     CALL            shift and go to state 39
@@ -4140,30 +4051,80 @@ state 237
     while                          shift and go to state 43
     for                            shift and go to state 44
 
+state 237
+
+    (81) for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE . statutes_aux RBRACE
+    (52) statutes_aux -> . statutes
+    (53) statutes_aux -> . statutes statutes_aux
+    (45) statutes -> . ASSIGN assignation SEMICOLON
+    (46) statutes -> . CALL call SEMICOLON
+    (47) statutes -> . read
+    (48) statutes -> . write
+    (49) statutes -> . condition
+    (50) statutes -> . while
+    (51) statutes -> . for
+    (74) read -> . READ LPAREN var RPAREN SEMICOLON
+    (75) write -> . WRITE LPAREN write_aux RPAREN SEMICOLON
+    (68) condition -> . IF condition_aux
+    (80) while -> . WHILE LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+    (81) for -> . FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+
+    ASSIGN          shift and go to state 38
+    CALL            shift and go to state 39
+    READ            shift and go to state 45
+    WRITE           shift and go to state 46
+    IF              shift and go to state 47
+    WHILE           shift and go to state 48
+    FROM            shift and go to state 49
+
+    statutes_aux                   shift and go to state 241
+    statutes                       shift and go to state 37
+    read                           shift and go to state 40
+    write                          shift and go to state 41
+    condition                      shift and go to state 42
+    while                          shift and go to state 43
+    for                            shift and go to state 44
+
 state 238
 
-    (44) body -> LBRACE dec_vars statutes_aux RETURN ID RBRACE .
-
-    FUNCT           reduce using rule 44 (body -> LBRACE dec_vars statutes_aux RETURN ID RBRACE .)
-    MAIN            reduce using rule 44 (body -> LBRACE dec_vars statutes_aux RETURN ID RBRACE .)
-    RBRACE          reduce using rule 44 (body -> LBRACE dec_vars statutes_aux RETURN ID RBRACE .)
-
-
-state 239
-
-    (72) condition_aux_3 -> ELSE LBRACE statutes_aux . RBRACE
-
-    RBRACE          shift and go to state 241
-
-
-state 240
-
-    (81) for -> FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux . RBRACE
+    (44) body -> LBRACE dec_vars statutes_aux RETURN ID SEMICOLON . RBRACE
 
     RBRACE          shift and go to state 242
 
 
+state 239
+
+    (43) body -> LBRACE statutes_aux RETURN ID SEMICOLON RBRACE .
+
+    FUNCT           reduce using rule 43 (body -> LBRACE statutes_aux RETURN ID SEMICOLON RBRACE .)
+    MAIN            reduce using rule 43 (body -> LBRACE statutes_aux RETURN ID SEMICOLON RBRACE .)
+    RBRACE          reduce using rule 43 (body -> LBRACE statutes_aux RETURN ID SEMICOLON RBRACE .)
+
+
+state 240
+
+    (72) condition_aux_3 -> ELSE LBRACE statutes_aux . RBRACE
+
+    RBRACE          shift and go to state 243
+
+
 state 241
+
+    (81) for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux . RBRACE
+
+    RBRACE          shift and go to state 244
+
+
+state 242
+
+    (44) body -> LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE .
+
+    FUNCT           reduce using rule 44 (body -> LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE .)
+    MAIN            reduce using rule 44 (body -> LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE .)
+    RBRACE          reduce using rule 44 (body -> LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE .)
+
+
+state 243
 
     (72) condition_aux_3 -> ELSE LBRACE statutes_aux RBRACE .
 
@@ -4178,22 +4139,22 @@ state 241
     RETURN          reduce using rule 72 (condition_aux_3 -> ELSE LBRACE statutes_aux RBRACE .)
 
 
-state 242
+state 244
 
-    (81) for -> FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .
+    (81) for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .
 
-    ASSIGN          reduce using rule 81 (for -> FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
-    CALL            reduce using rule 81 (for -> FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
-    READ            reduce using rule 81 (for -> FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
-    WRITE           reduce using rule 81 (for -> FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
-    IF              reduce using rule 81 (for -> FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
-    WHILE           reduce using rule 81 (for -> FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
-    FROM            reduce using rule 81 (for -> FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
-    RBRACE          reduce using rule 81 (for -> FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
-    RETURN          reduce using rule 81 (for -> FROM LPAREN exp RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
+    ASSIGN          reduce using rule 81 (for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
+    CALL            reduce using rule 81 (for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
+    READ            reduce using rule 81 (for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
+    WRITE           reduce using rule 81 (for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
+    IF              reduce using rule 81 (for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
+    WHILE           reduce using rule 81 (for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
+    FROM            reduce using rule 81 (for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
+    RBRACE          reduce using rule 81 (for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
+    RETURN          reduce using rule 81 (for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
 
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
-WARNING: reduce/reduce conflict in state 114 resolved using rule (var -> ID)
-WARNING: rejected rule (cte -> ID) in state 114
+WARNING: reduce/reduce conflict in state 115 resolved using rule (var -> ID)
+WARNING: rejected rule (cte -> ID) in state 115

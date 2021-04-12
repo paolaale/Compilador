@@ -1,6 +1,26 @@
 program p1 :
     var int a;
 
+    class perro inherits animal {
+        var float b[2][3];
+
+        funct bool getName() {
+            read(b);
+            return name;
+        }
+    }
+
+    funct void func1(int al, int bl) {
+        from (i = 0) until (i < 3) do {
+            assign r = 9;
+            write(i);
+            if (p < 7) then {
+                write("adios");
+            } 
+            write(i);
+        } 
+    }
+
     main {
         var int p;
         
