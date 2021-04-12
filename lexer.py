@@ -1,3 +1,9 @@
+# Proyecto compiladores, orientado a objetos
+# Equipo 6 grupo 2
+# Paola Villarreal 
+# Alan Zavala
+#Fecha: 07/04/2021
+
 import ply.lex as lex
 
 # Reserved word
