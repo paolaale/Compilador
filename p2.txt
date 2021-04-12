@@ -1,0 +1,25 @@
+program p2 :
+    var int a;
+
+    main {
+        var int p;
+        
+        write("hola");
+
+        while (p < 7) do {
+            write("adios");
+        }
+
+        if(a < 8) then {
+            write("adios");
+        }
+        elif (a > 8) then {
+            write("prueba");
+        }
+        else {
+            write("hola");
+        }
+        
+    }
+   
+end
