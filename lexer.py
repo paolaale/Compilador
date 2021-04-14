@@ -1,8 +1,8 @@
-# Proyecto compiladores, orientado a objetos
-# Equipo 6 grupo 2
-# Paola Villarreal 
-# Alan Zavala
-#Fecha: 07/04/2021
+# Proyecto compiladores, Grupo 02
+# Equipo 23, orientado a objetos
+# Paola Villarreal - A00821971
+# Alan Zavala - A01338448
+# Fecha: 15/04/2021
 
 import ply.lex as lex
 

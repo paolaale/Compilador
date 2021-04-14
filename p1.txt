@@ -1,14 +1,20 @@
-    class perro inherits animal {
-        var float b[2][3];
-
-        funct int getName() {
-            read(b);
-            return name;
-        }
+class animal {
+    funct int getEdad() {
+        write("edad");
     }
+}
 
-    program p1 :
-        var int a;
+class perro inherits animal {
+    var float b[2][3];
+
+    funct int getName() {
+        read(b);
+        return name;
+    }
+}
+
+program p1 :
+    var int a;
 
     funct void func1(int al, int bl) {
         from (i = 0) until (i < 3) do {
