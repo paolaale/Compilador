@@ -13,7 +13,6 @@ reserved = {
     'elif' : 'ELIF',
     'else' : 'ELSE',
     'int' : 'INT',
-    'bool' : 'BOOL',
     'float' : 'FLOAT',
     'char' : 'CHAR',
     'void' : 'VOID',
@@ -33,8 +32,6 @@ reserved = {
     'main' : 'MAIN',
     'funct' : 'FUNCT',
     'var' : 'VAR',
-    'true' : 'TRUE',
-    'false' : 'FALSE',
     'assign' : 'ASSIGN',
     'call' : 'CALL'
 }

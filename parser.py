@@ -8,11 +8,11 @@ import ply.yacc as yacc
 from lexer import tokens # Get the token list from the lexer
 
 def p_program(p):
-    'program : PROGRAM ID TWOPOINTS program_body main END'
+    'program : program_body_class PROGRAM ID TWOPOINTS program_body main END'
     p[0] = 'program'
 
 def p_program_body(p):
-    'program_body : program_body_vars program_body_class program_body_funct'
+    'program_body : program_body_vars program_body_funct'
     p[0] = 'program'
 
 def p_program_body_vars(p):
@@ -61,8 +61,7 @@ def p_vars_simple_type_aux(p):
 def p_simple_type(p):
     '''simple_type : INT 
                     | FLOAT 
-                    | CHAR 
-                    | BOOL'''
+                    | CHAR'''
     p[0] = 'program'
 
 def p_complex_type(p):
@@ -237,13 +236,7 @@ def p_cte(p):
     '''cte : ID
         | CTEI
         | CTEF
-        | CTECHAR
-        | bool'''
-    p[0] = 'program'
-
-def p_bool(p):
-    '''bool : TRUE
-        | FALSE'''
+        | CTECHAR'''
     p[0] = 'program'
 
 def p_main(p):

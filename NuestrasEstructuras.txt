@@ -1,0 +1,66 @@
+class Funcion {
+	String type;
+	HashMap<String, Var> vars;
+
+
+}
+
+
+class Var {
+	String type;
+	String value;
+}
+
+
+//string = name
+HashMap<String, TablaFunciones>
+
+
+
+
+
+
+int getEdad(int years) {
+	int a;
+}
+
+
+
+main {
+	//string = name
+	HashMap<String, vars> hashVarsGlobale,
+
+	//creamos tabla/hash
+	HashMap<String, Funcion> myFuncTable;
+
+
+	//Meter en la tabla/hash de funciones, cada función
+	Funcion myFunct = new Funcion("int", new HashMap<String, TablaVar>);
+
+	myFunctTable.put("getEdad", myFunct);
+
+
+	//meter variables a la función correspondiente
+
+	Var myVar = new Var("int", null);
+
+	if (hashVarsGlobales.contains(int)) {
+		throw error
+
+	}
+	else {
+	sí usala o actualízala
+	}
+
+
+	myFuncTable.getKey("getEdad").vars.put("years", myVar);
+
+
+
+
+
+
+
+}
+
+
