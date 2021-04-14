@@ -6,9 +6,15 @@
 
 import ply.yacc as yacc
 from lexer import tokens # Get the token list from the lexer
+import semanticFunctions as sF
 
 def p_program(p):
-    'program : program_body_class PROGRAM ID TWOPOINTS program_body main END'
+    'program : PROGRAM ID TWOPOINTS program_classes MAIN_CLASS LBRACE program_body main RBRACE END'
+    p[0] = 'program'
+
+def p_program_classes(p):
+    '''program_classes : classes 
+                        | empty'''
     p[0] = 'program'
 
 def p_program_body(p):
@@ -16,12 +22,7 @@ def p_program_body(p):
     p[0] = 'program'
 
 def p_program_body_vars(p):
-    '''program_body_vars : dec_vars 
-                        | empty'''
-    p[0] = 'program'
-
-def p_program_body_class(p):
-    '''program_body_class : classes 
+    '''program_body_vars : dec_vars
                         | empty'''
     p[0] = 'program'
 
@@ -47,22 +48,22 @@ def p_vars_complex_type(p):
     p[0] = 'program'
 
 def p_vars_simple_type(p):
-    '''vars_simple_type : ID 
-                        | ID COMMA vars_simple_type
+    '''vars_simple_type : ID add_variable
+                        | ID add_variable COMMA vars_simple_type
                         | ID vars_simple_type_aux
                         | ID vars_simple_type_aux COMMA vars_simple_type'''
     p[0] = 'program'
 
 def p_vars_simple_type_aux(p):
-    '''vars_simple_type_aux : LBRACKET CTEI RBRACKET
-                            | LBRACKET CTEI RBRACKET LBRACKET CTEI RBRACKET'''
+    '''vars_simple_type_aux : LBRACKET CTEI RBRACKET add_array_variable
+                            | LBRACKET CTEI RBRACKET LBRACKET CTEI RBRACKET add_matrix_variable'''
     p[0] = 'program'
 
 def p_simple_type(p):
     '''simple_type : INT 
                     | FLOAT 
                     | CHAR'''
-    p[0] = 'program'
+    p[0] = p[1]
 
 def p_complex_type(p):
     'complex_type : ID'
@@ -86,15 +87,15 @@ def p_functions(p):
     p[0] = 'program'
 
 def p_functions_aux(p):
-    '''functions_aux : VOID ID LPAREN params RPAREN body
-                    | VOID ID LPAREN RPAREN body
-                    | simple_type ID LPAREN RPAREN body
-                    | simple_type ID LPAREN params RPAREN body'''
+    '''functions_aux : VOID ID add_function LPAREN params RPAREN body
+                    | VOID ID add_function LPAREN RPAREN body
+                    | simple_type ID add_function LPAREN RPAREN body
+                    | simple_type ID add_function LPAREN params RPAREN body'''
     p[0] = 'program'
 
 def p_params(p):
-    '''params : simple_type ID
-            | simple_type ID COMMA params'''
+    '''params : simple_type ID add_variable
+            | simple_type ID add_variable COMMA params'''
     p[0] = 'program'
 
 def p_body(p):
@@ -250,6 +251,25 @@ def p_empty(p):
 
 def p_error(p):
     print("Syntax error in:", p.type) 
+
+def p_add_variable(p):
+    'add_variable :'
+    sF.addVars(p[-1], p[-2])
+    p[0] = 'program'
+
+def p_add_array_variable(p):
+    'add_array_variable :'
+    sF.addArrayVar(p[-4], p[-5], p[-2])
+    p[0] = 'program'
+
+def p_add_matrix_variable(p):
+    'add_matrix_variable :'
+    sF.addMatrixVar(p[-7], p[-8], p[-5], p[-2])
+    p[0] = 'program'
+
+def p_add_function(p):
+    'add_function :'
+    sF.addFunction(p[-1], p[-2])
 
 # if __name__ == '__main__':
 

@@ -33,7 +33,8 @@ reserved = {
     'funct' : 'FUNCT',
     'var' : 'VAR',
     'assign' : 'ASSIGN',
-    'call' : 'CALL'
+    'call' : 'CALL',
+    'main_class' : 'MAIN_CLASS'
 }
 
 # Tokens
