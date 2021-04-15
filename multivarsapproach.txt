@@ -1,0 +1,33 @@
+Approach for var dictionary with multiple functions
+#def addVars(vName, vType):
+#     global lastVarType
+#     if (vType == ','):
+#         vType = lastVarType
+#     else:
+#         lastVarType = vType
+#     #print("last var = ", lastVarType)
+#     #print(vName, "-", vType)
+#     global direc_variables
+#     # v = Vars(vType)
+#     # direc_functions[vName] = v
+
+
+# def addArrayVar(vName, vType, vSize):
+#     global lastVarType
+#     if (vType == ','):
+#         vType = lastVarType
+#     else:
+#         lastVarType = vType
+#     #print(vName, "-", vType, "-", vSize)
+#     # v = Vars(vType)
+#     # direc_functions[vName] = v
+
+# def addMatrixVar(vName, vType, vSize1, vSize2):
+#     global lastVarType
+#     if (vType == ','):
+#         vType = lastVarType
+#     else:
+#         lastVarType = vType
+#     v = Vars(vType, vSize1, vSize2)
+#     direc_functions[vName] = v
+#     #print(vName, "-", vType, "-", vSize1, "-", vSize2)

@@ -95,8 +95,14 @@ def p_functions_aux(p):
 
 def p_params(p):
     '''params : simple_type ID add_variable
-            | simple_type ID add_variable COMMA params'''
+            | simple_type ID add_variable COMMA params
+            | simple_type ID params_aux
+            | simple_type ID params_aux COMMA params'''
     p[0] = 'program'
+
+def p_params_aux(p):
+    '''params_aux : LBRACKET RBRACKET add_array_var_params
+                | LBRACKET RBRACKET LBRACKET RBRACKET add_matrix_var_params'''
 
 def p_body(p):
     '''body : LBRACE dec_vars statutes_aux RBRACE
@@ -252,19 +258,31 @@ def p_empty(p):
 def p_error(p):
     print("Syntax error in:", p.type) 
 
+# functions to create the dictionary of functions and variables
+
 def p_add_variable(p):
     'add_variable :'
-    sF.addVars(p[-1], p[-2])
+    sF.addVars(p[-1], p[-2], 0, 0)
     p[0] = 'program'
 
 def p_add_array_variable(p):
     'add_array_variable :'
-    sF.addArrayVar(p[-4], p[-5], p[-2])
+    sF.addVars(p[-4], p[-5], p[-2], 0)
     p[0] = 'program'
 
 def p_add_matrix_variable(p):
     'add_matrix_variable :'
-    sF.addMatrixVar(p[-7], p[-8], p[-5], p[-2])
+    sF.addVars(p[-7], p[-8], p[-5], p[-2])
+    p[0] = 'program'
+
+def p_add_array_var_params(p):
+    'add_array_var_params :'
+    sF.addVars(p[-3], p[-4], 0, 0)
+    p[0] = 'program'
+
+def p_add_matrix_var_params(p):
+    'add_matrix_var_params :'
+    sF.addVars(p[-5], p[-6], 0, 0)
     p[0] = 'program'
 
 def p_add_function(p):
@@ -294,5 +312,12 @@ if text:
 
     if result != None:
         print("Program accepted")
+        
+        print(sF.direc_functions);
+        print(sF.direc_functions["func1"].f_vars["cl"].v_type);
+
+        #check if variable was assignet to corrct function
+
+        
     else:
         print("Program failed")

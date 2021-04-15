@@ -1,33 +1,25 @@
-from symbolTables import Functions
+from symbolTables import Functions, Vars
 
-direc_functions = {}
+direc_functions = {"vG": Functions("global")}
 global_vars = {}
 lastVarType = ""
+currentFunct = "";
 
-def addVars(vName, vType):
+def addVars(vName, vType, vSize1, vSize2):
+    global lastVarType, direc_functions, currentFunct
     if (vType == ','):
         vType = lastVarType
     else:
         lastVarType = vType
-    #print("last var = ", lastVarType)
-    print(vName, "-", vType)
 
-def addArrayVar(vName, vType, vSize):
-    if (vType == ','):
-        vType = lastVarType
+    if currentFunct != "":
+        direc_functions[currentFunct].f_vars[vName] = Vars(vType, vSize1, vSize2)
     else:
-        lastVarType = vType
-    print(vName, "-", vType, "-", vSize)
-
-def addMatrixVar(vName, vType, vSize1, vSize2):
-    if (vType == ','):
-        vType = lastVarType
-    else:
-        lastVarType = vType
-    print(vName, "-", vType, "-", vSize1, "-", vSize2)
+        direc_functions["vG"].f_vars[vName] = Vars(vType, vSize1, vSize2)
 
 def addFunction(fName, fType):
-    f = Functions(fType)
-    direc_functions[fName] = f
-    #print(direc_functions[fName].f_type)
+    global direc_functions, currentFunct
+    currentFunct = fName
+    direc_functions[fName] = Functions(fType)
+    
 
