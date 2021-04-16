@@ -1,6 +1,27 @@
 program s1 :
     
-    main_class {
+    class animal {
+        funct int getEdad() {
+            write("edad");
+        }
+    }
+
+    class perro inherits animal {
+        var float b[2][3];
+
+        funct int getName() {
+            read(b);
+            return name;
+        }
+
+        funct void getBreed() {
+            var int breed;
+            read(b);
+            return name;
+        }
+    }
+
+    main {
 
         var int a;
 
@@ -23,7 +44,7 @@ program s1 :
 
             write(i);
         }
-
+        
          
         funct float func3(float f) {
             var int a;
@@ -32,7 +53,7 @@ program s1 :
             write(i);
         }
 
-        main {
+        init {
             var int p;
             
             call func1();

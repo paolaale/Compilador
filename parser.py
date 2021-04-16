@@ -2,14 +2,14 @@
 # Equipo 23, orientado a objetos
 # Paola Villarreal - A00821971
 # Alan Zavala - A01338448
-# Fecha: 15/04/2021
+# Fecha: 16/04/2021
 
 import ply.yacc as yacc
 from lexer import tokens # Get the token list from the lexer
-import semanticFunctions as sF
+import semanticFunc as sF
 
 def p_program(p):
-    'program : PROGRAM ID TWOPOINTS program_classes MAIN_CLASS LBRACE program_body main RBRACE END'
+    'program : PROGRAM ID TWOPOINTS program_classes MAIN add_class LBRACE program_body init RBRACE END'
     p[0] = 'program'
 
 def p_program_classes(p):
@@ -75,10 +75,10 @@ def p_classes(p):
     p[0] = 'program'
 
 def p_classes_aux(p):
-    '''classes_aux : LBRACE dec_vars functions RBRACE
-                    | LBRACE functions RBRACE
-                    | INHERITS ID LBRACE dec_vars functions RBRACE
-                    | INHERITS ID LBRACE functions RBRACE'''
+    '''classes_aux : add_class LBRACE dec_vars functions RBRACE
+                    | add_class LBRACE functions RBRACE
+                    | INHERITS ID add_inherit_class LBRACE dec_vars functions RBRACE
+                    | INHERITS ID add_inherit_class LBRACE functions RBRACE'''
     p[0] = 'program'
 
 def p_functions(p):
@@ -246,9 +246,9 @@ def p_cte(p):
         | CTECHAR'''
     p[0] = 'program'
 
-def p_main(p):
-    '''main : MAIN LBRACE statutes_aux RBRACE
-            | MAIN LBRACE dec_vars statutes_aux RBRACE'''
+def p_init(p):
+    '''init : INIT add_init LBRACE statutes_aux RBRACE
+            | INIT add_init LBRACE dec_vars statutes_aux RBRACE'''
     p[0] = 'program'
 
 def p_empty(p):
@@ -258,7 +258,7 @@ def p_empty(p):
 def p_error(p):
     print("Syntax error in:", p.type) 
 
-# functions to create the dictionary of functions and variables
+# FUNCTIONS TO CREATE DICTIONARIES
 
 def p_add_variable(p):
     'add_variable :'
@@ -289,6 +289,18 @@ def p_add_function(p):
     'add_function :'
     sF.addFunction(p[-1], p[-2])
 
+def p_add_init(p):
+    'add_init :'
+    sF.addFunction(p[-1], "void")
+
+def p_add_class(p):
+    'add_class :'
+    sF.addClass(p[-1], False, None)
+
+def p_add_inherit_class(p):
+    'add_inherit_class :'
+    sF.addClass(p[-3], True, p[-1])
+
 # if __name__ == '__main__':
 
 # Build parser
@@ -307,17 +319,9 @@ for line in fileData:
         break
         
 if text:
-    #isAccepted = parser.parse(lexer.tokenize(text))
     result = parser.parse(text)
 
     if result != None:
         print("Program accepted")
-        
-        print(sF.direc_functions);
-        print(sF.direc_functions["func1"].f_vars["cl"].v_type);
-
-        #check if variable was assignet to corrct function
-
-        
     else:
         print("Program failed")

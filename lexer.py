@@ -2,7 +2,7 @@
 # Equipo 23, orientado a objetos
 # Paola Villarreal - A00821971
 # Alan Zavala - A01338448
-# Fecha: 15/04/2021
+# Fecha: 16/04/2021
 
 import ply.lex as lex
 
@@ -30,11 +30,11 @@ reserved = {
     'and' : 'AND',
     'or' : 'OR',
     'main' : 'MAIN',
+    'init' : 'INIT',
     'funct' : 'FUNCT',
     'var' : 'VAR',
     'assign' : 'ASSIGN',
     'call' : 'CALL',
-    'main_class' : 'MAIN_CLASS'
 }
 
 # Tokens
