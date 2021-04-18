@@ -18,3 +18,5 @@ Alan Zavala Lévaro A01338448
 * Cambios en la sintaxis del programa
 * Corrección de problemas shift/reduce
 * Pruebas funcionales y aceptadas
+
+## Avance 3 (21 abril)
