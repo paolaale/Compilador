@@ -13,6 +13,23 @@ currentClass = ""
 currentFunct = ""
 lastVarType = ""
 
+# Match type structure where the key is a hashcode of the types
+# and the values is an array where index 0 = OA, index 1 = OR, 
+# index 2 = OL
+typeMatching = {
+    'iinntt': ["int", "bool", "error"],
+    'afilnott': ["float", "bool", "error"],
+    'achinrt': ["error", "error", "error"],
+    'aafflloott': ["float", "bool", "error"],
+    'aacfhlort': ["error", "error", "error"],
+    'aacchhrr': ["error", "bool", "error"],
+    'bblloooo': ["error", "error", "bool"]
+}
+
+oA = {"+", "-", "*", "/"}
+oR = {"<", ">", "<=", ">=", "==", "!="}
+oL = {"and", "or"}
+
 # function that recieves the name of class, 
 # a boolean that represents if is inherit 
 # and the name of the parent if is inherit, otherwise recieve None
@@ -47,6 +64,28 @@ def addVars(vName, vType, vSize1, vSize2):
     else:
         # add to dictionary of classes, in the current class and global variables "fucntion" the variables
         direc_classes[currentClass].c_funcs["vG"].f_vars[vName] = Vars(vType, vSize1, vSize2)
-
     
+# -------- START CHECKING MATCH TYPES -------- 
 
+# function to return the key for the typeMatching dictionaru
+def matchTypeHashCode(leftOpType, rightOpType):
+    return ''.join(sorted(leftOpType + rightOpType))
+
+def typeOfMatch(opSymbol):
+    global oA, oR, oL 
+
+    if opSymbol in oA:
+        return 0
+    elif opSymbol in oR:
+        return 1
+    else:
+        return 2
+
+def isAMatch(leftOpType, opSymbol, rightOpType):
+
+    key = matchTypeHashCode(leftOpType, rightOpType)
+    typeOfOP = typeOfMatch(opSymbol)
+    resultType = typeMatching[key][typeOfOP]
+    #print("resultado: ", resultType)
+
+# -------- END CHECKING MATCH TYPES -------- 
