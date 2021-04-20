@@ -321,6 +321,12 @@ for line in fileData:
 if text:
     result = parser.parse(text)
 
+    sF.currentClass = "perro"
+    sF.currentFunct = "getBreed"
+
+    sF.getVarType("paolaaa")
+
+
     if result != None:
         print("Program accepted")
     else:
