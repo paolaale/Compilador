@@ -200,34 +200,34 @@ def p_for(p):
     p[0] = 'program'
 
 def p_exp(p):
-    '''exp : n_exp
-            | n_exp OR exp'''   
+    '''exp : n_exp pop_op
+            | n_exp pop_op OR push_op exp'''   
     p[0] = 'program'
 
 def p_n_exp(p):
-    '''n_exp : l_exp
-            | l_exp AND n_exp'''  
+    '''n_exp : l_exp pop_op
+            | l_exp pop_op AND push_op n_exp'''  
     p[0] = 'program'
 
 def p_l_exp(p):
-    '''l_exp : a_exp
-            | a_exp RELOP a_exp''' 
+    '''l_exp : a_exp pop_op
+            | a_exp pop_op RELOP push_op a_exp''' 
     p[0] = 'program'
 
 def p_a_exp(p):
-    '''a_exp : term
-            | term PLUS a_exp
-            | term MINUS a_exp'''
+    '''a_exp : term pop_op
+            | term pop_op PLUS push_op a_exp
+            | term pop_op MINUS push_op a_exp'''
     p[0] = 'program'
 
 def p_term(p):
-    '''term : factor
-            | factor TIMES term
-            | factor DIVIDE term'''
+    '''term : factor pop_op
+            | factor pop_op TIMES push_op term
+            | factor pop_op DIVIDE push_op term'''
     p[0] = 'program'
 
 def p_factor(p):
-    '''factor : LPAREN exp RPAREN
+    '''factor : LPAREN push_paren exp RPAREN pop_paren
             | var
             | call
             | factor_aux'''
@@ -240,10 +240,10 @@ def p_factor_aux(p):
     p[0] = 'program'
 
 def p_cte(p):
-    '''cte : ID
-        | CTEI
-        | CTEF
-        | CTECHAR'''
+    '''cte : ID push_var
+        | CTEI push_var
+        | CTEF push_var
+        | CTECHAR push_var'''
     p[0] = 'program'
 
 def p_init(p):
@@ -300,6 +300,29 @@ def p_add_class(p):
 def p_add_inherit_class(p):
     'add_inherit_class :'
     sF.addClass(p[-3], True, p[-1])
+
+# FUNCTIONS FOR EXPRESSIONS
+
+def p_push_var(p):
+    'push_var :'
+    sF.pushVar(p[-1])
+
+def p_push_op(p):
+    'push_op :'
+    sF.pushOp(p[-1])
+
+def p_pop_op(p):
+    'pop_op :'
+    sF.popOp()
+
+def p_push_paren(p):
+    'push_paren :'
+    sF.pushParen(p[-1])
+
+def p_pop_paren(p):
+    'pop_paren :'
+    sF.popParen()
+
 
 # if __name__ == '__main__':
 
