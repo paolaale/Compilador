@@ -345,12 +345,7 @@ for line in fileData:
 if text:
     result = parser.parse(text)
 
-    print("stack of operands: ", sF.operandsStack);
-    # sF.currentClass = "perro"
-    # sF.currentFunct = "getBreed"
-
-    # sF.getVarType("paolaaa")
-
+    print("stack of operands: ", sF.operandsStack)
 
     if result != None:
         print("Program accepted")
