@@ -8,6 +8,17 @@ from Classes import Classes
 from Functions import Functions
 from Vars import Vars
 
+from collections import deque
+
+
+# stacks to solve expressions
+operatorsStack = deque()
+operandsStack = deque()
+typesStack = deque()
+
+#Queue of quadruples
+quadQueue = deque()
+
 direc_classes = {} # dictionary of classes
 currentClass = ""
 currentFunct = ""
@@ -30,6 +41,8 @@ oA = {"+", "-", "*", "/"}
 oR = {"<", ">", "<=", ">=", "==", "!="}
 oL = {"and", "or"}
 
+
+# -------- START ADDING ELEMENTS (FUNCT, CLASSES, VARS) -------- 
 # function that recieves the name of class, 
 # a boolean that represents if is inherit 
 # and the name of the parent if is inherit, otherwise recieve None
@@ -64,6 +77,8 @@ def addVars(vName, vType, vSize1, vSize2):
     else:
         # add to dictionary of classes, in the current class and global variables "fucntion" the variables
         direc_classes[currentClass].c_funcs["vG"].f_vars[vName] = Vars(vType, vSize1, vSize2)
+
+# -------- END ADDING ELEMENTS (FUNCT, CLASSES, VARS) -------- 
     
 # -------- START CHECKING MATCH TYPES -------- 
 
@@ -89,3 +104,36 @@ def isAMatch(leftOpType, opSymbol, rightOpType):
     #print("resultado: ", resultType)
 
 # -------- END CHECKING MATCH TYPES -------- 
+
+# verify that a variable exists
+def getVarType(id):
+    global currentFunct, currentClass
+    scope = existsVar(id)
+
+    if scope == None:
+        print("Deberíamos retornear o arrojar error porque no existe la variable")
+        return "no existe"
+    else:
+        print(direc_classes[currentClass].c_funcs[scope].f_vars[id].v_type)
+        return direc_classes[currentClass].c_funcs[scope].f_vars[id].v_type
+        
+
+def existsVar(id):
+    global currentFunct, currentClass
+
+    funcs = direc_classes[currentClass].c_funcs
+
+    if id in funcs[currentFunct].f_vars:
+        return currentFunct
+    elif id in funcs["vG"].f_vars:
+        return "vG"
+    else:
+        return None
+
+# -------- START EXPRESSION SOLVING -------- 
+
+def pushOperand(op):
+    global operandsStack
+    operandsStack.append(op)
+
+# -------- END EXPRESSION SOLVING -------- 

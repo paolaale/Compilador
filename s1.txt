@@ -11,6 +11,11 @@ program s1 :
 
         funct int getName() {
             read(b);
+
+            if (alan or omar and perro != gato) then {
+                write("hola");
+            }
+
             return name;
         }
 

@@ -201,30 +201,30 @@ def p_for(p):
     p[0] = 'program'
 
 def p_exp(p):
-    '''exp : n_exp pop_op
-            | n_exp pop_op OR push_op exp'''   
+    '''exp : n_exp
+            | n_exp OR push_op exp pop_op'''   
     p[0] = 'program'
 
 def p_n_exp(p):
-    '''n_exp : l_exp pop_op
-            | l_exp pop_op AND push_op n_exp'''  
+    '''n_exp : l_exp 
+            | l_exp AND push_op n_exp pop_op'''  
     p[0] = 'program'
 
 def p_l_exp(p):
-    '''l_exp : a_exp pop_op
-            | a_exp pop_op RELOP push_op a_exp''' 
+    '''l_exp : a_exp 
+            | a_exp RELOP push_op a_exp pop_op''' 
     p[0] = 'program'
 
 def p_a_exp(p):
-    '''a_exp : term pop_op
-            | term pop_op PLUS push_op a_exp
-            | term pop_op MINUS push_op a_exp'''
+    '''a_exp : term
+            | term PLUS push_op a_exp pop_op
+            | term MINUS push_op a_exp pop_op'''
     p[0] = 'program'
 
 def p_term(p):
-    '''term : factor pop_op
-            | factor pop_op TIMES push_op term
-            | factor pop_op DIVIDE push_op term'''
+    '''term : factor
+            | factor TIMES push_op term pop_op
+            | factor DIVIDE push_op term pop_op'''
     p[0] = 'program'
 
 def p_factor(p):
@@ -344,6 +344,13 @@ for line in fileData:
         
 if text:
     result = parser.parse(text)
+
+    print("stack of operands: ", sF.operandsStack);
+    # sF.currentClass = "perro"
+    # sF.currentFunct = "getBreed"
+
+    # sF.getVarType("paolaaa")
+
 
     if result != None:
         print("Program accepted")
