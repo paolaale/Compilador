@@ -112,7 +112,7 @@ def p_body(p):
     p[0] = 'program'
 
 def p_statutes(p):
-    '''statutes : ASSIGN assignation SEMICOLON
+    '''statutes : assignation SEMICOLON
                 | CALL call SEMICOLON
                 | read
                 | write
@@ -127,13 +127,14 @@ def p_statutes_aux(p):
     p[0] = 'program'
 
 def p_assignation(p):
-    'assignation : var EQUAL exp'
+    '''assignation : ID EQUAL exp  
+                    | ID var_aux EQUAL exp'''
     p[0] = 'program'
 
-def p_var(p):
-    '''var : ID
-            | ID var_aux'''
-    p[0] = 'program'
+# def p_var(p):
+#     '''var : ID
+#             | ID var_aux'''
+#     p[0] = 'program'
 
 def p_var_aux(p):
     '''var_aux : POINT ID 
@@ -177,7 +178,7 @@ def p_condition_aux_3(p):
     p[0] = 'program'
 
 def p_read(p):
-    'read : READ LPAREN var RPAREN SEMICOLON'
+    'read : READ LPAREN ID RPAREN SEMICOLON'
     p[0] = 'program'
 
 def p_write(p):
@@ -228,7 +229,6 @@ def p_term(p):
 
 def p_factor(p):
     '''factor : LPAREN push_paren exp RPAREN pop_paren
-            | var
             | call
             | factor_aux'''
     p[0] = 'program'
@@ -241,6 +241,7 @@ def p_factor_aux(p):
 
 def p_cte(p):
     '''cte : ID push_var
+        | ID var_aux push_var
         | CTEI push_var
         | CTEF push_var
         | CTECHAR push_var'''
@@ -305,23 +306,23 @@ def p_add_inherit_class(p):
 
 def p_push_var(p):
     'push_var :'
-    sF.pushVar(p[-1])
+    #sF.pushVar(p[-1])
 
 def p_push_op(p):
     'push_op :'
-    sF.pushOp(p[-1])
+    #sF.pushOp(p[-1])
 
 def p_pop_op(p):
     'pop_op :'
-    sF.popOp()
+    #sF.popOp()
 
 def p_push_paren(p):
     'push_paren :'
-    sF.pushParen(p[-1])
+    #sF.pushParen(p[-1])
 
 def p_pop_paren(p):
     'pop_paren :'
-    sF.popParen()
+    #sF.popParen()
 
 
 # if __name__ == '__main__':

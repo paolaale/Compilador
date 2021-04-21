@@ -33,7 +33,6 @@ reserved = {
     'init' : 'INIT',
     'funct' : 'FUNCT',
     'var' : 'VAR',
-    'assign' : 'ASSIGN',
     'call' : 'CALL',
 }
 

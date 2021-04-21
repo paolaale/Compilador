@@ -24,11 +24,12 @@ program s1 :
     main {
 
         var int a;
+            Perro perro;
 
         funct void func1(int al[], int bl, char cl[][]) {
 
             from (i = 0) until (i < 3) do {
-                assign r = 9;
+                r = 9;
                 write(i);
                 if (p < 7) then {
                     write("adios");
@@ -57,7 +58,7 @@ program s1 :
             var int p;
             
             call func1();
-            assign p = 0;
+            p = 0;
             write("hola");
 
             while (p < 7) do {
