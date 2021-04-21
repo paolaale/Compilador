@@ -131,3 +131,9 @@ def existsVar(id):
         return None
 
 # -------- START EXPRESSION SOLVING -------- 
+
+def pushOperand(op):
+    global operandsStack
+    operandsStack.append(op)
+
+# -------- END EXPRESSION SOLVING -------- 

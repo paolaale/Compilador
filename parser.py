@@ -131,7 +131,7 @@ def p_assignation(p):
     p[0] = 'program'
 
 def p_var(p):
-    '''var : ID
+    '''var : ID push_var
             | ID var_aux'''
     p[0] = 'program'
 
@@ -200,35 +200,34 @@ def p_for(p):
     p[0] = 'program'
 
 def p_exp(p):
-    '''exp : n_exp pop_op
-            | n_exp pop_op OR push_op exp'''   
+    '''exp : n_exp
+            | n_exp OR push_op exp pop_op'''   
     p[0] = 'program'
 
 def p_n_exp(p):
-    '''n_exp : l_exp pop_op
-            | l_exp pop_op AND push_op n_exp'''  
+    '''n_exp : l_exp 
+            | l_exp AND push_op n_exp pop_op'''  
     p[0] = 'program'
 
 def p_l_exp(p):
-    '''l_exp : a_exp pop_op
-            | a_exp pop_op RELOP push_op a_exp''' 
+    '''l_exp : a_exp 
+            | a_exp RELOP push_op a_exp pop_op''' 
     p[0] = 'program'
 
 def p_a_exp(p):
-    '''a_exp : term pop_op
-            | term pop_op PLUS push_op a_exp
-            | term pop_op MINUS push_op a_exp'''
+    '''a_exp : term
+            | term PLUS push_op a_exp pop_op
+            | term MINUS push_op a_exp pop_op'''
     p[0] = 'program'
 
 def p_term(p):
-    '''term : factor pop_op
-            | factor pop_op TIMES push_op term
-            | factor pop_op DIVIDE push_op term'''
+    '''term : factor
+            | factor TIMES push_op term pop_op
+            | factor DIVIDE push_op term pop_op'''
     p[0] = 'program'
 
 def p_factor(p):
     '''factor : LPAREN push_paren exp RPAREN pop_paren
-            | var
             | call
             | factor_aux'''
     p[0] = 'program'
@@ -240,7 +239,7 @@ def p_factor_aux(p):
     p[0] = 'program'
 
 def p_cte(p):
-    '''cte : ID push_var
+    '''cte : var
         | CTEI push_var
         | CTEF push_var
         | CTECHAR push_var'''
@@ -305,23 +304,28 @@ def p_add_inherit_class(p):
 
 def p_push_var(p):
     'push_var :'
-    sF.pushVar(p[-1])
+    #print("push_var: ", p[-1]);
+    sF.pushOperand(p[-1])
 
 def p_push_op(p):
     'push_op :'
-    sF.pushOp(p[-1])
+    #print("push_op_var: ", p[-1]);
+    #sF.pushOp(p[-1])
 
 def p_pop_op(p):
     'pop_op :'
-    sF.popOp()
+    #print("pop_op_var: ", p[-1]);
+    #sF.popOp()
 
 def p_push_paren(p):
     'push_paren :'
-    sF.pushParen(p[-1])
+    #print("push_paren_var: ", p[-1]);
+    #sF.pushParen(p[-1])
 
 def p_pop_paren(p):
     'pop_paren :'
-    sF.popParen()
+    #print("pop_paren_var: ", p[-1]);
+    #sF.popParen()
 
 
 # if __name__ == '__main__':
@@ -344,10 +348,11 @@ for line in fileData:
 if text:
     result = parser.parse(text)
 
-    sF.currentClass = "perro"
-    sF.currentFunct = "getBreed"
+    print("stack of operands: ", sF.operandsStack);
+    # sF.currentClass = "perro"
+    # sF.currentFunct = "getBreed"
 
-    sF.getVarType("paolaaa")
+    # sF.getVarType("paolaaa")
 
 
     if result != None:

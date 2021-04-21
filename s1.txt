@@ -11,6 +11,11 @@ program s1 :
 
         funct int getName() {
             read(b);
+
+            if (alan or omar and perro != gato) then {
+                write("hola");
+            }
+
             return name;
         }
 
@@ -27,7 +32,7 @@ program s1 :
 
         funct void func1(int al[], int bl, char cl[][]) {
 
-            from (i = 0) until (i < 3) do {
+            from (i = 0) until (i < 'z') do {
                 assign r = 9;
                 write(i);
                 if (p < 7) then {

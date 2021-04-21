@@ -1,0 +1,17 @@
+program s1 :
+    main {
+
+        var int a;
+
+        init {
+            var int p;
+            if (5 + 5 * 8) then {
+                write("hola");
+            }
+
+
+            
+        }
+    }
+   
+end
