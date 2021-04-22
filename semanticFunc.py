@@ -135,8 +135,14 @@ def pushOperand(op):
     global operandsStack
     operandsStack.append(op)
 
+def popOperands():
+    global operatorsStack, operandsStack
+
 def pushOperators(op):
     global operatorsStack
     operatorsStack.append(op)
+
+def popOperators():
+    global operatorsStack, operandsStack
 
 # -------- END EXPRESSION SOLVING -------- 
