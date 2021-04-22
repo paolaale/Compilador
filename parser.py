@@ -343,9 +343,8 @@ if __name__ == '__main__':
     if text:
         result = parser.parse(text)
 
-        #print("stack of operands: ", sF.operandsStack)
-        #print("stack of operators: ", sF.operatorsStack)
-        print(sF.direc_classes["main"].c_funcs["vG"].f_vars["perro"].v_type)
+        print("stack of operands: ", sF.operandsStack)
+        print("stack of operators: ", sF.operatorsStack)
 
         if result != None:
             print("Program accepted")
