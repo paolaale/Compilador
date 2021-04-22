@@ -201,29 +201,29 @@ def p_for(p):
 
 def p_exp(p):
     '''exp : n_exp
-            | n_exp OR push_op exp pop_op'''   
+            | n_exp OR push_op exp pop_op_or'''   
     p[0] = 'program'
 
 def p_n_exp(p):
     '''n_exp : l_exp 
-            | l_exp AND push_op n_exp pop_op'''  
+            | l_exp AND push_op n_exp pop_op_and'''  
     p[0] = 'program'
 
 def p_l_exp(p):
     '''l_exp : a_exp 
-            | a_exp RELOP push_op a_exp pop_op''' 
+            | a_exp RELOP push_op a_exp pop_op_relop''' 
     p[0] = 'program'
 
 def p_a_exp(p):
     '''a_exp : term
-            | term PLUS push_op a_exp pop_op
-            | term MINUS push_op a_exp pop_op'''
+            | term PLUS push_op a_exp pop_op_art_n2
+            | term MINUS push_op a_exp pop_op_art_n2'''
     p[0] = 'program'
 
 def p_term(p):
     '''term : factor
-            | factor TIMES push_op term pop_op
-            | factor DIVIDE push_op term pop_op'''
+            | factor TIMES push_op term pop_op_art_n1
+            | factor DIVIDE push_op term pop_op_art_n2'''
     p[0] = 'program'
 
 def p_factor(p):
@@ -311,8 +311,24 @@ def p_push_op(p):
     'push_op :'
     sF.pushOperand(p[-1])
 
-def p_pop_op(p):
-    'pop_op :'
+def p_pop_op_art_n1(p):
+    'pop_op_art_n1 :'
+    #sF.popOp()
+
+def p_pop_op_art_n2(p):
+    'pop_op_art_n2 :'
+    #sF.popOp()
+
+def p_pop_op_relop(p):
+    'pop_op_relop :'
+    #sF.popOp()
+
+def p_pop_op_and(p):
+    'pop_op_and :'
+    #sF.popOp()
+
+def p_pop_op_or(p):
+    'pop_op_or :'
     #sF.popOp()
 
 def p_push_paren(p):

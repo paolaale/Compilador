@@ -88,17 +88,17 @@ Rule 82    write_aux -> CTESTRING COMMA write_aux
 Rule 83    while -> WHILE LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
 Rule 84    for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
 Rule 85    exp -> n_exp
-Rule 86    exp -> n_exp OR push_op exp pop_op
+Rule 86    exp -> n_exp OR push_op exp pop_op_or
 Rule 87    n_exp -> l_exp
-Rule 88    n_exp -> l_exp AND push_op n_exp pop_op
+Rule 88    n_exp -> l_exp AND push_op n_exp pop_op_and
 Rule 89    l_exp -> a_exp
-Rule 90    l_exp -> a_exp RELOP push_op a_exp pop_op
+Rule 90    l_exp -> a_exp RELOP push_op a_exp pop_op_relop
 Rule 91    a_exp -> term
-Rule 92    a_exp -> term PLUS push_op a_exp pop_op
-Rule 93    a_exp -> term MINUS push_op a_exp pop_op
+Rule 92    a_exp -> term PLUS push_op a_exp pop_op_art_n2
+Rule 93    a_exp -> term MINUS push_op a_exp pop_op_art_n2
 Rule 94    term -> factor
-Rule 95    term -> factor TIMES push_op term pop_op
-Rule 96    term -> factor DIVIDE push_op term pop_op
+Rule 95    term -> factor TIMES push_op term pop_op_art_n1
+Rule 96    term -> factor DIVIDE push_op term pop_op_art_n2
 Rule 97    factor -> LPAREN push_paren exp RPAREN pop_paren
 Rule 98    factor -> call
 Rule 99    factor -> factor_aux
@@ -124,9 +124,13 @@ Rule 118   add_class -> <empty>
 Rule 119   add_inherit_class -> <empty>
 Rule 120   push_var -> <empty>
 Rule 121   push_op -> <empty>
-Rule 122   pop_op -> <empty>
-Rule 123   push_paren -> <empty>
-Rule 124   pop_paren -> <empty>
+Rule 122   pop_op_art_n1 -> <empty>
+Rule 123   pop_op_art_n2 -> <empty>
+Rule 124   pop_op_relop -> <empty>
+Rule 125   pop_op_and -> <empty>
+Rule 126   pop_op_or -> <empty>
+Rule 127   push_paren -> <empty>
+Rule 128   pop_paren -> <empty>
 
 Terminals, with rules where they appear
 
@@ -219,7 +223,11 @@ l_exp                : 87 88
 n_exp                : 85 86 88
 params               : 35 38 40 42
 params_aux           : 41 42
-pop_op               : 86 88 90 92 93 95 96
+pop_op_and           : 88
+pop_op_art_n1        : 95
+pop_op_art_n2        : 92 93 96
+pop_op_or            : 86
+pop_op_relop         : 90
 pop_paren            : 97
 program              : 0
 program_body         : 1
@@ -1473,17 +1481,17 @@ state 106
     (63) var_aux_2 -> LBRACKET . exp RBRACKET
     (64) var_aux_2 -> LBRACKET . exp RBRACKET LBRACKET exp RBRACKET
     (85) exp -> . n_exp
-    (86) exp -> . n_exp OR push_op exp pop_op
+    (86) exp -> . n_exp OR push_op exp pop_op_or
     (87) n_exp -> . l_exp
-    (88) n_exp -> . l_exp AND push_op n_exp pop_op
+    (88) n_exp -> . l_exp AND push_op n_exp pop_op_and
     (89) l_exp -> . a_exp
-    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op
+    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op_relop
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -1533,17 +1541,17 @@ state 108
     (81) write_aux -> . CTESTRING
     (82) write_aux -> . CTESTRING COMMA write_aux
     (85) exp -> . n_exp
-    (86) exp -> . n_exp OR push_op exp pop_op
+    (86) exp -> . n_exp OR push_op exp pop_op_or
     (87) n_exp -> . l_exp
-    (88) n_exp -> . l_exp AND push_op n_exp pop_op
+    (88) n_exp -> . l_exp AND push_op n_exp pop_op_and
     (89) l_exp -> . a_exp
-    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op
+    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op_relop
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -1600,17 +1608,17 @@ state 110
     (72) condition_aux -> LPAREN . exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3
     (74) condition_aux_2 -> LPAREN . exp RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux
     (85) exp -> . n_exp
-    (86) exp -> . n_exp OR push_op exp pop_op
+    (86) exp -> . n_exp OR push_op exp pop_op_or
     (87) n_exp -> . l_exp
-    (88) n_exp -> . l_exp AND push_op n_exp pop_op
+    (88) n_exp -> . l_exp AND push_op n_exp pop_op_and
     (89) l_exp -> . a_exp
-    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op
+    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op_relop
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -1664,17 +1672,17 @@ state 112
 
     (83) while -> WHILE LPAREN . exp RPAREN DO LBRACE statutes_aux RBRACE
     (85) exp -> . n_exp
-    (86) exp -> . n_exp OR push_op exp pop_op
+    (86) exp -> . n_exp OR push_op exp pop_op_or
     (87) n_exp -> . l_exp
-    (88) n_exp -> . l_exp AND push_op n_exp pop_op
+    (88) n_exp -> . l_exp AND push_op n_exp pop_op_and
     (89) l_exp -> . a_exp
-    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op
+    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op_relop
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -1829,17 +1837,17 @@ state 125
     (69) call_aux -> . exp
     (70) call_aux -> . exp COMMA call_aux
     (85) exp -> . n_exp
-    (86) exp -> . n_exp OR push_op exp pop_op
+    (86) exp -> . n_exp OR push_op exp pop_op_or
     (87) n_exp -> . l_exp
-    (88) n_exp -> . l_exp AND push_op n_exp pop_op
+    (88) n_exp -> . l_exp AND push_op n_exp pop_op_and
     (89) l_exp -> . a_exp
-    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op
+    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op_relop
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -1903,17 +1911,17 @@ state 128
 
     (59) assignation -> ID var_aux EQUAL . exp
     (85) exp -> . n_exp
-    (86) exp -> . n_exp OR push_op exp pop_op
+    (86) exp -> . n_exp OR push_op exp pop_op_or
     (87) n_exp -> . l_exp
-    (88) n_exp -> . l_exp AND push_op n_exp pop_op
+    (88) n_exp -> . l_exp AND push_op n_exp pop_op_and
     (89) l_exp -> . a_exp
-    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op
+    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op_relop
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -1982,7 +1990,7 @@ state 130
 state 131
 
     (85) exp -> n_exp .
-    (86) exp -> n_exp . OR push_op exp pop_op
+    (86) exp -> n_exp . OR push_op exp pop_op_or
 
     RBRACKET        reduce using rule 85 (exp -> n_exp .)
     COMMA           reduce using rule 85 (exp -> n_exp .)
@@ -1994,7 +2002,7 @@ state 131
 state 132
 
     (87) n_exp -> l_exp .
-    (88) n_exp -> l_exp . AND push_op n_exp pop_op
+    (88) n_exp -> l_exp . AND push_op n_exp pop_op_and
 
     OR              reduce using rule 87 (n_exp -> l_exp .)
     RBRACKET        reduce using rule 87 (n_exp -> l_exp .)
@@ -2007,7 +2015,7 @@ state 132
 state 133
 
     (89) l_exp -> a_exp .
-    (90) l_exp -> a_exp . RELOP push_op a_exp pop_op
+    (90) l_exp -> a_exp . RELOP push_op a_exp pop_op_relop
 
     AND             reduce using rule 89 (l_exp -> a_exp .)
     OR              reduce using rule 89 (l_exp -> a_exp .)
@@ -2021,8 +2029,8 @@ state 133
 state 134
 
     (91) a_exp -> term .
-    (92) a_exp -> term . PLUS push_op a_exp pop_op
-    (93) a_exp -> term . MINUS push_op a_exp pop_op
+    (92) a_exp -> term . PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> term . MINUS push_op a_exp pop_op_art_n2
 
     RELOP           reduce using rule 91 (a_exp -> term .)
     AND             reduce using rule 91 (a_exp -> term .)
@@ -2070,8 +2078,8 @@ state 136
 state 137
 
     (94) term -> factor .
-    (95) term -> factor . TIMES push_op term pop_op
-    (96) term -> factor . DIVIDE push_op term pop_op
+    (95) term -> factor . TIMES push_op term pop_op_art_n1
+    (96) term -> factor . DIVIDE push_op term pop_op_art_n2
 
     PLUS            reduce using rule 94 (term -> factor .)
     MINUS           reduce using rule 94 (term -> factor .)
@@ -2089,15 +2097,15 @@ state 137
 state 138
 
     (97) factor -> LPAREN . push_paren exp RPAREN pop_paren
-    (123) push_paren -> .
+    (127) push_paren -> .
 
-    LPAREN          reduce using rule 123 (push_paren -> .)
-    ID              reduce using rule 123 (push_paren -> .)
-    PLUS            reduce using rule 123 (push_paren -> .)
-    MINUS           reduce using rule 123 (push_paren -> .)
-    CTEI            reduce using rule 123 (push_paren -> .)
-    CTEF            reduce using rule 123 (push_paren -> .)
-    CTECHAR         reduce using rule 123 (push_paren -> .)
+    LPAREN          reduce using rule 127 (push_paren -> .)
+    ID              reduce using rule 127 (push_paren -> .)
+    PLUS            reduce using rule 127 (push_paren -> .)
+    MINUS           reduce using rule 127 (push_paren -> .)
+    CTEI            reduce using rule 127 (push_paren -> .)
+    CTEF            reduce using rule 127 (push_paren -> .)
+    CTECHAR         reduce using rule 127 (push_paren -> .)
 
     push_paren                     shift and go to state 179
 
@@ -2459,17 +2467,17 @@ state 165
 
     (58) assignation -> ID push_var EQUAL push_op . exp
     (85) exp -> . n_exp
-    (86) exp -> . n_exp OR push_op exp pop_op
+    (86) exp -> . n_exp OR push_op exp pop_op_or
     (87) n_exp -> . l_exp
-    (88) n_exp -> . l_exp AND push_op n_exp pop_op
+    (88) n_exp -> . l_exp AND push_op n_exp pop_op_and
     (89) l_exp -> . a_exp
-    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op
+    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op_relop
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -2552,7 +2560,7 @@ state 168
 
 state 169
 
-    (86) exp -> n_exp OR . push_op exp pop_op
+    (86) exp -> n_exp OR . push_op exp pop_op_or
     (121) push_op -> .
 
     LPAREN          reduce using rule 121 (push_op -> .)
@@ -2567,7 +2575,7 @@ state 169
 
 state 170
 
-    (88) n_exp -> l_exp AND . push_op n_exp pop_op
+    (88) n_exp -> l_exp AND . push_op n_exp pop_op_and
     (121) push_op -> .
 
     LPAREN          reduce using rule 121 (push_op -> .)
@@ -2582,7 +2590,7 @@ state 170
 
 state 171
 
-    (90) l_exp -> a_exp RELOP . push_op a_exp pop_op
+    (90) l_exp -> a_exp RELOP . push_op a_exp pop_op_relop
     (121) push_op -> .
 
     LPAREN          reduce using rule 121 (push_op -> .)
@@ -2597,7 +2605,7 @@ state 171
 
 state 172
 
-    (92) a_exp -> term PLUS . push_op a_exp pop_op
+    (92) a_exp -> term PLUS . push_op a_exp pop_op_art_n2
     (121) push_op -> .
 
     LPAREN          reduce using rule 121 (push_op -> .)
@@ -2612,7 +2620,7 @@ state 172
 
 state 173
 
-    (93) a_exp -> term MINUS . push_op a_exp pop_op
+    (93) a_exp -> term MINUS . push_op a_exp pop_op_art_n2
     (121) push_op -> .
 
     LPAREN          reduce using rule 121 (push_op -> .)
@@ -2690,7 +2698,7 @@ state 176
 
 state 177
 
-    (95) term -> factor TIMES . push_op term pop_op
+    (95) term -> factor TIMES . push_op term pop_op_art_n1
     (121) push_op -> .
 
     LPAREN          reduce using rule 121 (push_op -> .)
@@ -2705,7 +2713,7 @@ state 177
 
 state 178
 
-    (96) term -> factor DIVIDE . push_op term pop_op
+    (96) term -> factor DIVIDE . push_op term pop_op_art_n2
     (121) push_op -> .
 
     LPAREN          reduce using rule 121 (push_op -> .)
@@ -2722,17 +2730,17 @@ state 179
 
     (97) factor -> LPAREN push_paren . exp RPAREN pop_paren
     (85) exp -> . n_exp
-    (86) exp -> . n_exp OR push_op exp pop_op
+    (86) exp -> . n_exp OR push_op exp pop_op_or
     (87) n_exp -> . l_exp
-    (88) n_exp -> . l_exp AND push_op n_exp pop_op
+    (88) n_exp -> . l_exp AND push_op n_exp pop_op_and
     (89) l_exp -> . a_exp
-    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op
+    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op_relop
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -2886,17 +2894,17 @@ state 188
     (81) write_aux -> . CTESTRING
     (82) write_aux -> . CTESTRING COMMA write_aux
     (85) exp -> . n_exp
-    (86) exp -> . n_exp OR push_op exp pop_op
+    (86) exp -> . n_exp OR push_op exp pop_op_or
     (87) n_exp -> . l_exp
-    (88) n_exp -> . l_exp AND push_op n_exp pop_op
+    (88) n_exp -> . l_exp AND push_op n_exp pop_op_and
     (89) l_exp -> . a_exp
-    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op
+    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op_relop
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -2941,17 +2949,17 @@ state 189
     (81) write_aux -> . CTESTRING
     (82) write_aux -> . CTESTRING COMMA write_aux
     (85) exp -> . n_exp
-    (86) exp -> . n_exp OR push_op exp pop_op
+    (86) exp -> . n_exp OR push_op exp pop_op_or
     (87) n_exp -> . l_exp
-    (88) n_exp -> . l_exp AND push_op n_exp pop_op
+    (88) n_exp -> . l_exp AND push_op n_exp pop_op_and
     (89) l_exp -> . a_exp
-    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op
+    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op_relop
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -3131,17 +3139,17 @@ state 202
     (69) call_aux -> . exp
     (70) call_aux -> . exp COMMA call_aux
     (85) exp -> . n_exp
-    (86) exp -> . n_exp OR push_op exp pop_op
+    (86) exp -> . n_exp OR push_op exp pop_op_or
     (87) n_exp -> . l_exp
-    (88) n_exp -> . l_exp AND push_op n_exp pop_op
+    (88) n_exp -> . l_exp AND push_op n_exp pop_op_and
     (89) l_exp -> . a_exp
-    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op
+    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op_relop
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -3184,17 +3192,17 @@ state 203
     (69) call_aux -> . exp
     (70) call_aux -> . exp COMMA call_aux
     (85) exp -> . n_exp
-    (86) exp -> . n_exp OR push_op exp pop_op
+    (86) exp -> . n_exp OR push_op exp pop_op_or
     (87) n_exp -> . l_exp
-    (88) n_exp -> . l_exp AND push_op n_exp pop_op
+    (88) n_exp -> . l_exp AND push_op n_exp pop_op_and
     (89) l_exp -> . a_exp
-    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op
+    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op_relop
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -3243,17 +3251,17 @@ state 205
 
     (64) var_aux_2 -> LBRACKET exp RBRACKET LBRACKET . exp RBRACKET
     (85) exp -> . n_exp
-    (86) exp -> . n_exp OR push_op exp pop_op
+    (86) exp -> . n_exp OR push_op exp pop_op_or
     (87) n_exp -> . l_exp
-    (88) n_exp -> . l_exp AND push_op n_exp pop_op
+    (88) n_exp -> . l_exp AND push_op n_exp pop_op_and
     (89) l_exp -> . a_exp
-    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op
+    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op_relop
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -3290,19 +3298,19 @@ state 205
 
 state 206
 
-    (86) exp -> n_exp OR push_op . exp pop_op
+    (86) exp -> n_exp OR push_op . exp pop_op_or
     (85) exp -> . n_exp
-    (86) exp -> . n_exp OR push_op exp pop_op
+    (86) exp -> . n_exp OR push_op exp pop_op_or
     (87) n_exp -> . l_exp
-    (88) n_exp -> . l_exp AND push_op n_exp pop_op
+    (88) n_exp -> . l_exp AND push_op n_exp pop_op_and
     (89) l_exp -> . a_exp
-    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op
+    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op_relop
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -3339,17 +3347,17 @@ state 206
 
 state 207
 
-    (88) n_exp -> l_exp AND push_op . n_exp pop_op
+    (88) n_exp -> l_exp AND push_op . n_exp pop_op_and
     (87) n_exp -> . l_exp
-    (88) n_exp -> . l_exp AND push_op n_exp pop_op
+    (88) n_exp -> . l_exp AND push_op n_exp pop_op_and
     (89) l_exp -> . a_exp
-    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op
+    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op_relop
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -3385,13 +3393,13 @@ state 207
 
 state 208
 
-    (90) l_exp -> a_exp RELOP push_op . a_exp pop_op
+    (90) l_exp -> a_exp RELOP push_op . a_exp pop_op_relop
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -3425,13 +3433,13 @@ state 208
 
 state 209
 
-    (92) a_exp -> term PLUS push_op . a_exp pop_op
+    (92) a_exp -> term PLUS push_op . a_exp pop_op_art_n2
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -3465,13 +3473,13 @@ state 209
 
 state 210
 
-    (93) a_exp -> term MINUS push_op . a_exp pop_op
+    (93) a_exp -> term MINUS push_op . a_exp pop_op_art_n2
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -3505,10 +3513,10 @@ state 210
 
 state 211
 
-    (95) term -> factor TIMES push_op . term pop_op
+    (95) term -> factor TIMES push_op . term pop_op_art_n1
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -3541,10 +3549,10 @@ state 211
 
 state 212
 
-    (96) term -> factor DIVIDE push_op . term pop_op
+    (96) term -> factor DIVIDE push_op . term pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -3813,123 +3821,123 @@ state 233
 
 state 234
 
-    (86) exp -> n_exp OR push_op exp . pop_op
-    (122) pop_op -> .
+    (86) exp -> n_exp OR push_op exp . pop_op_or
+    (126) pop_op_or -> .
 
-    RBRACKET        reduce using rule 122 (pop_op -> .)
-    COMMA           reduce using rule 122 (pop_op -> .)
-    RPAREN          reduce using rule 122 (pop_op -> .)
-    SEMICOLON       reduce using rule 122 (pop_op -> .)
+    RBRACKET        reduce using rule 126 (pop_op_or -> .)
+    COMMA           reduce using rule 126 (pop_op_or -> .)
+    RPAREN          reduce using rule 126 (pop_op_or -> .)
+    SEMICOLON       reduce using rule 126 (pop_op_or -> .)
 
-    pop_op                         shift and go to state 255
+    pop_op_or                      shift and go to state 255
 
 state 235
 
-    (88) n_exp -> l_exp AND push_op n_exp . pop_op
-    (122) pop_op -> .
+    (88) n_exp -> l_exp AND push_op n_exp . pop_op_and
+    (125) pop_op_and -> .
 
-    OR              reduce using rule 122 (pop_op -> .)
-    RBRACKET        reduce using rule 122 (pop_op -> .)
-    COMMA           reduce using rule 122 (pop_op -> .)
-    RPAREN          reduce using rule 122 (pop_op -> .)
-    SEMICOLON       reduce using rule 122 (pop_op -> .)
+    OR              reduce using rule 125 (pop_op_and -> .)
+    RBRACKET        reduce using rule 125 (pop_op_and -> .)
+    COMMA           reduce using rule 125 (pop_op_and -> .)
+    RPAREN          reduce using rule 125 (pop_op_and -> .)
+    SEMICOLON       reduce using rule 125 (pop_op_and -> .)
 
-    pop_op                         shift and go to state 256
+    pop_op_and                     shift and go to state 256
 
 state 236
 
-    (90) l_exp -> a_exp RELOP push_op a_exp . pop_op
-    (122) pop_op -> .
+    (90) l_exp -> a_exp RELOP push_op a_exp . pop_op_relop
+    (124) pop_op_relop -> .
 
-    AND             reduce using rule 122 (pop_op -> .)
-    OR              reduce using rule 122 (pop_op -> .)
-    RBRACKET        reduce using rule 122 (pop_op -> .)
-    COMMA           reduce using rule 122 (pop_op -> .)
-    RPAREN          reduce using rule 122 (pop_op -> .)
-    SEMICOLON       reduce using rule 122 (pop_op -> .)
+    AND             reduce using rule 124 (pop_op_relop -> .)
+    OR              reduce using rule 124 (pop_op_relop -> .)
+    RBRACKET        reduce using rule 124 (pop_op_relop -> .)
+    COMMA           reduce using rule 124 (pop_op_relop -> .)
+    RPAREN          reduce using rule 124 (pop_op_relop -> .)
+    SEMICOLON       reduce using rule 124 (pop_op_relop -> .)
 
-    pop_op                         shift and go to state 257
+    pop_op_relop                   shift and go to state 257
 
 state 237
 
-    (92) a_exp -> term PLUS push_op a_exp . pop_op
-    (122) pop_op -> .
+    (92) a_exp -> term PLUS push_op a_exp . pop_op_art_n2
+    (123) pop_op_art_n2 -> .
 
-    RELOP           reduce using rule 122 (pop_op -> .)
-    AND             reduce using rule 122 (pop_op -> .)
-    OR              reduce using rule 122 (pop_op -> .)
-    RBRACKET        reduce using rule 122 (pop_op -> .)
-    COMMA           reduce using rule 122 (pop_op -> .)
-    RPAREN          reduce using rule 122 (pop_op -> .)
-    SEMICOLON       reduce using rule 122 (pop_op -> .)
+    RELOP           reduce using rule 123 (pop_op_art_n2 -> .)
+    AND             reduce using rule 123 (pop_op_art_n2 -> .)
+    OR              reduce using rule 123 (pop_op_art_n2 -> .)
+    RBRACKET        reduce using rule 123 (pop_op_art_n2 -> .)
+    COMMA           reduce using rule 123 (pop_op_art_n2 -> .)
+    RPAREN          reduce using rule 123 (pop_op_art_n2 -> .)
+    SEMICOLON       reduce using rule 123 (pop_op_art_n2 -> .)
 
-    pop_op                         shift and go to state 258
+    pop_op_art_n2                  shift and go to state 258
 
 state 238
 
-    (93) a_exp -> term MINUS push_op a_exp . pop_op
-    (122) pop_op -> .
+    (93) a_exp -> term MINUS push_op a_exp . pop_op_art_n2
+    (123) pop_op_art_n2 -> .
 
-    RELOP           reduce using rule 122 (pop_op -> .)
-    AND             reduce using rule 122 (pop_op -> .)
-    OR              reduce using rule 122 (pop_op -> .)
-    RBRACKET        reduce using rule 122 (pop_op -> .)
-    COMMA           reduce using rule 122 (pop_op -> .)
-    RPAREN          reduce using rule 122 (pop_op -> .)
-    SEMICOLON       reduce using rule 122 (pop_op -> .)
+    RELOP           reduce using rule 123 (pop_op_art_n2 -> .)
+    AND             reduce using rule 123 (pop_op_art_n2 -> .)
+    OR              reduce using rule 123 (pop_op_art_n2 -> .)
+    RBRACKET        reduce using rule 123 (pop_op_art_n2 -> .)
+    COMMA           reduce using rule 123 (pop_op_art_n2 -> .)
+    RPAREN          reduce using rule 123 (pop_op_art_n2 -> .)
+    SEMICOLON       reduce using rule 123 (pop_op_art_n2 -> .)
 
-    pop_op                         shift and go to state 259
+    pop_op_art_n2                  shift and go to state 259
 
 state 239
 
-    (95) term -> factor TIMES push_op term . pop_op
-    (122) pop_op -> .
+    (95) term -> factor TIMES push_op term . pop_op_art_n1
+    (122) pop_op_art_n1 -> .
 
-    PLUS            reduce using rule 122 (pop_op -> .)
-    MINUS           reduce using rule 122 (pop_op -> .)
-    RELOP           reduce using rule 122 (pop_op -> .)
-    AND             reduce using rule 122 (pop_op -> .)
-    OR              reduce using rule 122 (pop_op -> .)
-    RBRACKET        reduce using rule 122 (pop_op -> .)
-    COMMA           reduce using rule 122 (pop_op -> .)
-    RPAREN          reduce using rule 122 (pop_op -> .)
-    SEMICOLON       reduce using rule 122 (pop_op -> .)
+    PLUS            reduce using rule 122 (pop_op_art_n1 -> .)
+    MINUS           reduce using rule 122 (pop_op_art_n1 -> .)
+    RELOP           reduce using rule 122 (pop_op_art_n1 -> .)
+    AND             reduce using rule 122 (pop_op_art_n1 -> .)
+    OR              reduce using rule 122 (pop_op_art_n1 -> .)
+    RBRACKET        reduce using rule 122 (pop_op_art_n1 -> .)
+    COMMA           reduce using rule 122 (pop_op_art_n1 -> .)
+    RPAREN          reduce using rule 122 (pop_op_art_n1 -> .)
+    SEMICOLON       reduce using rule 122 (pop_op_art_n1 -> .)
 
-    pop_op                         shift and go to state 260
+    pop_op_art_n1                  shift and go to state 260
 
 state 240
 
-    (96) term -> factor DIVIDE push_op term . pop_op
-    (122) pop_op -> .
+    (96) term -> factor DIVIDE push_op term . pop_op_art_n2
+    (123) pop_op_art_n2 -> .
 
-    PLUS            reduce using rule 122 (pop_op -> .)
-    MINUS           reduce using rule 122 (pop_op -> .)
-    RELOP           reduce using rule 122 (pop_op -> .)
-    AND             reduce using rule 122 (pop_op -> .)
-    OR              reduce using rule 122 (pop_op -> .)
-    RBRACKET        reduce using rule 122 (pop_op -> .)
-    COMMA           reduce using rule 122 (pop_op -> .)
-    RPAREN          reduce using rule 122 (pop_op -> .)
-    SEMICOLON       reduce using rule 122 (pop_op -> .)
+    PLUS            reduce using rule 123 (pop_op_art_n2 -> .)
+    MINUS           reduce using rule 123 (pop_op_art_n2 -> .)
+    RELOP           reduce using rule 123 (pop_op_art_n2 -> .)
+    AND             reduce using rule 123 (pop_op_art_n2 -> .)
+    OR              reduce using rule 123 (pop_op_art_n2 -> .)
+    RBRACKET        reduce using rule 123 (pop_op_art_n2 -> .)
+    COMMA           reduce using rule 123 (pop_op_art_n2 -> .)
+    RPAREN          reduce using rule 123 (pop_op_art_n2 -> .)
+    SEMICOLON       reduce using rule 123 (pop_op_art_n2 -> .)
 
-    pop_op                         shift and go to state 261
+    pop_op_art_n2                  shift and go to state 261
 
 state 241
 
     (97) factor -> LPAREN push_paren exp RPAREN . pop_paren
-    (124) pop_paren -> .
+    (128) pop_paren -> .
 
-    TIMES           reduce using rule 124 (pop_paren -> .)
-    DIVIDE          reduce using rule 124 (pop_paren -> .)
-    PLUS            reduce using rule 124 (pop_paren -> .)
-    MINUS           reduce using rule 124 (pop_paren -> .)
-    RELOP           reduce using rule 124 (pop_paren -> .)
-    AND             reduce using rule 124 (pop_paren -> .)
-    OR              reduce using rule 124 (pop_paren -> .)
-    RBRACKET        reduce using rule 124 (pop_paren -> .)
-    COMMA           reduce using rule 124 (pop_paren -> .)
-    RPAREN          reduce using rule 124 (pop_paren -> .)
-    SEMICOLON       reduce using rule 124 (pop_paren -> .)
+    TIMES           reduce using rule 128 (pop_paren -> .)
+    DIVIDE          reduce using rule 128 (pop_paren -> .)
+    PLUS            reduce using rule 128 (pop_paren -> .)
+    MINUS           reduce using rule 128 (pop_paren -> .)
+    RELOP           reduce using rule 128 (pop_paren -> .)
+    AND             reduce using rule 128 (pop_paren -> .)
+    OR              reduce using rule 128 (pop_paren -> .)
+    RBRACKET        reduce using rule 128 (pop_paren -> .)
+    COMMA           reduce using rule 128 (pop_paren -> .)
+    RPAREN          reduce using rule 128 (pop_paren -> .)
+    SEMICOLON       reduce using rule 128 (pop_paren -> .)
 
     pop_paren                      shift and go to state 262
 
@@ -4012,17 +4020,17 @@ state 244
 
     (84) for -> FROM LPAREN assignation RPAREN UNTIL LPAREN . exp RPAREN DO LBRACE statutes_aux RBRACE
     (85) exp -> . n_exp
-    (86) exp -> . n_exp OR push_op exp pop_op
+    (86) exp -> . n_exp OR push_op exp pop_op_or
     (87) n_exp -> . l_exp
-    (88) n_exp -> . l_exp AND push_op n_exp pop_op
+    (88) n_exp -> . l_exp AND push_op n_exp pop_op_and
     (89) l_exp -> . a_exp
-    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op
+    (90) l_exp -> . a_exp RELOP push_op a_exp pop_op_relop
     (91) a_exp -> . term
-    (92) a_exp -> . term PLUS push_op a_exp pop_op
-    (93) a_exp -> . term MINUS push_op a_exp pop_op
+    (92) a_exp -> . term PLUS push_op a_exp pop_op_art_n2
+    (93) a_exp -> . term MINUS push_op a_exp pop_op_art_n2
     (94) term -> . factor
-    (95) term -> . factor TIMES push_op term pop_op
-    (96) term -> . factor DIVIDE push_op term pop_op
+    (95) term -> . factor TIMES push_op term pop_op_art_n1
+    (96) term -> . factor DIVIDE push_op term pop_op_art_n2
     (97) factor -> . LPAREN push_paren exp RPAREN pop_paren
     (98) factor -> . call
     (99) factor -> . factor_aux
@@ -4154,91 +4162,91 @@ state 254
 
 state 255
 
-    (86) exp -> n_exp OR push_op exp pop_op .
+    (86) exp -> n_exp OR push_op exp pop_op_or .
 
-    RBRACKET        reduce using rule 86 (exp -> n_exp OR push_op exp pop_op .)
-    COMMA           reduce using rule 86 (exp -> n_exp OR push_op exp pop_op .)
-    RPAREN          reduce using rule 86 (exp -> n_exp OR push_op exp pop_op .)
-    SEMICOLON       reduce using rule 86 (exp -> n_exp OR push_op exp pop_op .)
+    RBRACKET        reduce using rule 86 (exp -> n_exp OR push_op exp pop_op_or .)
+    COMMA           reduce using rule 86 (exp -> n_exp OR push_op exp pop_op_or .)
+    RPAREN          reduce using rule 86 (exp -> n_exp OR push_op exp pop_op_or .)
+    SEMICOLON       reduce using rule 86 (exp -> n_exp OR push_op exp pop_op_or .)
 
 
 state 256
 
-    (88) n_exp -> l_exp AND push_op n_exp pop_op .
+    (88) n_exp -> l_exp AND push_op n_exp pop_op_and .
 
-    OR              reduce using rule 88 (n_exp -> l_exp AND push_op n_exp pop_op .)
-    RBRACKET        reduce using rule 88 (n_exp -> l_exp AND push_op n_exp pop_op .)
-    COMMA           reduce using rule 88 (n_exp -> l_exp AND push_op n_exp pop_op .)
-    RPAREN          reduce using rule 88 (n_exp -> l_exp AND push_op n_exp pop_op .)
-    SEMICOLON       reduce using rule 88 (n_exp -> l_exp AND push_op n_exp pop_op .)
+    OR              reduce using rule 88 (n_exp -> l_exp AND push_op n_exp pop_op_and .)
+    RBRACKET        reduce using rule 88 (n_exp -> l_exp AND push_op n_exp pop_op_and .)
+    COMMA           reduce using rule 88 (n_exp -> l_exp AND push_op n_exp pop_op_and .)
+    RPAREN          reduce using rule 88 (n_exp -> l_exp AND push_op n_exp pop_op_and .)
+    SEMICOLON       reduce using rule 88 (n_exp -> l_exp AND push_op n_exp pop_op_and .)
 
 
 state 257
 
-    (90) l_exp -> a_exp RELOP push_op a_exp pop_op .
+    (90) l_exp -> a_exp RELOP push_op a_exp pop_op_relop .
 
-    AND             reduce using rule 90 (l_exp -> a_exp RELOP push_op a_exp pop_op .)
-    OR              reduce using rule 90 (l_exp -> a_exp RELOP push_op a_exp pop_op .)
-    RBRACKET        reduce using rule 90 (l_exp -> a_exp RELOP push_op a_exp pop_op .)
-    COMMA           reduce using rule 90 (l_exp -> a_exp RELOP push_op a_exp pop_op .)
-    RPAREN          reduce using rule 90 (l_exp -> a_exp RELOP push_op a_exp pop_op .)
-    SEMICOLON       reduce using rule 90 (l_exp -> a_exp RELOP push_op a_exp pop_op .)
+    AND             reduce using rule 90 (l_exp -> a_exp RELOP push_op a_exp pop_op_relop .)
+    OR              reduce using rule 90 (l_exp -> a_exp RELOP push_op a_exp pop_op_relop .)
+    RBRACKET        reduce using rule 90 (l_exp -> a_exp RELOP push_op a_exp pop_op_relop .)
+    COMMA           reduce using rule 90 (l_exp -> a_exp RELOP push_op a_exp pop_op_relop .)
+    RPAREN          reduce using rule 90 (l_exp -> a_exp RELOP push_op a_exp pop_op_relop .)
+    SEMICOLON       reduce using rule 90 (l_exp -> a_exp RELOP push_op a_exp pop_op_relop .)
 
 
 state 258
 
-    (92) a_exp -> term PLUS push_op a_exp pop_op .
+    (92) a_exp -> term PLUS push_op a_exp pop_op_art_n2 .
 
-    RELOP           reduce using rule 92 (a_exp -> term PLUS push_op a_exp pop_op .)
-    AND             reduce using rule 92 (a_exp -> term PLUS push_op a_exp pop_op .)
-    OR              reduce using rule 92 (a_exp -> term PLUS push_op a_exp pop_op .)
-    RBRACKET        reduce using rule 92 (a_exp -> term PLUS push_op a_exp pop_op .)
-    COMMA           reduce using rule 92 (a_exp -> term PLUS push_op a_exp pop_op .)
-    RPAREN          reduce using rule 92 (a_exp -> term PLUS push_op a_exp pop_op .)
-    SEMICOLON       reduce using rule 92 (a_exp -> term PLUS push_op a_exp pop_op .)
+    RELOP           reduce using rule 92 (a_exp -> term PLUS push_op a_exp pop_op_art_n2 .)
+    AND             reduce using rule 92 (a_exp -> term PLUS push_op a_exp pop_op_art_n2 .)
+    OR              reduce using rule 92 (a_exp -> term PLUS push_op a_exp pop_op_art_n2 .)
+    RBRACKET        reduce using rule 92 (a_exp -> term PLUS push_op a_exp pop_op_art_n2 .)
+    COMMA           reduce using rule 92 (a_exp -> term PLUS push_op a_exp pop_op_art_n2 .)
+    RPAREN          reduce using rule 92 (a_exp -> term PLUS push_op a_exp pop_op_art_n2 .)
+    SEMICOLON       reduce using rule 92 (a_exp -> term PLUS push_op a_exp pop_op_art_n2 .)
 
 
 state 259
 
-    (93) a_exp -> term MINUS push_op a_exp pop_op .
+    (93) a_exp -> term MINUS push_op a_exp pop_op_art_n2 .
 
-    RELOP           reduce using rule 93 (a_exp -> term MINUS push_op a_exp pop_op .)
-    AND             reduce using rule 93 (a_exp -> term MINUS push_op a_exp pop_op .)
-    OR              reduce using rule 93 (a_exp -> term MINUS push_op a_exp pop_op .)
-    RBRACKET        reduce using rule 93 (a_exp -> term MINUS push_op a_exp pop_op .)
-    COMMA           reduce using rule 93 (a_exp -> term MINUS push_op a_exp pop_op .)
-    RPAREN          reduce using rule 93 (a_exp -> term MINUS push_op a_exp pop_op .)
-    SEMICOLON       reduce using rule 93 (a_exp -> term MINUS push_op a_exp pop_op .)
+    RELOP           reduce using rule 93 (a_exp -> term MINUS push_op a_exp pop_op_art_n2 .)
+    AND             reduce using rule 93 (a_exp -> term MINUS push_op a_exp pop_op_art_n2 .)
+    OR              reduce using rule 93 (a_exp -> term MINUS push_op a_exp pop_op_art_n2 .)
+    RBRACKET        reduce using rule 93 (a_exp -> term MINUS push_op a_exp pop_op_art_n2 .)
+    COMMA           reduce using rule 93 (a_exp -> term MINUS push_op a_exp pop_op_art_n2 .)
+    RPAREN          reduce using rule 93 (a_exp -> term MINUS push_op a_exp pop_op_art_n2 .)
+    SEMICOLON       reduce using rule 93 (a_exp -> term MINUS push_op a_exp pop_op_art_n2 .)
 
 
 state 260
 
-    (95) term -> factor TIMES push_op term pop_op .
+    (95) term -> factor TIMES push_op term pop_op_art_n1 .
 
-    PLUS            reduce using rule 95 (term -> factor TIMES push_op term pop_op .)
-    MINUS           reduce using rule 95 (term -> factor TIMES push_op term pop_op .)
-    RELOP           reduce using rule 95 (term -> factor TIMES push_op term pop_op .)
-    AND             reduce using rule 95 (term -> factor TIMES push_op term pop_op .)
-    OR              reduce using rule 95 (term -> factor TIMES push_op term pop_op .)
-    RBRACKET        reduce using rule 95 (term -> factor TIMES push_op term pop_op .)
-    COMMA           reduce using rule 95 (term -> factor TIMES push_op term pop_op .)
-    RPAREN          reduce using rule 95 (term -> factor TIMES push_op term pop_op .)
-    SEMICOLON       reduce using rule 95 (term -> factor TIMES push_op term pop_op .)
+    PLUS            reduce using rule 95 (term -> factor TIMES push_op term pop_op_art_n1 .)
+    MINUS           reduce using rule 95 (term -> factor TIMES push_op term pop_op_art_n1 .)
+    RELOP           reduce using rule 95 (term -> factor TIMES push_op term pop_op_art_n1 .)
+    AND             reduce using rule 95 (term -> factor TIMES push_op term pop_op_art_n1 .)
+    OR              reduce using rule 95 (term -> factor TIMES push_op term pop_op_art_n1 .)
+    RBRACKET        reduce using rule 95 (term -> factor TIMES push_op term pop_op_art_n1 .)
+    COMMA           reduce using rule 95 (term -> factor TIMES push_op term pop_op_art_n1 .)
+    RPAREN          reduce using rule 95 (term -> factor TIMES push_op term pop_op_art_n1 .)
+    SEMICOLON       reduce using rule 95 (term -> factor TIMES push_op term pop_op_art_n1 .)
 
 
 state 261
 
-    (96) term -> factor DIVIDE push_op term pop_op .
+    (96) term -> factor DIVIDE push_op term pop_op_art_n2 .
 
-    PLUS            reduce using rule 96 (term -> factor DIVIDE push_op term pop_op .)
-    MINUS           reduce using rule 96 (term -> factor DIVIDE push_op term pop_op .)
-    RELOP           reduce using rule 96 (term -> factor DIVIDE push_op term pop_op .)
-    AND             reduce using rule 96 (term -> factor DIVIDE push_op term pop_op .)
-    OR              reduce using rule 96 (term -> factor DIVIDE push_op term pop_op .)
-    RBRACKET        reduce using rule 96 (term -> factor DIVIDE push_op term pop_op .)
-    COMMA           reduce using rule 96 (term -> factor DIVIDE push_op term pop_op .)
-    RPAREN          reduce using rule 96 (term -> factor DIVIDE push_op term pop_op .)
-    SEMICOLON       reduce using rule 96 (term -> factor DIVIDE push_op term pop_op .)
+    PLUS            reduce using rule 96 (term -> factor DIVIDE push_op term pop_op_art_n2 .)
+    MINUS           reduce using rule 96 (term -> factor DIVIDE push_op term pop_op_art_n2 .)
+    RELOP           reduce using rule 96 (term -> factor DIVIDE push_op term pop_op_art_n2 .)
+    AND             reduce using rule 96 (term -> factor DIVIDE push_op term pop_op_art_n2 .)
+    OR              reduce using rule 96 (term -> factor DIVIDE push_op term pop_op_art_n2 .)
+    RBRACKET        reduce using rule 96 (term -> factor DIVIDE push_op term pop_op_art_n2 .)
+    COMMA           reduce using rule 96 (term -> factor DIVIDE push_op term pop_op_art_n2 .)
+    RPAREN          reduce using rule 96 (term -> factor DIVIDE push_op term pop_op_art_n2 .)
+    SEMICOLON       reduce using rule 96 (term -> factor DIVIDE push_op term pop_op_art_n2 .)
 
 
 state 262
