@@ -32,22 +32,19 @@ def p_program_body_funct(p):
     p[0] = 'program'
 
 def p_dec_vars(p):
-    '''dec_vars : VAR dec_vars_aux'''
+    'dec_vars : VAR dec_vars_aux'
     p[0] = 'program'
 
 def p_dec_vars_aux(p):
-    '''dec_vars_aux : simple_type vars_simple_type SEMICOLON
-                    | simple_type vars_simple_type SEMICOLON dec_vars_aux
-                    | complex_type vars_complex_type SEMICOLON
-                    | complex_type vars_complex_type SEMICOLON dec_vars_aux'''
+    '''dec_vars_aux : dec_vars_simple_aux'''
     p[0] = 'program'
 
-def p_vars_complex_type(p):
-    '''vars_complex_type : ID 
-                        | ID COMMA vars_complex_type'''
+def p_dec_vars_simple_aux(p):
+    '''dec_vars_simple_aux : simple_type vars_simple_type SEMICOLON
+                            | simple_type vars_simple_type SEMICOLON dec_vars_aux'''
     p[0] = 'program'
 
-def p_vars_simple_type(p):
+def p_vars_simple_type(p): 
     '''vars_simple_type : ID add_variable
                         | ID add_variable COMMA vars_simple_type
                         | ID vars_simple_type_aux
@@ -65,9 +62,26 @@ def p_simple_type(p):
                     | CHAR'''
     p[0] = p[1]
 
-def p_complex_type(p):
+# def p_dec_vars_complex_aux(p):
+#     '''dec_vars_complex_aux : ID vars_complex_type SEMICOLON
+#                             | ID vars_complex_type SEMICOLON dec_vars_aux'''
+#     p[0] = 'program'
+
+# def p_dec_vars_aux(p):
+#     '''dec_vars_aux : simple_type vars_simple_type SEMICOLON
+#                     | simple_type vars_simple_type SEMICOLON dec_vars_aux
+#                     | ID vars_complex_type SEMICOLON
+#                     | ID vars_complex_type SEMICOLON dec_vars_aux'''
+#     p[0] = 'program'
+
+# def p_vars_complex_type(p):
+#      '''vars_complex_type : ID 
+#                          | ID COMMA vars_complex_type'''
+#      p[0] = 'program'
+
+""" def p_complex_type(p):
     'complex_type : ID'
-    p[0] = 'program'
+    p[0] = 'program' """
 
 def p_classes(p):
     '''classes : CLASS ID classes_aux 
@@ -127,14 +141,9 @@ def p_statutes_aux(p):
     p[0] = 'program'
 
 def p_assignation(p):
-    '''assignation : ID EQUAL exp  
+    '''assignation : ID push_var EQUAL push_op exp  
                     | ID var_aux EQUAL exp'''
     p[0] = 'program'
-
-# def p_var(p):
-#     '''var : ID
-#             | ID var_aux'''
-#     p[0] = 'program'
 
 def p_var_aux(p):
     '''var_aux : POINT ID 
@@ -306,11 +315,11 @@ def p_add_inherit_class(p):
 
 def p_push_var(p):
     'push_var :'
-    #sF.pushVar(p[-1])
+    sF.pushOperators(p[-1])
 
 def p_push_op(p):
     'push_op :'
-    #sF.pushOp(p[-1])
+    sF.pushOperand(p[-1])
 
 def p_pop_op(p):
     'pop_op :'
@@ -318,12 +327,11 @@ def p_pop_op(p):
 
 def p_push_paren(p):
     'push_paren :'
-    #sF.pushParen(p[-1])
+    sF.pushOperand(p[-1])
 
 def p_pop_paren(p):
     'pop_paren :'
     #sF.popParen()
-
 
 # if __name__ == '__main__':
 
@@ -346,6 +354,7 @@ if text:
     result = parser.parse(text)
 
     print("stack of operands: ", sF.operandsStack)
+    print("stack of operators: ", sF.operatorsStack)
 
     if result != None:
         print("Program accepted")

@@ -10,7 +10,6 @@ from Vars import Vars
 
 from collections import deque
 
-
 # stacks to solve expressions
 operatorsStack = deque()
 operandsStack = deque()
@@ -135,5 +134,9 @@ def existsVar(id):
 def pushOperand(op):
     global operandsStack
     operandsStack.append(op)
+
+def pushOperators(op):
+    global operatorsStack
+    operatorsStack.append(op)
 
 # -------- END EXPRESSION SOLVING -------- 
