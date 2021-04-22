@@ -12,10 +12,10 @@ Rule 6     program_body_vars -> empty
 Rule 7     program_body_funct -> functions
 Rule 8     program_body_funct -> empty
 Rule 9     dec_vars -> VAR dec_vars_aux
-Rule 10    dec_vars_aux -> dec_vars_simple_aux
-Rule 11    dec_vars_aux -> dec_vars_complex_aux
-Rule 12    dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON
-Rule 13    dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON dec_vars_aux
+Rule 10    dec_vars_aux -> dec_vars_simple
+Rule 11    dec_vars_aux -> dec_vars_complex
+Rule 12    dec_vars_simple -> simple_type vars_simple_type SEMICOLON
+Rule 13    dec_vars_simple -> simple_type vars_simple_type SEMICOLON dec_vars_aux
 Rule 14    simple_type -> INT
 Rule 15    simple_type -> FLOAT
 Rule 16    simple_type -> CHAR
@@ -25,8 +25,8 @@ Rule 19    vars_simple_type -> ID vars_simple_type_aux
 Rule 20    vars_simple_type -> ID vars_simple_type_aux COMMA vars_simple_type
 Rule 21    vars_simple_type_aux -> LBRACKET CTEI RBRACKET add_array_variable
 Rule 22    vars_simple_type_aux -> LBRACKET CTEI RBRACKET LBRACKET CTEI RBRACKET add_matrix_variable
-Rule 23    dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON
-Rule 24    dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON dec_vars_aux
+Rule 23    dec_vars_complex -> OBJECT vars_complex_type SEMICOLON
+Rule 24    dec_vars_complex -> OBJECT vars_complex_type SEMICOLON dec_vars_aux
 Rule 25    vars_complex_type -> ID add_variable
 Rule 26    vars_complex_type -> ID add_variable COMMA vars_complex_type
 Rule 27    classes -> CLASS ID classes_aux
@@ -209,8 +209,8 @@ condition_aux_3      : 72
 cte                  : 100 101 102
 dec_vars             : 5 29 31 45 48 109
 dec_vars_aux         : 9 13 24
-dec_vars_complex_aux : 11
-dec_vars_simple_aux  : 10
+dec_vars_complex     : 11
+dec_vars_simple      : 10
 empty                : 3 6 8 76
 exp                  : 58 59 63 64 64 69 70 72 74 79 80 83 84 86 97
 factor               : 94 95 96
@@ -481,12 +481,12 @@ state 22
 state 23
 
     (9) dec_vars -> VAR . dec_vars_aux
-    (10) dec_vars_aux -> . dec_vars_simple_aux
-    (11) dec_vars_aux -> . dec_vars_complex_aux
-    (12) dec_vars_simple_aux -> . simple_type vars_simple_type SEMICOLON
-    (13) dec_vars_simple_aux -> . simple_type vars_simple_type SEMICOLON dec_vars_aux
-    (23) dec_vars_complex_aux -> . OBJECT vars_complex_type SEMICOLON
-    (24) dec_vars_complex_aux -> . OBJECT vars_complex_type SEMICOLON dec_vars_aux
+    (10) dec_vars_aux -> . dec_vars_simple
+    (11) dec_vars_aux -> . dec_vars_complex
+    (12) dec_vars_simple -> . simple_type vars_simple_type SEMICOLON
+    (13) dec_vars_simple -> . simple_type vars_simple_type SEMICOLON dec_vars_aux
+    (23) dec_vars_complex -> . OBJECT vars_complex_type SEMICOLON
+    (24) dec_vars_complex -> . OBJECT vars_complex_type SEMICOLON dec_vars_aux
     (14) simple_type -> . INT
     (15) simple_type -> . FLOAT
     (16) simple_type -> . CHAR
@@ -497,8 +497,8 @@ state 23
     CHAR            shift and go to state 40
 
     dec_vars_aux                   shift and go to state 33
-    dec_vars_simple_aux            shift and go to state 34
-    dec_vars_complex_aux           shift and go to state 35
+    dec_vars_simple                shift and go to state 34
+    dec_vars_complex               shift and go to state 35
     simple_type                    shift and go to state 36
 
 state 24
@@ -601,38 +601,38 @@ state 33
 
 state 34
 
-    (10) dec_vars_aux -> dec_vars_simple_aux .
+    (10) dec_vars_aux -> dec_vars_simple .
 
-    FUNCT           reduce using rule 10 (dec_vars_aux -> dec_vars_simple_aux .)
-    INIT            reduce using rule 10 (dec_vars_aux -> dec_vars_simple_aux .)
-    CALL            reduce using rule 10 (dec_vars_aux -> dec_vars_simple_aux .)
-    ID              reduce using rule 10 (dec_vars_aux -> dec_vars_simple_aux .)
-    READ            reduce using rule 10 (dec_vars_aux -> dec_vars_simple_aux .)
-    WRITE           reduce using rule 10 (dec_vars_aux -> dec_vars_simple_aux .)
-    IF              reduce using rule 10 (dec_vars_aux -> dec_vars_simple_aux .)
-    WHILE           reduce using rule 10 (dec_vars_aux -> dec_vars_simple_aux .)
-    FROM            reduce using rule 10 (dec_vars_aux -> dec_vars_simple_aux .)
+    FUNCT           reduce using rule 10 (dec_vars_aux -> dec_vars_simple .)
+    INIT            reduce using rule 10 (dec_vars_aux -> dec_vars_simple .)
+    CALL            reduce using rule 10 (dec_vars_aux -> dec_vars_simple .)
+    ID              reduce using rule 10 (dec_vars_aux -> dec_vars_simple .)
+    READ            reduce using rule 10 (dec_vars_aux -> dec_vars_simple .)
+    WRITE           reduce using rule 10 (dec_vars_aux -> dec_vars_simple .)
+    IF              reduce using rule 10 (dec_vars_aux -> dec_vars_simple .)
+    WHILE           reduce using rule 10 (dec_vars_aux -> dec_vars_simple .)
+    FROM            reduce using rule 10 (dec_vars_aux -> dec_vars_simple .)
 
 
 state 35
 
-    (11) dec_vars_aux -> dec_vars_complex_aux .
+    (11) dec_vars_aux -> dec_vars_complex .
 
-    FUNCT           reduce using rule 11 (dec_vars_aux -> dec_vars_complex_aux .)
-    INIT            reduce using rule 11 (dec_vars_aux -> dec_vars_complex_aux .)
-    CALL            reduce using rule 11 (dec_vars_aux -> dec_vars_complex_aux .)
-    ID              reduce using rule 11 (dec_vars_aux -> dec_vars_complex_aux .)
-    READ            reduce using rule 11 (dec_vars_aux -> dec_vars_complex_aux .)
-    WRITE           reduce using rule 11 (dec_vars_aux -> dec_vars_complex_aux .)
-    IF              reduce using rule 11 (dec_vars_aux -> dec_vars_complex_aux .)
-    WHILE           reduce using rule 11 (dec_vars_aux -> dec_vars_complex_aux .)
-    FROM            reduce using rule 11 (dec_vars_aux -> dec_vars_complex_aux .)
+    FUNCT           reduce using rule 11 (dec_vars_aux -> dec_vars_complex .)
+    INIT            reduce using rule 11 (dec_vars_aux -> dec_vars_complex .)
+    CALL            reduce using rule 11 (dec_vars_aux -> dec_vars_complex .)
+    ID              reduce using rule 11 (dec_vars_aux -> dec_vars_complex .)
+    READ            reduce using rule 11 (dec_vars_aux -> dec_vars_complex .)
+    WRITE           reduce using rule 11 (dec_vars_aux -> dec_vars_complex .)
+    IF              reduce using rule 11 (dec_vars_aux -> dec_vars_complex .)
+    WHILE           reduce using rule 11 (dec_vars_aux -> dec_vars_complex .)
+    FROM            reduce using rule 11 (dec_vars_aux -> dec_vars_complex .)
 
 
 state 36
 
-    (12) dec_vars_simple_aux -> simple_type . vars_simple_type SEMICOLON
-    (13) dec_vars_simple_aux -> simple_type . vars_simple_type SEMICOLON dec_vars_aux
+    (12) dec_vars_simple -> simple_type . vars_simple_type SEMICOLON
+    (13) dec_vars_simple -> simple_type . vars_simple_type SEMICOLON dec_vars_aux
     (17) vars_simple_type -> . ID add_variable
     (18) vars_simple_type -> . ID add_variable COMMA vars_simple_type
     (19) vars_simple_type -> . ID vars_simple_type_aux
@@ -644,8 +644,8 @@ state 36
 
 state 37
 
-    (23) dec_vars_complex_aux -> OBJECT . vars_complex_type SEMICOLON
-    (24) dec_vars_complex_aux -> OBJECT . vars_complex_type SEMICOLON dec_vars_aux
+    (23) dec_vars_complex -> OBJECT . vars_complex_type SEMICOLON
+    (24) dec_vars_complex -> OBJECT . vars_complex_type SEMICOLON dec_vars_aux
     (25) vars_complex_type -> . ID add_variable
     (26) vars_complex_type -> . ID add_variable COMMA vars_complex_type
 
@@ -749,8 +749,8 @@ state 48
 
 state 49
 
-    (12) dec_vars_simple_aux -> simple_type vars_simple_type . SEMICOLON
-    (13) dec_vars_simple_aux -> simple_type vars_simple_type . SEMICOLON dec_vars_aux
+    (12) dec_vars_simple -> simple_type vars_simple_type . SEMICOLON
+    (13) dec_vars_simple -> simple_type vars_simple_type . SEMICOLON dec_vars_aux
 
     SEMICOLON       shift and go to state 61
 
@@ -774,8 +774,8 @@ state 50
 
 state 51
 
-    (23) dec_vars_complex_aux -> OBJECT vars_complex_type . SEMICOLON
-    (24) dec_vars_complex_aux -> OBJECT vars_complex_type . SEMICOLON dec_vars_aux
+    (23) dec_vars_complex -> OBJECT vars_complex_type . SEMICOLON
+    (24) dec_vars_complex -> OBJECT vars_complex_type . SEMICOLON dec_vars_aux
 
     SEMICOLON       shift and go to state 65
 
@@ -894,27 +894,27 @@ state 60
 
 state 61
 
-    (12) dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON .
-    (13) dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON . dec_vars_aux
-    (10) dec_vars_aux -> . dec_vars_simple_aux
-    (11) dec_vars_aux -> . dec_vars_complex_aux
-    (12) dec_vars_simple_aux -> . simple_type vars_simple_type SEMICOLON
-    (13) dec_vars_simple_aux -> . simple_type vars_simple_type SEMICOLON dec_vars_aux
-    (23) dec_vars_complex_aux -> . OBJECT vars_complex_type SEMICOLON
-    (24) dec_vars_complex_aux -> . OBJECT vars_complex_type SEMICOLON dec_vars_aux
+    (12) dec_vars_simple -> simple_type vars_simple_type SEMICOLON .
+    (13) dec_vars_simple -> simple_type vars_simple_type SEMICOLON . dec_vars_aux
+    (10) dec_vars_aux -> . dec_vars_simple
+    (11) dec_vars_aux -> . dec_vars_complex
+    (12) dec_vars_simple -> . simple_type vars_simple_type SEMICOLON
+    (13) dec_vars_simple -> . simple_type vars_simple_type SEMICOLON dec_vars_aux
+    (23) dec_vars_complex -> . OBJECT vars_complex_type SEMICOLON
+    (24) dec_vars_complex -> . OBJECT vars_complex_type SEMICOLON dec_vars_aux
     (14) simple_type -> . INT
     (15) simple_type -> . FLOAT
     (16) simple_type -> . CHAR
 
-    FUNCT           reduce using rule 12 (dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON .)
-    INIT            reduce using rule 12 (dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON .)
-    CALL            reduce using rule 12 (dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON .)
-    ID              reduce using rule 12 (dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON .)
-    READ            reduce using rule 12 (dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON .)
-    WRITE           reduce using rule 12 (dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON .)
-    IF              reduce using rule 12 (dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON .)
-    WHILE           reduce using rule 12 (dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON .)
-    FROM            reduce using rule 12 (dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON .)
+    FUNCT           reduce using rule 12 (dec_vars_simple -> simple_type vars_simple_type SEMICOLON .)
+    INIT            reduce using rule 12 (dec_vars_simple -> simple_type vars_simple_type SEMICOLON .)
+    CALL            reduce using rule 12 (dec_vars_simple -> simple_type vars_simple_type SEMICOLON .)
+    ID              reduce using rule 12 (dec_vars_simple -> simple_type vars_simple_type SEMICOLON .)
+    READ            reduce using rule 12 (dec_vars_simple -> simple_type vars_simple_type SEMICOLON .)
+    WRITE           reduce using rule 12 (dec_vars_simple -> simple_type vars_simple_type SEMICOLON .)
+    IF              reduce using rule 12 (dec_vars_simple -> simple_type vars_simple_type SEMICOLON .)
+    WHILE           reduce using rule 12 (dec_vars_simple -> simple_type vars_simple_type SEMICOLON .)
+    FROM            reduce using rule 12 (dec_vars_simple -> simple_type vars_simple_type SEMICOLON .)
     OBJECT          shift and go to state 37
     INT             shift and go to state 38
     FLOAT           shift and go to state 39
@@ -922,8 +922,8 @@ state 61
 
     simple_type                    shift and go to state 36
     dec_vars_aux                   shift and go to state 87
-    dec_vars_simple_aux            shift and go to state 34
-    dec_vars_complex_aux           shift and go to state 35
+    dec_vars_simple                shift and go to state 34
+    dec_vars_complex               shift and go to state 35
 
 state 62
 
@@ -953,35 +953,35 @@ state 64
 
 state 65
 
-    (23) dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON .
-    (24) dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON . dec_vars_aux
-    (10) dec_vars_aux -> . dec_vars_simple_aux
-    (11) dec_vars_aux -> . dec_vars_complex_aux
-    (12) dec_vars_simple_aux -> . simple_type vars_simple_type SEMICOLON
-    (13) dec_vars_simple_aux -> . simple_type vars_simple_type SEMICOLON dec_vars_aux
-    (23) dec_vars_complex_aux -> . OBJECT vars_complex_type SEMICOLON
-    (24) dec_vars_complex_aux -> . OBJECT vars_complex_type SEMICOLON dec_vars_aux
+    (23) dec_vars_complex -> OBJECT vars_complex_type SEMICOLON .
+    (24) dec_vars_complex -> OBJECT vars_complex_type SEMICOLON . dec_vars_aux
+    (10) dec_vars_aux -> . dec_vars_simple
+    (11) dec_vars_aux -> . dec_vars_complex
+    (12) dec_vars_simple -> . simple_type vars_simple_type SEMICOLON
+    (13) dec_vars_simple -> . simple_type vars_simple_type SEMICOLON dec_vars_aux
+    (23) dec_vars_complex -> . OBJECT vars_complex_type SEMICOLON
+    (24) dec_vars_complex -> . OBJECT vars_complex_type SEMICOLON dec_vars_aux
     (14) simple_type -> . INT
     (15) simple_type -> . FLOAT
     (16) simple_type -> . CHAR
 
-    FUNCT           reduce using rule 23 (dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON .)
-    INIT            reduce using rule 23 (dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON .)
-    CALL            reduce using rule 23 (dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON .)
-    ID              reduce using rule 23 (dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON .)
-    READ            reduce using rule 23 (dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON .)
-    WRITE           reduce using rule 23 (dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON .)
-    IF              reduce using rule 23 (dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON .)
-    WHILE           reduce using rule 23 (dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON .)
-    FROM            reduce using rule 23 (dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON .)
+    FUNCT           reduce using rule 23 (dec_vars_complex -> OBJECT vars_complex_type SEMICOLON .)
+    INIT            reduce using rule 23 (dec_vars_complex -> OBJECT vars_complex_type SEMICOLON .)
+    CALL            reduce using rule 23 (dec_vars_complex -> OBJECT vars_complex_type SEMICOLON .)
+    ID              reduce using rule 23 (dec_vars_complex -> OBJECT vars_complex_type SEMICOLON .)
+    READ            reduce using rule 23 (dec_vars_complex -> OBJECT vars_complex_type SEMICOLON .)
+    WRITE           reduce using rule 23 (dec_vars_complex -> OBJECT vars_complex_type SEMICOLON .)
+    IF              reduce using rule 23 (dec_vars_complex -> OBJECT vars_complex_type SEMICOLON .)
+    WHILE           reduce using rule 23 (dec_vars_complex -> OBJECT vars_complex_type SEMICOLON .)
+    FROM            reduce using rule 23 (dec_vars_complex -> OBJECT vars_complex_type SEMICOLON .)
     OBJECT          shift and go to state 37
     INT             shift and go to state 38
     FLOAT           shift and go to state 39
     CHAR            shift and go to state 40
 
     dec_vars_aux                   shift and go to state 91
-    dec_vars_simple_aux            shift and go to state 34
-    dec_vars_complex_aux           shift and go to state 35
+    dec_vars_simple                shift and go to state 34
+    dec_vars_complex               shift and go to state 35
     simple_type                    shift and go to state 36
 
 state 66
@@ -1263,17 +1263,17 @@ state 86
 
 state 87
 
-    (13) dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON dec_vars_aux .
+    (13) dec_vars_simple -> simple_type vars_simple_type SEMICOLON dec_vars_aux .
 
-    FUNCT           reduce using rule 13 (dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON dec_vars_aux .)
-    INIT            reduce using rule 13 (dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON dec_vars_aux .)
-    CALL            reduce using rule 13 (dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON dec_vars_aux .)
-    ID              reduce using rule 13 (dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON dec_vars_aux .)
-    READ            reduce using rule 13 (dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON dec_vars_aux .)
-    WRITE           reduce using rule 13 (dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON dec_vars_aux .)
-    IF              reduce using rule 13 (dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON dec_vars_aux .)
-    WHILE           reduce using rule 13 (dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON dec_vars_aux .)
-    FROM            reduce using rule 13 (dec_vars_simple_aux -> simple_type vars_simple_type SEMICOLON dec_vars_aux .)
+    FUNCT           reduce using rule 13 (dec_vars_simple -> simple_type vars_simple_type SEMICOLON dec_vars_aux .)
+    INIT            reduce using rule 13 (dec_vars_simple -> simple_type vars_simple_type SEMICOLON dec_vars_aux .)
+    CALL            reduce using rule 13 (dec_vars_simple -> simple_type vars_simple_type SEMICOLON dec_vars_aux .)
+    ID              reduce using rule 13 (dec_vars_simple -> simple_type vars_simple_type SEMICOLON dec_vars_aux .)
+    READ            reduce using rule 13 (dec_vars_simple -> simple_type vars_simple_type SEMICOLON dec_vars_aux .)
+    WRITE           reduce using rule 13 (dec_vars_simple -> simple_type vars_simple_type SEMICOLON dec_vars_aux .)
+    IF              reduce using rule 13 (dec_vars_simple -> simple_type vars_simple_type SEMICOLON dec_vars_aux .)
+    WHILE           reduce using rule 13 (dec_vars_simple -> simple_type vars_simple_type SEMICOLON dec_vars_aux .)
+    FROM            reduce using rule 13 (dec_vars_simple -> simple_type vars_simple_type SEMICOLON dec_vars_aux .)
 
 
 state 88
@@ -1310,17 +1310,17 @@ state 90
 
 state 91
 
-    (24) dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .
+    (24) dec_vars_complex -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .
 
-    FUNCT           reduce using rule 24 (dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .)
-    INIT            reduce using rule 24 (dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .)
-    CALL            reduce using rule 24 (dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .)
-    ID              reduce using rule 24 (dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .)
-    READ            reduce using rule 24 (dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .)
-    WRITE           reduce using rule 24 (dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .)
-    IF              reduce using rule 24 (dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .)
-    WHILE           reduce using rule 24 (dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .)
-    FROM            reduce using rule 24 (dec_vars_complex_aux -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .)
+    FUNCT           reduce using rule 24 (dec_vars_complex -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .)
+    INIT            reduce using rule 24 (dec_vars_complex -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .)
+    CALL            reduce using rule 24 (dec_vars_complex -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .)
+    ID              reduce using rule 24 (dec_vars_complex -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .)
+    READ            reduce using rule 24 (dec_vars_complex -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .)
+    WRITE           reduce using rule 24 (dec_vars_complex -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .)
+    IF              reduce using rule 24 (dec_vars_complex -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .)
+    WHILE           reduce using rule 24 (dec_vars_complex -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .)
+    FROM            reduce using rule 24 (dec_vars_complex -> OBJECT vars_complex_type SEMICOLON dec_vars_aux .)
 
 
 state 92

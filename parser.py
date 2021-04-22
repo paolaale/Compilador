@@ -36,12 +36,12 @@ def p_dec_vars(p):
     p[0] = 'program'
 
 def p_dec_vars_aux(p):
-    '''dec_vars_aux : dec_vars_simple_aux
-                    | dec_vars_complex_aux'''
+    '''dec_vars_aux : dec_vars_simple
+                    | dec_vars_complex'''
     p[0] = 'program'
 
-def p_dec_vars_simple_aux(p):
-    '''dec_vars_simple_aux : simple_type vars_simple_type SEMICOLON
+def p_dec_vars_simple(p):
+    '''dec_vars_simple : simple_type vars_simple_type SEMICOLON
                             | simple_type vars_simple_type SEMICOLON dec_vars_aux'''
     p[0] = 'program'
 
@@ -63,8 +63,8 @@ def p_vars_simple_type_aux(p):
                             | LBRACKET CTEI RBRACKET LBRACKET CTEI RBRACKET add_matrix_variable'''
     p[0] = 'program'
 
-def p_dec_vars_complex_aux(p):
-    '''dec_vars_complex_aux : OBJECT vars_complex_type SEMICOLON
+def p_dec_vars_complex(p):
+    '''dec_vars_complex : OBJECT vars_complex_type SEMICOLON
                               | OBJECT vars_complex_type SEMICOLON dec_vars_aux'''
     p[0] = 'program'
 
