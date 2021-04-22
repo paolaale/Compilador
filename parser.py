@@ -32,11 +32,12 @@ def p_program_body_funct(p):
     p[0] = 'program'
 
 def p_dec_vars(p):
-    'dec_vars : VAR dec_vars_aux'
+    '''dec_vars : VAR dec_vars_aux'''
     p[0] = 'program'
 
 def p_dec_vars_aux(p):
-    '''dec_vars_aux : dec_vars_simple_aux'''
+    '''dec_vars_aux : dec_vars_simple_aux
+                    | dec_vars_complex_aux'''
     p[0] = 'program'
 
 def p_dec_vars_simple_aux(p):
@@ -44,6 +45,12 @@ def p_dec_vars_simple_aux(p):
                             | simple_type vars_simple_type SEMICOLON dec_vars_aux'''
     p[0] = 'program'
 
+def p_simple_type(p):
+    '''simple_type : INT 
+                    | FLOAT 
+                    | CHAR'''
+    p[0] = p[1]
+    
 def p_vars_simple_type(p): 
     '''vars_simple_type : ID add_variable
                         | ID add_variable COMMA vars_simple_type
@@ -56,32 +63,15 @@ def p_vars_simple_type_aux(p):
                             | LBRACKET CTEI RBRACKET LBRACKET CTEI RBRACKET add_matrix_variable'''
     p[0] = 'program'
 
-def p_simple_type(p):
-    '''simple_type : INT 
-                    | FLOAT 
-                    | CHAR'''
-    p[0] = p[1]
+def p_dec_vars_complex_aux(p):
+    '''dec_vars_complex_aux : OBJECT vars_complex_type SEMICOLON
+                              | OBJECT vars_complex_type SEMICOLON dec_vars_aux'''
+    p[0] = 'program'
 
-# def p_dec_vars_complex_aux(p):
-#     '''dec_vars_complex_aux : ID vars_complex_type SEMICOLON
-#                             | ID vars_complex_type SEMICOLON dec_vars_aux'''
-#     p[0] = 'program'
-
-# def p_dec_vars_aux(p):
-#     '''dec_vars_aux : simple_type vars_simple_type SEMICOLON
-#                     | simple_type vars_simple_type SEMICOLON dec_vars_aux
-#                     | ID vars_complex_type SEMICOLON
-#                     | ID vars_complex_type SEMICOLON dec_vars_aux'''
-#     p[0] = 'program'
-
-# def p_vars_complex_type(p):
-#      '''vars_complex_type : ID 
-#                          | ID COMMA vars_complex_type'''
-#      p[0] = 'program'
-
-""" def p_complex_type(p):
-    'complex_type : ID'
-    p[0] = 'program' """
+def p_vars_complex_type(p):
+    '''vars_complex_type : ID add_variable
+                         | ID add_variable COMMA vars_complex_type'''
+    p[0] = 'program'
 
 def p_classes(p):
     '''classes : CLASS ID classes_aux 
@@ -333,30 +323,31 @@ def p_pop_paren(p):
     'pop_paren :'
     #sF.popParen()
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 
-# Build parser
-parser = yacc.yacc()
+    # Build parser
+    parser = yacc.yacc()
 
-# Read file
-doc = input()
-fileData = open(doc,'r')
+    # Read file
+    doc = input()
+    fileData = open(doc,'r')
 
-text = ""
+    text = ""
 
-for line in fileData:
-    try:
-        text = text + line.strip()
-    except EOFError:
-        break
-        
-if text:
-    result = parser.parse(text)
+    for line in fileData:
+        try:
+            text = text + line.strip()
+        except EOFError:
+            break
+            
+    if text:
+        result = parser.parse(text)
 
-    print("stack of operands: ", sF.operandsStack)
-    print("stack of operators: ", sF.operatorsStack)
+        #print("stack of operands: ", sF.operandsStack)
+        #print("stack of operators: ", sF.operatorsStack)
+        print(sF.direc_classes["main"].c_funcs["vG"].f_vars["perro"].v_type)
 
-    if result != None:
-        print("Program accepted")
-    else:
-        print("Program failed")
+        if result != None:
+            print("Program accepted")
+        else:
+            print("Program failed")

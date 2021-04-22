@@ -38,11 +38,10 @@ reserved = {
 
 # Tokens
 tokens = [
-    'CTEI', 'CTEF', 'CTESTRING', 'CTECHAR', 'ID',
-    'RELOP', 'PLUS', 'MINUS', 'DIVIDE', 'TIMES',
-    'EQUAL', 'TWOPOINTS', 'SEMICOLON', 'COMMA',
-    'LPAREN', 'RPAREN', 'LBRACKET', 'RBRACKET',
-    'LBRACE', 'RBRACE', 'POINT'
+    'CTEI', 'CTEF', 'CTESTRING', 'CTECHAR', 'ID', 'OBJECT',
+    'RELOP', 'PLUS', 'MINUS', 'DIVIDE', 'TIMES', 'EQUAL', 
+    'TWOPOINTS', 'SEMICOLON', 'COMMA', 'LPAREN', 'RPAREN', 
+    'LBRACKET', 'RBRACKET', 'LBRACE', 'RBRACE', 'POINT'
 ] + list(reserved.values())
 
 # Regular expression rules
@@ -70,6 +69,11 @@ t_RBRACE = r'\}'
 # Ignore Characters
 t_ignore =' \t\n'
 
+def t_OBJECT(t):
+    r'[A-Z_][a-zA-Z_0-9_]*'
+    t.type = reserved.get(t.value,'OBJECT') # Check for reserved words
+    return t
+    
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9_]*'
     t.type = reserved.get(t.value,'ID') # Check for reserved words

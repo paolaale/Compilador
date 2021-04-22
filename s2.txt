@@ -4,8 +4,8 @@ program s2 :
 
         init {
            var int a, b;
-
-           a = b + 6 * 8;
+           
+            a = b + 6 * 8;
         }
     }
 end
