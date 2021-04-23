@@ -5,7 +5,7 @@ program s2 :
         init {
            var int a, b, c, d, e, j, k;
            
-            a = b + a + c - d + e;
+            a = b + 10 + c - 15.5 + e;
         }
     }
 end

@@ -74,15 +74,15 @@ def p_vars_complex_type(p):
     p[0] = 'program'
 
 def p_classes(p):
-    '''classes : CLASS ID classes_aux 
-                | CLASS ID classes_aux classes'''
+    '''classes : CLASS OBJECT classes_aux 
+                | CLASS OBJECT classes_aux classes'''
     p[0] = 'program'
 
 def p_classes_aux(p):
     '''classes_aux : add_class LBRACE dec_vars functions RBRACE
                     | add_class LBRACE functions RBRACE
-                    | INHERITS ID add_inherit_class LBRACE dec_vars functions RBRACE
-                    | INHERITS ID add_inherit_class LBRACE functions RBRACE'''
+                    | INHERITS OBJECT add_inherit_class LBRACE dec_vars functions RBRACE
+                    | INHERITS OBJECT add_inherit_class LBRACE functions RBRACE'''
     p[0] = 'program'
 
 def p_functions(p):
@@ -131,7 +131,7 @@ def p_statutes_aux(p):
     p[0] = 'program'
 
 def p_assignation(p):
-    '''assignation : ID push_var EQUAL push_op exp  
+    '''assignation : ID EQUAL exp  
                     | ID var_aux EQUAL exp'''
     p[0] = 'program'
 
@@ -215,15 +215,15 @@ def p_l_exp(p):
     p[0] = 'program'
 
 def p_a_exp(p):
-    '''a_exp : term
-            | term PLUS push_op a_exp pop_op_art_n2
-            | term MINUS push_op a_exp pop_op_art_n2'''
+    '''a_exp : term pop_op_art_n2
+            | term pop_op_art_n2 PLUS push_op a_exp
+            | term pop_op_art_n2 MINUS push_op a_exp'''
     p[0] = 'program'
 
 def p_term(p):
     '''term : factor
             | factor TIMES push_op term pop_op_art_n1
-            | factor DIVIDE push_op term pop_op_art_n2'''
+            | factor DIVIDE push_op term pop_op_art_n1'''
     p[0] = 'program'
 
 def p_factor(p):
@@ -305,29 +305,29 @@ def p_add_inherit_class(p):
 
 def p_push_var(p):
     'push_var :'
-    sF.pushOperators(p[-1])
+    sF.pushOperand(p[-1])
 
 def p_push_op(p):
     'push_op :'
-    sF.pushOperand(p[-1])
+    sF.pushOperator(p[-1])
 
-def p_pop_op_art_n1(p):
+def p_pop_op_art_n1(self):
     'pop_op_art_n1 :'
     #sF.popOp()
 
-def p_pop_op_art_n2(p):
+def p_pop_op_art_n2(self):
     'pop_op_art_n2 :'
-    #sF.popOp()
+    sF.pop_op_art_n2()
 
-def p_pop_op_relop(p):
+def p_pop_op_relop(self):
     'pop_op_relop :'
     #sF.popOp()
 
-def p_pop_op_and(p):
+def p_pop_op_and(self):
     'pop_op_and :'
     #sF.popOp()
 
-def p_pop_op_or(p):
+def p_pop_op_or(self):
     'pop_op_or :'
     #sF.popOp()
 
@@ -340,7 +340,7 @@ def p_pop_paren(p):
     #sF.popParen()
 
 if __name__ == '__main__':
-
+    
     # Build parser
     parser = yacc.yacc()
 
@@ -361,6 +361,9 @@ if __name__ == '__main__':
 
         print("stack of operands: ", sF.operandsStack)
         print("stack of operators: ", sF.operatorsStack)
+        #print("Quadruples: ", sF.quadQueue[0].operation);
+
+        sF.printQuadruples()
 
         if result != None:
             print("Program accepted")

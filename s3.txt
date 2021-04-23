@@ -4,8 +4,9 @@ program s2 :
 
         init {
            var int a, b, c, d, e, j, k;
+                char z;
            
-            a = b + a + c - d + e;
+            a = b + k + c - d - z + e;
         }
     }
 end

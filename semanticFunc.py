@@ -8,6 +8,7 @@ from Classes import Classes
 from Functions import Functions
 from Vars import Vars
 
+from Quadruple import Quadruple
 from collections import deque
 
 # stacks to solve expressions
@@ -22,6 +23,9 @@ direc_classes = {} # dictionary of classes
 currentClass = ""
 currentFunct = ""
 lastVarType = ""
+
+# variable de prueba que se borrará después
+countOfTemps = 1
 
 # Match type structure where the key is a hashcode of the types
 # and the values is an array where index 0 = OA, index 1 = OR, 
@@ -100,6 +104,8 @@ def isAMatch(leftOpType, opSymbol, rightOpType):
     key = matchTypeHashCode(leftOpType, rightOpType)
     typeOfOP = typeOfMatch(opSymbol)
     resultType = typeMatching[key][typeOfOP]
+
+    return resultType
     #print("resultado: ", resultType)
 
 # -------- END CHECKING MATCH TYPES -------- 
@@ -107,14 +113,24 @@ def isAMatch(leftOpType, opSymbol, rightOpType):
 # verify that a variable exists
 def getVarType(id):
     global currentFunct, currentClass
-    scope = existsVar(id)
+   
+    if id.isdigit():
+        return "int"
+    elif isfloat(id):
+        return "float"
+        
+    #aqui probablemente agregar uno para los chars, para que jale la asignacion a = 'b'
 
-    if scope == None:
-        print("Deberíamos retornear o arrojar error porque no existe la variable")
-        return "no existe"
-    else:
-        print(direc_classes[currentClass].c_funcs[scope].f_vars[id].v_type)
-        return direc_classes[currentClass].c_funcs[scope].f_vars[id].v_type
+    else:   
+        scope = existsVar(id)
+
+        if scope == None:
+            print("Deberíamos retornear o arrojar error porque no existe la variable: ", id)
+            raise Exception("Variable: ", id, " doesn´t exist")
+            return "no existe"
+        else:
+            #print(direc_classes[currentClass].c_funcs[scope].f_vars[id].v_type)
+            return direc_classes[currentClass].c_funcs[scope].f_vars[id].v_type
         
 
 def existsVar(id):
@@ -134,15 +150,61 @@ def existsVar(id):
 def pushOperand(op):
     global operandsStack
     operandsStack.append(op)
+    typesStack.append(getVarType(op))
+    #print("puse: " + op)
 
-def popOperands():
+def popOperand():
     global operatorsStack, operandsStack
 
-def pushOperators(op):
-    global operatorsStack
+def pushOperator(op):
+    global operatorsStack, typesStack
     operatorsStack.append(op)
+    #print("puse: " + op)
 
-def popOperators():
-    global operatorsStack, operandsStack
+# function to pop from the stack "+"" "-""
+def pop_op_art_n2():
+    global operatorsStack, operandsStack, quadQueue, countOfTemps
+
+    # first we check that the stack isn´t empty
+    if operatorsStack and (operatorsStack[-1] == "+" or operatorsStack[-1] == "-"):
+
+        right_op = operandsStack.pop()
+        right_op_type = typesStack.pop()
+        left_op = operandsStack.pop()
+        left_op_type = typesStack.pop()
+        operator = operatorsStack.pop()
+
+        operandsMatch = isAMatch(left_op_type, operator, right_op_type)
+
+        if operandsMatch != "error":
+            result = "TEMP" + str(countOfTemps)
+            countOfTemps += 1
+
+            quadQueue.append(Quadruple(operator, left_op, right_op, result))
+
+            operandsStack.append(result)
+            typesStack.append(operandsMatch)
+    
+        else:
+            raise Exception("Type mismatch")
+
+
+def printQuadruples():
+    global quadQueue
+    i = 0
+    while quadQueue:
+        tempQuad = quadQueue.popleft()
+        print("Quad ", i, " symbol: ", tempQuad.operation, " left: ", tempQuad.left_op, " right: ", tempQuad.right_op, " temp: ", tempQuad.tResult)
+        i += 1;
+        
+
 
 # -------- END EXPRESSION SOLVING -------- 
+
+# Validation method for floats
+def isfloat(value):
+  try:
+    float(value)
+    return True
+  except ValueError:
+    return False
