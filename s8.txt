@@ -1,0 +1,11 @@
+program s2 :
+
+    main {
+
+        init {
+            var int a, b, c, d, e, j, k;
+           
+            e = a * (b + c * d - e) > b + (c * d - e);
+        }
+    }
+end

@@ -221,9 +221,9 @@ def p_a_exp(p):
     p[0] = 'program'
 
 def p_term(p):
-    '''term : factor
-            | factor TIMES push_op term pop_op_art_n1
-            | factor DIVIDE push_op term pop_op_art_n1'''
+    '''term : factor pop_op_art_n1
+            | factor pop_op_art_n1 TIMES push_op term
+            | factor pop_op_art_n1 DIVIDE push_op term'''
     p[0] = 'program'
 
 def p_factor(p):
@@ -313,7 +313,7 @@ def p_push_op(p):
 
 def p_pop_op_art_n1(self):
     'pop_op_art_n1 :'
-    #sF.popOp()
+    sF.pop_op_art_n1()
 
 def p_pop_op_art_n2(self):
     'pop_op_art_n2 :'
@@ -321,7 +321,7 @@ def p_pop_op_art_n2(self):
 
 def p_pop_op_relop(self):
     'pop_op_relop :'
-    #sF.popOp()
+    sF.pop_op_relop()
 
 def p_pop_op_and(self):
     'pop_op_and :'
@@ -333,11 +333,11 @@ def p_pop_op_or(self):
 
 def p_push_paren(p):
     'push_paren :'
-    sF.pushOperand(p[-1])
+    sF.pushOperator(p[-1])
 
 def p_pop_paren(p):
     'pop_paren :'
-    #sF.popParen()
+    sF.pop_paren()
 
 if __name__ == '__main__':
     

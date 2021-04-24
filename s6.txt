@@ -1,0 +1,11 @@
+program s2 :
+
+    main {
+
+        init {
+           var int a, b, c, d, e, j, k;
+           
+            a = k + b - j * c * d / e - b + d;
+        }
+    }
+end

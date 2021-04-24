@@ -162,11 +162,67 @@ def pushOperator(op):
     #print("puse: " + op)
 
 # function to pop from the stack "+"" "-""
+def pop_op_relop():
+    global operatorsStack, operandsStack, quadQueue, countOfTemps
+    
+    right_op = operandsStack.pop()
+    right_op_type = typesStack.pop()
+    left_op = operandsStack.pop()
+    left_op_type = typesStack.pop()
+    operator = operatorsStack.pop()
+
+    operandsMatch = isAMatch(left_op_type, operator, right_op_type)
+
+    if operandsMatch != "error":
+        result = "TEMP" + str(countOfTemps)
+        countOfTemps += 1
+
+        quadQueue.append(Quadruple(operator, left_op, right_op, result))
+
+        operandsStack.append(result)
+        typesStack.append(operandsMatch)
+    
+    else:
+        raise Exception("Type mismatch")
+
+def pop_paren():
+    global operatorsStack, operandsStack, quadQueue, countOfTemps
+    operatorsStack.pop()
+
+# function to pop from the stack "+"" "-""
 def pop_op_art_n2():
     global operatorsStack, operandsStack, quadQueue, countOfTemps
 
+
     # first we check that the stack isn´t empty
     if operatorsStack and (operatorsStack[-1] == "+" or operatorsStack[-1] == "-"):
+
+        right_op = operandsStack.pop()
+        right_op_type = typesStack.pop()
+        left_op = operandsStack.pop()
+        left_op_type = typesStack.pop()
+        operator = operatorsStack.pop()
+
+        operandsMatch = isAMatch(left_op_type, operator, right_op_type)
+
+        if operandsMatch != "error":
+            result = "TEMP" + str(countOfTemps)
+            countOfTemps += 1
+
+            quadQueue.append(Quadruple(operator, left_op, right_op, result))
+
+            operandsStack.append(result)
+            typesStack.append(operandsMatch)
+    
+        else:
+            raise Exception("Type mismatch")
+
+# function to pop from the stack "*"" "/""
+def pop_op_art_n1():
+    global operatorsStack, operandsStack, quadQueue, countOfTemps
+
+    # first we check that the stack isn´t empty
+    if operatorsStack and (operatorsStack[-1] == "*" or operatorsStack[-1] == "/"):
 
         right_op = operandsStack.pop()
         right_op_type = typesStack.pop()
