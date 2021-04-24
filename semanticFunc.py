@@ -129,6 +129,9 @@ def getVarType(id):
             raise Exception("Variable: ", id, " doesn´t exist")
             return "no existe"
         else:
+
+            #aquí programar para validar que las variables usadas en expresiones sí estén inicializadas
+
             #print(direc_classes[currentClass].c_funcs[scope].f_vars[id].v_type)
             return direc_classes[currentClass].c_funcs[scope].f_vars[id].v_type
         
@@ -161,6 +164,35 @@ def pushOperator(op):
     operatorsStack.append(op)
     #print("puse: " + op)
 
+def pop_op_lop():
+    global operatorsStack, operandsStack, quadQueue, countOfTemps
+
+
+    # first we check that the stack isn´t empty
+    if operatorsStack and (operatorsStack[-1] == "or" or operatorsStack[-1] == "and"):
+        print("Es un: ",operatorsStack[-1]);
+        print("stack al momento: ", operatorsStack)
+
+        right_op = operandsStack.pop()
+        right_op_type = typesStack.pop()
+        left_op = operandsStack.pop()
+        left_op_type = typesStack.pop()
+        operator = operatorsStack.pop()
+
+        operandsMatch = isAMatch(left_op_type, operator, right_op_type)
+
+        if operandsMatch != "error":
+            result = "TEMP" + str(countOfTemps)
+            countOfTemps += 1
+
+            quadQueue.append(Quadruple(operator, left_op, right_op, result))
+
+            operandsStack.append(result)
+            typesStack.append(operandsMatch)
+    
+        else:
+            raise Exception("Type mismatch")
+
 # function to pop from the stack "+"" "-""
 def pop_op_relop():
     global operatorsStack, operandsStack, quadQueue, countOfTemps
@@ -181,6 +213,7 @@ def pop_op_relop():
 
         operandsStack.append(result)
         typesStack.append(operandsMatch)
+        print("last type in the stack = ", operandsMatch);
     
     else:
         raise Exception("Type mismatch")
@@ -223,6 +256,9 @@ def pop_op_art_n1():
 
     # first we check that the stack isn´t empty
     if operatorsStack and (operatorsStack[-1] == "*" or operatorsStack[-1] == "/"):
+
+        #print("Es M o D: ",operatorsStack[-1]);
+        print("stack al momento M/D: ", operatorsStack)
 
         right_op = operandsStack.pop()
         right_op_type = typesStack.pop()

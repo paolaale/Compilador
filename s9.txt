@@ -1,0 +1,11 @@
+program s2 :
+
+    main {
+
+        init {
+            var int a, b, c, d, e, j, k;
+           
+            e = (a + b) * b > c * d and d * (e + k) == k - 2 or 7 < d;
+        }
+    }
+end

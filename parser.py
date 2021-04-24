@@ -200,13 +200,9 @@ def p_for(p):
     p[0] = 'program'
 
 def p_exp(p):
-    '''exp : n_exp
-            | n_exp OR push_op exp pop_op_or'''   
-    p[0] = 'program'
-
-def p_n_exp(p):
-    '''n_exp : l_exp 
-            | l_exp AND push_op n_exp pop_op_and'''  
+    '''exp : l_exp pop_op_lop
+            | l_exp pop_op_lop OR push_op exp
+            | l_exp pop_op_lop AND push_op exp'''   
     p[0] = 'program'
 
 def p_l_exp(p):
@@ -323,13 +319,9 @@ def p_pop_op_relop(self):
     'pop_op_relop :'
     sF.pop_op_relop()
 
-def p_pop_op_and(self):
-    'pop_op_and :'
-    #sF.popOp()
-
-def p_pop_op_or(self):
-    'pop_op_or :'
-    #sF.popOp()
+def p_pop_op_lop(self):
+    'pop_op_lop :'
+    sF.pop_op_lop()
 
 def p_push_paren(p):
     'push_paren :'
