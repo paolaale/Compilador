@@ -4,7 +4,7 @@ program s2 :
 
         init {
            var int a, b, c, d, e, j, k;
-           
+            b = j + 15 - 8;
             a = b + a + c - d + e;
         }
     }

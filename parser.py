@@ -131,8 +131,8 @@ def p_statutes_aux(p):
     p[0] = 'program'
 
 def p_assignation(p):
-    '''assignation : ID EQUAL exp  
-                    | ID var_aux EQUAL exp'''
+    '''assignation : ID push_var EQUAL push_op exp pop_op_assign
+                    | ID var_aux push_var EQUAL push_op exp pop_op_assign'''
     p[0] = 'program'
 
 def p_var_aux(p):
@@ -323,6 +323,10 @@ def p_pop_op_lop(self):
     'pop_op_lop :'
     sF.pop_op_lop()
 
+def p_pop_op_assign(self):
+    'pop_op_assign :'
+    sF.pop_op_assign()
+
 def p_push_paren(p):
     'push_paren :'
     sF.pushOperator(p[-1])
@@ -355,7 +359,7 @@ if __name__ == '__main__':
         print("stack of operators: ", sF.operatorsStack)
         #print("Quadruples: ", sF.quadQueue[0].operation);
 
-        sF.printQuadruples()
+        #sF.printQuadruples()
 
         if result != None:
             print("Program accepted")

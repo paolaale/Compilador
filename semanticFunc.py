@@ -36,7 +36,7 @@ typeMatching = {
     'achinrt': ["error", "error", "error"],
     'aafflloott': ["float", "bool", "error"],
     'aacfhlort': ["error", "error", "error"],
-    'aacchhrr': ["error", "bool", "error"],
+    'aacchhrr': ["error", "error", "error"], #probablemente consideremos relop bool
     'bblloooo': ["error", "error", "bool"]
 }
 
@@ -106,7 +106,6 @@ def isAMatch(leftOpType, opSymbol, rightOpType):
     resultType = typeMatching[key][typeOfOP]
 
     return resultType
-    #print("resultado: ", resultType)
 
 # -------- END CHECKING MATCH TYPES -------- 
 
@@ -151,9 +150,11 @@ def existsVar(id):
 # -------- START EXPRESSION SOLVING -------- 
 
 def pushOperand(op):
-    global operandsStack
+    global operandsStack, quadQueue
+
     operandsStack.append(op)
     typesStack.append(getVarType(op))
+
     #print("puse: " + op)
 
 def popOperand():
@@ -162,6 +163,10 @@ def popOperand():
 def pushOperator(op):
     global operatorsStack, typesStack
     operatorsStack.append(op)
+
+    if op == "=":
+        print("----------EXPRESSION-----------")
+        quadQueue = deque()
     #print("puse: " + op)
 
 def pop_op_lop():
@@ -170,8 +175,6 @@ def pop_op_lop():
 
     # first we check that the stack isn´t empty
     if operatorsStack and (operatorsStack[-1] == "or" or operatorsStack[-1] == "and"):
-        print("Es un: ",operatorsStack[-1]);
-        print("stack al momento: ", operatorsStack)
 
         right_op = operandsStack.pop()
         right_op_type = typesStack.pop()
@@ -213,7 +216,6 @@ def pop_op_relop():
 
         operandsStack.append(result)
         typesStack.append(operandsMatch)
-        print("last type in the stack = ", operandsMatch);
     
     else:
         raise Exception("Type mismatch")
@@ -257,9 +259,6 @@ def pop_op_art_n1():
     # first we check that the stack isn´t empty
     if operatorsStack and (operatorsStack[-1] == "*" or operatorsStack[-1] == "/"):
 
-        #print("Es M o D: ",operatorsStack[-1]);
-        print("stack al momento M/D: ", operatorsStack)
-
         right_op = operandsStack.pop()
         right_op_type = typesStack.pop()
         left_op = operandsStack.pop()
@@ -281,9 +280,26 @@ def pop_op_art_n1():
             raise Exception("Type mismatch")
 
 
+#Aquí el cuadruplo debe quedar como =, TEMP, None, z 
+def pop_op_assign():
+    global operatorsStack, operandsStack, quadQueue
+
+    left_op = operandsStack.pop()
+    left_op_type = typesStack.pop()
+    var_to_assign = operandsStack.pop()
+    assignation_type = typesStack.pop()
+    operator = operatorsStack.pop()   
+
+    if assignation_type == left_op_type:
+        quadQueue.append(Quadruple(operator, left_op, None, var_to_assign))
+        printQuadruples()
+    else:
+        raise Exception("Cannot assign variable of type %s with %s" % (assignation_type, left_op_type))
+
+
 def printQuadruples():
     global quadQueue
-    i = 0
+    i = 1
     while quadQueue:
         tempQuad = quadQueue.popleft()
         print("Quad ", i, " symbol: ", tempQuad.operation, " left: ", tempQuad.left_op, " right: ", tempQuad.right_op, " temp: ", tempQuad.tResult)
