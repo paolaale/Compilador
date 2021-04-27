@@ -19,10 +19,11 @@ typesStack = deque()
 #Queue of quadruples
 quadQueue = deque()
 
-direc_classes = {} # dictionary of classes
+direcClasses = {} # dictionary of classes
 currentClass = ""
 currentFunct = ""
 lastVarType = ""
+stringToWrite = ""
 
 # variable de prueba que se borrará después
 countOfTemps = 1
@@ -44,17 +45,16 @@ oA = {"+", "-", "*", "/"}
 oR = {"<", ">", "<=", ">=", "==", "!="}
 oL = {"and", "or"}
 
-
 # -------- START ADDING ELEMENTS (FUNCT, CLASSES, VARS) -------- 
 # function that recieves the name of class, 
 # a boolean that represents if is inherit 
 # and the name of the parent if is inherit, otherwise recieve None
 def addClass(cName, cInherits, cParentName):
-    global direc_classes, currentClass, currentFunct
+    global direcClasses, currentClass, currentFunct
     currentClass = cName 
     currentFunct = ""
     # add to the dictionary of classes the class
-    direc_classes[cName] = Classes(cInherits, cParentName) 
+    direcClasses[cName] = Classes(cInherits, cParentName) 
 
 # function that recieves the name of the function 
 # and the type of return
@@ -62,7 +62,7 @@ def addFunction(fName, fType):
     global currentClass, currentFunct
     currentFunct = fName
     # add to dictionary of classes, in the current class the function
-    direc_classes[currentClass].c_funcs[fName] = Functions(fType) 
+    direcClasses[currentClass].c_funcs[fName] = Functions(fType) 
 
 # fucntion that recieves the name and type of the variable
 # size 1 that represents number of rows (array)
@@ -76,10 +76,10 @@ def addVars(vName, vType, vSize1, vSize2):
 
     if currentFunct != "":
         # add to dictionary of classes, in the current class and current function the variables
-        direc_classes[currentClass].c_funcs[currentFunct].f_vars[vName] = Vars(vType, vSize1, vSize2)
+        direcClasses[currentClass].c_funcs[currentFunct].f_vars[vName] = Vars(vType, vSize1, vSize2)
     else:
         # add to dictionary of classes, in the current class and global variables "fucntion" the variables
-        direc_classes[currentClass].c_funcs["vG"].f_vars[vName] = Vars(vType, vSize1, vSize2)
+        direcClasses[currentClass].c_funcs["vG"].f_vars[vName] = Vars(vType, vSize1, vSize2)
 
 # -------- END ADDING ELEMENTS (FUNCT, CLASSES, VARS) -------- 
     
@@ -124,21 +124,17 @@ def getVarType(id):
         scope = existsVar(id)
 
         if scope == None:
-            print("Deberíamos retornear o arrojar error porque no existe la variable: ", id)
             raise Exception("Variable: ", id, " doesn´t exist")
             return "no existe"
         else:
-
             #aquí programar para validar que las variables usadas en expresiones sí estén inicializadas
-
-            #print(direc_classes[currentClass].c_funcs[scope].f_vars[id].v_type)
-            return direc_classes[currentClass].c_funcs[scope].f_vars[id].v_type
+            return direcClasses[currentClass].c_funcs[scope].f_vars[id].v_type
         
 
 def existsVar(id):
     global currentFunct, currentClass
 
-    funcs = direc_classes[currentClass].c_funcs
+    funcs = direcClasses[currentClass].c_funcs
 
     if id in funcs[currentFunct].f_vars:
         return currentFunct
@@ -155,19 +151,13 @@ def pushOperand(op):
     operandsStack.append(op)
     typesStack.append(getVarType(op))
 
-    #print("puse: " + op)
-
-def popOperand():
-    global operatorsStack, operandsStack
-
 def pushOperator(op):
-    global operatorsStack, typesStack
+    global operatorsStack, typesStack, quadQueue
     operatorsStack.append(op)
 
     if op == "=":
-        print("----------EXPRESSION-----------")
+        print("----------ASSIGNATION-----------")
         quadQueue = deque()
-    #print("puse: " + op)
 
 def pop_op_lop():
     global operatorsStack, operandsStack, quadQueue, countOfTemps
@@ -227,7 +217,6 @@ def pop_paren():
 # function to pop from the stack "+"" "-""
 def pop_op_art_n2():
     global operatorsStack, operandsStack, quadQueue, countOfTemps
-
 
     # first we check that the stack isn´t empty
     if operatorsStack and (operatorsStack[-1] == "+" or operatorsStack[-1] == "-"):
@@ -296,6 +285,34 @@ def pop_op_assign():
     else:
         raise Exception("Cannot assign variable of type %s with %s" % (assignation_type, left_op_type))
 
+def generateWrite():
+    global operandsStack, quadQueue, stringToWrite
+
+    if (stringToWrite != ""):
+        varToWrite = stringToWrite
+        stringToWrite = ""
+    else:
+        varToWrite = operandsStack.pop()
+
+    print("----------WRITE-----------")
+    quadQueue.append(Quadruple("WRITE", None, None, varToWrite))
+    printQuadruples()
+    quadQueue = deque()
+
+def saveString(s):
+    global stringToWrite
+
+    stringToWrite = s
+
+def generateRead():
+    global operandsStack, quadQueue
+
+    varToRead = operandsStack.pop()
+    print("----------READ-----------")
+    quadQueue.append(Quadruple("READ", None, None, varToRead))
+    printQuadruples()
+    quadQueue = deque()
+
 
 def printQuadruples():
     global quadQueue
@@ -303,10 +320,8 @@ def printQuadruples():
     while quadQueue:
         tempQuad = quadQueue.popleft()
         print("Quad ", i, " symbol: ", tempQuad.operation, " left: ", tempQuad.left_op, " right: ", tempQuad.right_op, " temp: ", tempQuad.tResult)
-        i += 1;
+        i += 1
         
-
-
 # -------- END EXPRESSION SOLVING -------- 
 
 # Validation method for floats

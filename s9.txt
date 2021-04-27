@@ -1,4 +1,4 @@
-program s2 :
+program s9 :
 
     main {
 

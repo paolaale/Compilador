@@ -19,4 +19,10 @@ Alan Zavala Lévaro A01338448
 * Corrección de problemas shift/reduce
 * Pruebas funcionales y aceptadas
 
-## Avance 3 (21 abril)
+## Avance 3 (23 abril)
+* Cambios en la sintaxis del programa
+* Coreccción de todos los errores shift/reduce y reduce/reduce
+* Programación de stacks de operadores, operandos y tipos
+* Programación de los cuadruplos, validando que variable exista y el tipo sea coherente
+* Pruebas funcionales y aceptadas de todo tipo de expresiones
+* Falta hacer asignación de resultados

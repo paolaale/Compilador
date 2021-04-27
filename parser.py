@@ -177,18 +177,23 @@ def p_condition_aux_3(p):
     p[0] = 'program'
 
 def p_read(p):
-    'read : READ LPAREN ID RPAREN SEMICOLON'
+    'read : READ LPAREN read_aux RPAREN SEMICOLON generate_read'
+    p[0] = 'program'
+
+def p_read_aux(p):
+    '''read_aux : ID push_var
+            | ID push_var COMMA generate_read read_aux'''
     p[0] = 'program'
 
 def p_write(p):
-    '''write : WRITE LPAREN write_aux RPAREN SEMICOLON'''
+    '''write : WRITE LPAREN write_aux RPAREN SEMICOLON generate_write'''
     p[0] = 'program'
 
 def p_write_aux(p):
     '''write_aux : exp
-                | exp COMMA write_aux
-                | CTESTRING
-                | CTESTRING COMMA write_aux'''
+                | exp COMMA generate_write write_aux
+                | CTESTRING save_string
+                | CTESTRING save_string COMMA generate_write write_aux'''
     p[0] = 'program'
 
 def p_while(p):
@@ -335,6 +340,18 @@ def p_pop_paren(p):
     'pop_paren :'
     sF.pop_paren()
 
+def p_generate_write(self):
+    'generate_write :'
+    sF.generateWrite()
+
+def p_save_string(p):
+    'save_string :'
+    sF.saveString(p[-1])
+
+def p_generate_read(self):
+    'generate_read :'
+    sF.generateRead()
+
 if __name__ == '__main__':
     
     # Build parser
@@ -357,8 +374,6 @@ if __name__ == '__main__':
 
         print("stack of operands: ", sF.operandsStack)
         print("stack of operators: ", sF.operatorsStack)
-        #print("Quadruples: ", sF.quadQueue[0].operation);
-
         #sF.printQuadruples()
 
         if result != None:
