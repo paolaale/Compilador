@@ -26,3 +26,6 @@ Alan Zavala Lévaro A01338448
 * Programación de los cuadruplos, validando que variable exista y el tipo sea coherente
 * Pruebas funcionales y aceptadas de todo tipo de expresiones
 * Falta hacer asignación de resultados
+
+## Avance 4 (30 abril)
+* Se crean los cuadruplos de asignaciones, write y read
