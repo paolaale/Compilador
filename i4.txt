@@ -1,0 +1,22 @@
+program i4 :
+
+    main {
+
+        init {
+           
+           var int a,b,c,d;
+
+           if (a + b > c * d) then {
+               a = b + d;
+           }
+           elif (b * c < d - a) then {
+               a = c * b;
+           }
+           else {
+               a = d - c;
+           }
+
+           b = a * c + d;
+        }
+    }
+end

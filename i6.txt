@@ -1,0 +1,22 @@
+program i6 :
+
+    main {
+
+        init {
+           
+           var int a,b,c,d;
+
+           if (a + b > c * d) then {
+               a = b + d;
+           }
+           elif (b * c < d - a) then {
+               a = c * b;
+           }
+           elif (c < 7) then {
+               a = 8 * 8;
+           }
+
+           b = a * c + d;
+        }
+    }
+end

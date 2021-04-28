@@ -2,7 +2,7 @@
 # Equipo 23, orientado a objetos
 # Paola Villarreal - A00821971
 # Alan Zavala - A01338448
-# Fecha: 21/04/2021
+# Fecha: 30/04/2021
 
 import ply.yacc as yacc
 from lexer import tokens # Get the token list from the lexer
@@ -163,16 +163,16 @@ def p_condition(p):
     p[0] = 'program'
 
 def p_condition_aux(p):
-    '''condition_aux : LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3
+    '''condition_aux : LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if
                     | condition_aux_2'''
     p[0] = 'program'
 
 def p_condition_aux_2(p): 
-    '''condition_aux_2 : LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux'''
+    '''condition_aux_2 : LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux'''
     p[0] = 'program'
 
 def p_condition_aux_3(p):
-    '''condition_aux_3 : ELSE LBRACE statutes_aux RBRACE
+    '''condition_aux_3 : ELSE else_condition LBRACE statutes_aux RBRACE
                         | empty'''
     p[0] = 'program'
 
@@ -352,6 +352,18 @@ def p_generate_read(self):
     'generate_read :'
     sF.generateRead()
 
+def p_condition_type(self):
+    'condition_type :'
+    sF.checkConditionType()
+
+def p_else_condition(self):
+    'else_condition :'
+    sF.elseCondition()
+
+def p_end_if(self):
+    'end_if :'
+    sF.endIF()
+
 if __name__ == '__main__':
     
     # Build parser
@@ -374,7 +386,9 @@ if __name__ == '__main__':
 
         print("stack of operands: ", sF.operandsStack)
         print("stack of operators: ", sF.operatorsStack)
-        #sF.printQuadruples()
+        print("stack of types: ", sF.typesStack)
+        print("stack of jumps: ", sF.jumpsStack)
+        sF.printQuadruples()
 
         if result != None:
             print("Program accepted")

@@ -1,0 +1,14 @@
+program i1 :
+
+    main {
+
+        init {
+           
+           var int a,b;
+
+           if (a > b) then {
+               write(a);
+           }
+        }
+    }
+end

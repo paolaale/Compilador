@@ -74,10 +74,10 @@ Rule 68    call -> ID POINT ID LPAREN call_aux RPAREN
 Rule 69    call_aux -> exp
 Rule 70    call_aux -> exp COMMA call_aux
 Rule 71    condition -> IF condition_aux
-Rule 72    condition_aux -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3
+Rule 72    condition_aux -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if
 Rule 73    condition_aux -> condition_aux_2
-Rule 74    condition_aux_2 -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux
-Rule 75    condition_aux_3 -> ELSE LBRACE statutes_aux RBRACE
+Rule 74    condition_aux_2 -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux
+Rule 75    condition_aux_3 -> ELSE else_condition LBRACE statutes_aux RBRACE
 Rule 76    condition_aux_3 -> empty
 Rule 77    read -> READ LPAREN read_aux RPAREN SEMICOLON generate_read
 Rule 78    read_aux -> ID push_var
@@ -135,6 +135,9 @@ Rule 129   pop_paren -> <empty>
 Rule 130   generate_write -> <empty>
 Rule 131   save_string -> <empty>
 Rule 132   generate_read -> <empty>
+Rule 133   condition_type -> <empty>
+Rule 134   else_condition -> <empty>
+Rule 135   end_if -> <empty>
 
 Terminals, with rules where they appear
 
@@ -210,12 +213,15 @@ condition            : 53
 condition_aux        : 71 74
 condition_aux_2      : 73
 condition_aux_3      : 72
+condition_type       : 72 74
 cte                  : 101 102 103
 dec_vars             : 5 29 31 45 48 110
 dec_vars_aux         : 9 13 24
 dec_vars_complex     : 11
 dec_vars_simple      : 10
+else_condition       : 75
 empty                : 3 6 8 76
+end_if               : 72
 exp                  : 58 59 63 64 64 69 70 72 74 81 82 85 86 88 89 98
 factor               : 95 96 97
 factor_aux           : 100
@@ -1245,9 +1251,9 @@ state 83
 state 84
 
     (71) condition -> IF . condition_aux
-    (72) condition_aux -> . LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3
+    (72) condition_aux -> . LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if
     (73) condition_aux -> . condition_aux_2
-    (74) condition_aux_2 -> . LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux
+    (74) condition_aux_2 -> . LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux
 
     LPAREN          shift and go to state 110
 
@@ -1613,8 +1619,8 @@ state 109
 
 state 110
 
-    (72) condition_aux -> LPAREN . exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3
-    (74) condition_aux_2 -> LPAREN . exp RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux
+    (72) condition_aux -> LPAREN . exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if
+    (74) condition_aux_2 -> LPAREN . exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux
     (87) exp -> . l_exp pop_op_lop
     (88) exp -> . l_exp pop_op_lop OR push_op exp
     (89) exp -> . l_exp pop_op_lop AND push_op exp
@@ -2253,8 +2259,8 @@ state 149
 
 state 150
 
-    (72) condition_aux -> LPAREN exp . RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3
-    (74) condition_aux_2 -> LPAREN exp . RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux
+    (72) condition_aux -> LPAREN exp . RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if
+    (74) condition_aux_2 -> LPAREN exp . RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux
 
     RPAREN          shift and go to state 188
 
@@ -2853,11 +2859,13 @@ state 187
 
 state 188
 
-    (72) condition_aux -> LPAREN exp RPAREN . THEN LBRACE statutes_aux RBRACE condition_aux_3
-    (74) condition_aux_2 -> LPAREN exp RPAREN . THEN LBRACE statutes_aux RBRACE ELIF condition_aux
+    (72) condition_aux -> LPAREN exp RPAREN . condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if
+    (74) condition_aux_2 -> LPAREN exp RPAREN . condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux
+    (133) condition_type -> .
 
-    THEN            shift and go to state 220
+    THEN            reduce using rule 133 (condition_type -> .)
 
+    condition_type                 shift and go to state 220
 
 state 189
 
@@ -3487,10 +3495,10 @@ state 219
 
 state 220
 
-    (72) condition_aux -> LPAREN exp RPAREN THEN . LBRACE statutes_aux RBRACE condition_aux_3
-    (74) condition_aux_2 -> LPAREN exp RPAREN THEN . LBRACE statutes_aux RBRACE ELIF condition_aux
+    (72) condition_aux -> LPAREN exp RPAREN condition_type . THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if
+    (74) condition_aux_2 -> LPAREN exp RPAREN condition_type . THEN LBRACE statutes_aux RBRACE ELIF condition_aux
 
-    LBRACE          shift and go to state 249
+    THEN            shift and go to state 249
 
 
 state 221
@@ -4027,41 +4035,11 @@ state 248
 
 state 249
 
-    (72) condition_aux -> LPAREN exp RPAREN THEN LBRACE . statutes_aux RBRACE condition_aux_3
-    (74) condition_aux_2 -> LPAREN exp RPAREN THEN LBRACE . statutes_aux RBRACE ELIF condition_aux
-    (56) statutes_aux -> . statutes
-    (57) statutes_aux -> . statutes statutes_aux
-    (49) statutes -> . assignation SEMICOLON
-    (50) statutes -> . CALL call SEMICOLON
-    (51) statutes -> . read
-    (52) statutes -> . write
-    (53) statutes -> . condition
-    (54) statutes -> . while
-    (55) statutes -> . for
-    (58) assignation -> . ID push_var EQUAL push_op exp pop_op_assign
-    (59) assignation -> . ID var_aux push_var EQUAL push_op exp pop_op_assign
-    (77) read -> . READ LPAREN read_aux RPAREN SEMICOLON generate_read
-    (80) write -> . WRITE LPAREN write_aux RPAREN SEMICOLON generate_write
-    (71) condition -> . IF condition_aux
-    (85) while -> . WHILE LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
-    (86) for -> . FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+    (72) condition_aux -> LPAREN exp RPAREN condition_type THEN . LBRACE statutes_aux RBRACE condition_aux_3 end_if
+    (74) condition_aux_2 -> LPAREN exp RPAREN condition_type THEN . LBRACE statutes_aux RBRACE ELIF condition_aux
 
-    CALL            shift and go to state 75
-    ID              shift and go to state 81
-    READ            shift and go to state 82
-    WRITE           shift and go to state 83
-    IF              shift and go to state 84
-    WHILE           shift and go to state 85
-    FROM            shift and go to state 86
+    LBRACE          shift and go to state 273
 
-    statutes_aux                   shift and go to state 273
-    statutes                       shift and go to state 73
-    assignation                    shift and go to state 74
-    read                           shift and go to state 76
-    write                          shift and go to state 77
-    condition                      shift and go to state 78
-    while                          shift and go to state 79
-    for                            shift and go to state 80
 
 state 250
 
@@ -4371,11 +4349,41 @@ state 272
 
 state 273
 
-    (72) condition_aux -> LPAREN exp RPAREN THEN LBRACE statutes_aux . RBRACE condition_aux_3
-    (74) condition_aux_2 -> LPAREN exp RPAREN THEN LBRACE statutes_aux . RBRACE ELIF condition_aux
+    (72) condition_aux -> LPAREN exp RPAREN condition_type THEN LBRACE . statutes_aux RBRACE condition_aux_3 end_if
+    (74) condition_aux_2 -> LPAREN exp RPAREN condition_type THEN LBRACE . statutes_aux RBRACE ELIF condition_aux
+    (56) statutes_aux -> . statutes
+    (57) statutes_aux -> . statutes statutes_aux
+    (49) statutes -> . assignation SEMICOLON
+    (50) statutes -> . CALL call SEMICOLON
+    (51) statutes -> . read
+    (52) statutes -> . write
+    (53) statutes -> . condition
+    (54) statutes -> . while
+    (55) statutes -> . for
+    (58) assignation -> . ID push_var EQUAL push_op exp pop_op_assign
+    (59) assignation -> . ID var_aux push_var EQUAL push_op exp pop_op_assign
+    (77) read -> . READ LPAREN read_aux RPAREN SEMICOLON generate_read
+    (80) write -> . WRITE LPAREN write_aux RPAREN SEMICOLON generate_write
+    (71) condition -> . IF condition_aux
+    (85) while -> . WHILE LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+    (86) for -> . FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
 
-    RBRACE          shift and go to state 279
+    CALL            shift and go to state 75
+    ID              shift and go to state 81
+    READ            shift and go to state 82
+    WRITE           shift and go to state 83
+    IF              shift and go to state 84
+    WHILE           shift and go to state 85
+    FROM            shift and go to state 86
 
+    statutes_aux                   shift and go to state 279
+    statutes                       shift and go to state 73
+    assignation                    shift and go to state 74
+    read                           shift and go to state 76
+    write                          shift and go to state 77
+    condition                      shift and go to state 78
+    while                          shift and go to state 79
+    for                            shift and go to state 80
 
 state 274
 
@@ -4417,26 +4425,11 @@ state 278
 
 state 279
 
-    (72) condition_aux -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE . condition_aux_3
-    (74) condition_aux_2 -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE . ELIF condition_aux
-    (75) condition_aux_3 -> . ELSE LBRACE statutes_aux RBRACE
-    (76) condition_aux_3 -> . empty
-    (111) empty -> .
+    (72) condition_aux -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux . RBRACE condition_aux_3 end_if
+    (74) condition_aux_2 -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux . RBRACE ELIF condition_aux
 
-    ELIF            shift and go to state 286
-    ELSE            shift and go to state 287
-    CALL            reduce using rule 111 (empty -> .)
-    ID              reduce using rule 111 (empty -> .)
-    READ            reduce using rule 111 (empty -> .)
-    WRITE           reduce using rule 111 (empty -> .)
-    IF              reduce using rule 111 (empty -> .)
-    WHILE           reduce using rule 111 (empty -> .)
-    FROM            reduce using rule 111 (empty -> .)
-    RBRACE          reduce using rule 111 (empty -> .)
-    RETURN          reduce using rule 111 (empty -> .)
+    RBRACE          shift and go to state 285
 
-    condition_aux_3                shift and go to state 285
-    empty                          shift and go to state 288
 
 state 280
 
@@ -4457,14 +4450,14 @@ state 281
 
     (86) for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN . DO LBRACE statutes_aux RBRACE
 
-    DO              shift and go to state 289
+    DO              shift and go to state 286
 
 
 state 282
 
     (48) body -> LBRACE dec_vars statutes_aux RETURN ID SEMICOLON . RBRACE
 
-    RBRACE          shift and go to state 290
+    RBRACE          shift and go to state 287
 
 
 state 283
@@ -4486,39 +4479,82 @@ state 284
 
 state 285
 
-    (72) condition_aux -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3 .
+    (72) condition_aux -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE . condition_aux_3 end_if
+    (74) condition_aux_2 -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE . ELIF condition_aux
+    (75) condition_aux_3 -> . ELSE else_condition LBRACE statutes_aux RBRACE
+    (76) condition_aux_3 -> . empty
+    (111) empty -> .
 
-    CALL            reduce using rule 72 (condition_aux -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3 .)
-    ID              reduce using rule 72 (condition_aux -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3 .)
-    READ            reduce using rule 72 (condition_aux -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3 .)
-    WRITE           reduce using rule 72 (condition_aux -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3 .)
-    IF              reduce using rule 72 (condition_aux -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3 .)
-    WHILE           reduce using rule 72 (condition_aux -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3 .)
-    FROM            reduce using rule 72 (condition_aux -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3 .)
-    RBRACE          reduce using rule 72 (condition_aux -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3 .)
-    RETURN          reduce using rule 72 (condition_aux -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3 .)
+    ELIF            shift and go to state 289
+    ELSE            shift and go to state 290
+    CALL            reduce using rule 111 (empty -> .)
+    ID              reduce using rule 111 (empty -> .)
+    READ            reduce using rule 111 (empty -> .)
+    WRITE           reduce using rule 111 (empty -> .)
+    IF              reduce using rule 111 (empty -> .)
+    WHILE           reduce using rule 111 (empty -> .)
+    FROM            reduce using rule 111 (empty -> .)
+    RBRACE          reduce using rule 111 (empty -> .)
+    RETURN          reduce using rule 111 (empty -> .)
 
+    condition_aux_3                shift and go to state 288
+    empty                          shift and go to state 291
 
 state 286
 
-    (74) condition_aux_2 -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE ELIF . condition_aux
-    (72) condition_aux -> . LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE condition_aux_3
-    (73) condition_aux -> . condition_aux_2
-    (74) condition_aux_2 -> . LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux
-
-    LPAREN          shift and go to state 110
-
-    condition_aux                  shift and go to state 291
-    condition_aux_2                shift and go to state 111
-
-state 287
-
-    (75) condition_aux_3 -> ELSE . LBRACE statutes_aux RBRACE
+    (86) for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO . LBRACE statutes_aux RBRACE
 
     LBRACE          shift and go to state 292
 
 
+state 287
+
+    (48) body -> LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE .
+
+    FUNCT           reduce using rule 48 (body -> LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE .)
+    RBRACE          reduce using rule 48 (body -> LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE .)
+    INIT            reduce using rule 48 (body -> LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE .)
+
+
 state 288
+
+    (72) condition_aux -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 . end_if
+    (135) end_if -> .
+
+    CALL            reduce using rule 135 (end_if -> .)
+    ID              reduce using rule 135 (end_if -> .)
+    READ            reduce using rule 135 (end_if -> .)
+    WRITE           reduce using rule 135 (end_if -> .)
+    IF              reduce using rule 135 (end_if -> .)
+    WHILE           reduce using rule 135 (end_if -> .)
+    FROM            reduce using rule 135 (end_if -> .)
+    RBRACE          reduce using rule 135 (end_if -> .)
+    RETURN          reduce using rule 135 (end_if -> .)
+
+    end_if                         shift and go to state 293
+
+state 289
+
+    (74) condition_aux_2 -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF . condition_aux
+    (72) condition_aux -> . LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if
+    (73) condition_aux -> . condition_aux_2
+    (74) condition_aux_2 -> . LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux
+
+    LPAREN          shift and go to state 110
+
+    condition_aux                  shift and go to state 294
+    condition_aux_2                shift and go to state 111
+
+state 290
+
+    (75) condition_aux_3 -> ELSE . else_condition LBRACE statutes_aux RBRACE
+    (134) else_condition -> .
+
+    LBRACE          reduce using rule 134 (else_condition -> .)
+
+    else_condition                 shift and go to state 295
+
+state 291
 
     (76) condition_aux_3 -> empty .
 
@@ -4533,75 +4569,7 @@ state 288
     RETURN          reduce using rule 76 (condition_aux_3 -> empty .)
 
 
-state 289
-
-    (86) for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO . LBRACE statutes_aux RBRACE
-
-    LBRACE          shift and go to state 293
-
-
-state 290
-
-    (48) body -> LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE .
-
-    FUNCT           reduce using rule 48 (body -> LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE .)
-    RBRACE          reduce using rule 48 (body -> LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE .)
-    INIT            reduce using rule 48 (body -> LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE .)
-
-
-state 291
-
-    (74) condition_aux_2 -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux .
-
-    CALL            reduce using rule 74 (condition_aux_2 -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux .)
-    ID              reduce using rule 74 (condition_aux_2 -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux .)
-    READ            reduce using rule 74 (condition_aux_2 -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux .)
-    WRITE           reduce using rule 74 (condition_aux_2 -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux .)
-    IF              reduce using rule 74 (condition_aux_2 -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux .)
-    WHILE           reduce using rule 74 (condition_aux_2 -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux .)
-    FROM            reduce using rule 74 (condition_aux_2 -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux .)
-    RBRACE          reduce using rule 74 (condition_aux_2 -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux .)
-    RETURN          reduce using rule 74 (condition_aux_2 -> LPAREN exp RPAREN THEN LBRACE statutes_aux RBRACE ELIF condition_aux .)
-
-
 state 292
-
-    (75) condition_aux_3 -> ELSE LBRACE . statutes_aux RBRACE
-    (56) statutes_aux -> . statutes
-    (57) statutes_aux -> . statutes statutes_aux
-    (49) statutes -> . assignation SEMICOLON
-    (50) statutes -> . CALL call SEMICOLON
-    (51) statutes -> . read
-    (52) statutes -> . write
-    (53) statutes -> . condition
-    (54) statutes -> . while
-    (55) statutes -> . for
-    (58) assignation -> . ID push_var EQUAL push_op exp pop_op_assign
-    (59) assignation -> . ID var_aux push_var EQUAL push_op exp pop_op_assign
-    (77) read -> . READ LPAREN read_aux RPAREN SEMICOLON generate_read
-    (80) write -> . WRITE LPAREN write_aux RPAREN SEMICOLON generate_write
-    (71) condition -> . IF condition_aux
-    (85) while -> . WHILE LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
-    (86) for -> . FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
-
-    CALL            shift and go to state 75
-    ID              shift and go to state 81
-    READ            shift and go to state 82
-    WRITE           shift and go to state 83
-    IF              shift and go to state 84
-    WHILE           shift and go to state 85
-    FROM            shift and go to state 86
-
-    statutes_aux                   shift and go to state 294
-    statutes                       shift and go to state 73
-    assignation                    shift and go to state 74
-    read                           shift and go to state 76
-    write                          shift and go to state 77
-    condition                      shift and go to state 78
-    while                          shift and go to state 79
-    for                            shift and go to state 80
-
-state 293
 
     (86) for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE . statutes_aux RBRACE
     (56) statutes_aux -> . statutes
@@ -4630,7 +4598,7 @@ state 293
     FROM            shift and go to state 86
 
     assignation                    shift and go to state 74
-    statutes_aux                   shift and go to state 295
+    statutes_aux                   shift and go to state 296
     statutes                       shift and go to state 73
     read                           shift and go to state 76
     write                          shift and go to state 77
@@ -4638,36 +4606,88 @@ state 293
     while                          shift and go to state 79
     for                            shift and go to state 80
 
+state 293
+
+    (72) condition_aux -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if .
+
+    CALL            reduce using rule 72 (condition_aux -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if .)
+    ID              reduce using rule 72 (condition_aux -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if .)
+    READ            reduce using rule 72 (condition_aux -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if .)
+    WRITE           reduce using rule 72 (condition_aux -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if .)
+    IF              reduce using rule 72 (condition_aux -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if .)
+    WHILE           reduce using rule 72 (condition_aux -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if .)
+    FROM            reduce using rule 72 (condition_aux -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if .)
+    RBRACE          reduce using rule 72 (condition_aux -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if .)
+    RETURN          reduce using rule 72 (condition_aux -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if .)
+
+
 state 294
 
-    (75) condition_aux_3 -> ELSE LBRACE statutes_aux . RBRACE
+    (74) condition_aux_2 -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux .
 
-    RBRACE          shift and go to state 296
+    CALL            reduce using rule 74 (condition_aux_2 -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux .)
+    ID              reduce using rule 74 (condition_aux_2 -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux .)
+    READ            reduce using rule 74 (condition_aux_2 -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux .)
+    WRITE           reduce using rule 74 (condition_aux_2 -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux .)
+    IF              reduce using rule 74 (condition_aux_2 -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux .)
+    WHILE           reduce using rule 74 (condition_aux_2 -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux .)
+    FROM            reduce using rule 74 (condition_aux_2 -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux .)
+    RBRACE          reduce using rule 74 (condition_aux_2 -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux .)
+    RETURN          reduce using rule 74 (condition_aux_2 -> LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux .)
 
 
 state 295
 
-    (86) for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux . RBRACE
+    (75) condition_aux_3 -> ELSE else_condition . LBRACE statutes_aux RBRACE
 
-    RBRACE          shift and go to state 297
+    LBRACE          shift and go to state 297
 
 
 state 296
 
-    (75) condition_aux_3 -> ELSE LBRACE statutes_aux RBRACE .
+    (86) for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux . RBRACE
 
-    CALL            reduce using rule 75 (condition_aux_3 -> ELSE LBRACE statutes_aux RBRACE .)
-    ID              reduce using rule 75 (condition_aux_3 -> ELSE LBRACE statutes_aux RBRACE .)
-    READ            reduce using rule 75 (condition_aux_3 -> ELSE LBRACE statutes_aux RBRACE .)
-    WRITE           reduce using rule 75 (condition_aux_3 -> ELSE LBRACE statutes_aux RBRACE .)
-    IF              reduce using rule 75 (condition_aux_3 -> ELSE LBRACE statutes_aux RBRACE .)
-    WHILE           reduce using rule 75 (condition_aux_3 -> ELSE LBRACE statutes_aux RBRACE .)
-    FROM            reduce using rule 75 (condition_aux_3 -> ELSE LBRACE statutes_aux RBRACE .)
-    RBRACE          reduce using rule 75 (condition_aux_3 -> ELSE LBRACE statutes_aux RBRACE .)
-    RETURN          reduce using rule 75 (condition_aux_3 -> ELSE LBRACE statutes_aux RBRACE .)
+    RBRACE          shift and go to state 298
 
 
 state 297
+
+    (75) condition_aux_3 -> ELSE else_condition LBRACE . statutes_aux RBRACE
+    (56) statutes_aux -> . statutes
+    (57) statutes_aux -> . statutes statutes_aux
+    (49) statutes -> . assignation SEMICOLON
+    (50) statutes -> . CALL call SEMICOLON
+    (51) statutes -> . read
+    (52) statutes -> . write
+    (53) statutes -> . condition
+    (54) statutes -> . while
+    (55) statutes -> . for
+    (58) assignation -> . ID push_var EQUAL push_op exp pop_op_assign
+    (59) assignation -> . ID var_aux push_var EQUAL push_op exp pop_op_assign
+    (77) read -> . READ LPAREN read_aux RPAREN SEMICOLON generate_read
+    (80) write -> . WRITE LPAREN write_aux RPAREN SEMICOLON generate_write
+    (71) condition -> . IF condition_aux
+    (85) while -> . WHILE LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+    (86) for -> . FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE
+
+    CALL            shift and go to state 75
+    ID              shift and go to state 81
+    READ            shift and go to state 82
+    WRITE           shift and go to state 83
+    IF              shift and go to state 84
+    WHILE           shift and go to state 85
+    FROM            shift and go to state 86
+
+    statutes_aux                   shift and go to state 299
+    statutes                       shift and go to state 73
+    assignation                    shift and go to state 74
+    read                           shift and go to state 76
+    write                          shift and go to state 77
+    condition                      shift and go to state 78
+    while                          shift and go to state 79
+    for                            shift and go to state 80
+
+state 298
 
     (86) for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .
 
@@ -4680,4 +4700,26 @@ state 297
     FROM            reduce using rule 86 (for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
     RBRACE          reduce using rule 86 (for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
     RETURN          reduce using rule 86 (for -> FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE .)
+
+
+state 299
+
+    (75) condition_aux_3 -> ELSE else_condition LBRACE statutes_aux . RBRACE
+
+    RBRACE          shift and go to state 300
+
+
+state 300
+
+    (75) condition_aux_3 -> ELSE else_condition LBRACE statutes_aux RBRACE .
+
+    CALL            reduce using rule 75 (condition_aux_3 -> ELSE else_condition LBRACE statutes_aux RBRACE .)
+    ID              reduce using rule 75 (condition_aux_3 -> ELSE else_condition LBRACE statutes_aux RBRACE .)
+    READ            reduce using rule 75 (condition_aux_3 -> ELSE else_condition LBRACE statutes_aux RBRACE .)
+    WRITE           reduce using rule 75 (condition_aux_3 -> ELSE else_condition LBRACE statutes_aux RBRACE .)
+    IF              reduce using rule 75 (condition_aux_3 -> ELSE else_condition LBRACE statutes_aux RBRACE .)
+    WHILE           reduce using rule 75 (condition_aux_3 -> ELSE else_condition LBRACE statutes_aux RBRACE .)
+    FROM            reduce using rule 75 (condition_aux_3 -> ELSE else_condition LBRACE statutes_aux RBRACE .)
+    RBRACE          reduce using rule 75 (condition_aux_3 -> ELSE else_condition LBRACE statutes_aux RBRACE .)
+    RETURN          reduce using rule 75 (condition_aux_3 -> ELSE else_condition LBRACE statutes_aux RBRACE .)
 
