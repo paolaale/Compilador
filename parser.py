@@ -193,7 +193,7 @@ def p_write_aux(p):
     p[0] = 'program'
 
 def p_while(p):
-    'while : WHILE LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE'
+    'while : WHILE push_while_jump LPAREN exp RPAREN generate_while_quad DO LBRACE statutes_aux RBRACE define_while_jumps'
     p[0] = 'program'
 
 def p_for(p):
@@ -348,6 +348,8 @@ def p_generate_read(self):
     'generate_read :'
     sF.generateRead()
 
+# Functions for NO-LINEAL statements
+
 def p_if_condition(self):
     'if_condition :'
     sF.ifCondition()
@@ -367,6 +369,18 @@ def p_else_condition(self):
 def p_end_if(self):
     'end_if :'
     sF.endIF()
+
+def p_push_while_jump(self):
+    'push_while_jump :'
+    sF.pushWhileJump()
+
+def p_generate_while_quad(self):
+    'generate_while_quad :'
+    sF.generateWhileQuad()
+
+def p_define_while_jumps(self):
+    'define_while_jumps :'
+    sF.defineWhileJumps()
 
 if __name__ == '__main__':
     

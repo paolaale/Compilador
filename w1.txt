@@ -1,19 +1,17 @@
-program s10 :
+program w1 :
 
     main {
 
         init {
             var int a, b, c, d;
-            char x;
             
-            c = b / c;
-
-            write("hola", a + b);
-            write("adios");
-            write(b * c);
+            while (a > b * c) do {
+                a = a - d;
+                write(a);
+            }
             
 
-            b = d * a;
+            b = c + a;
         }
     }
 end

@@ -393,6 +393,35 @@ def endIF():
 # --- END IF --- #
 
 # --- WHILE --- #
+def pushWhileJump():
+    global quadCounter, jumpsStack
+    jumpsStack.append(quadCounter)
+
+def generateWhileQuad():
+    global quadCounter, typesStack, quadList, operandsStack, jumpsStack
+
+    resultType = typesStack.pop()
+    print("TYPE WHILE: ", resultType);
+
+    if resultType != "bool":
+        raise Exception("Type mismatch. Expecting bool")
+    else:
+        expResult = operandsStack.pop()
+        quadCounter += 1
+        quadList.append(Quadruple("GOTOF", expResult, None, None))
+        jumpsStack.append(quadCounter - 1)
+
+def defineWhileJumps():
+    global quadCounter, typesStack, quadList, operandsStack, jumpsStack
+
+    endWhile = jumpsStack.pop()
+    whileReturnQuad = jumpsStack.pop()
+    quadCounter += 1
+    quadList.append(Quadruple("GOTO", None, None, whileReturnQuad))
+    quadList[endWhile].tResult = quadCounter
+
+    
+
 
 # --- END WHILE --- #
 
