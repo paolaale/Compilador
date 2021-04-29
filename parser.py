@@ -159,20 +159,16 @@ def p_call_aux(p):
     p[0] = 'program'
 
 def p_condition(p):
-    'condition : IF condition_aux'
+    'condition : IF LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_elif condition_aux_else end_if'
     p[0] = 'program'
 
-def p_condition_aux(p):
-    '''condition_aux : LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if
-                    | condition_aux_2'''
+def p_condition_aux_elif(p): 
+    '''condition_aux_elif : ELIF LPAREN exp RPAREN condition_type THEN elif_condition LBRACE statutes_aux RBRACE condition_aux_elif
+                        | empty'''
     p[0] = 'program'
 
-def p_condition_aux_2(p): 
-    '''condition_aux_2 : LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux'''
-    p[0] = 'program'
-
-def p_condition_aux_3(p):
-    '''condition_aux_3 : ELSE else_condition LBRACE statutes_aux RBRACE
+def p_condition_aux_else(p):
+    '''condition_aux_else : ELSE else_condition LBRACE statutes_aux RBRACE
                         | empty'''
     p[0] = 'program'
 
@@ -355,6 +351,10 @@ def p_generate_read(self):
 def p_condition_type(self):
     'condition_type :'
     sF.checkConditionType()
+
+def p_elif_condition(self):
+    'elif_condition :'
+    sF.elifCondition()
 
 def p_else_condition(self):
     'else_condition :'

@@ -228,7 +228,7 @@ def pop_op_relop():
         raise Exception("Type mismatch")
 
 def pop_paren():
-    global operatorsStack, operandsStack, quadList, countOfTemps
+    global operatorsStack
     operatorsStack.pop()
 
 # function to pop from the stack "+"" "-""
@@ -304,7 +304,6 @@ def pop_op_assign():
     if assignation_type == left_op_type:
         quadList.append(Quadruple(operator, left_op, None, var_to_assign))
         quadCounter += 1
-        #printQuadruples()
     else:
         raise Exception("Cannot assign variable of type %s with %s" % (assignation_type, left_op_type))
 
@@ -319,11 +318,9 @@ def generateWrite():
 
     typesStack.pop()
 
-    #print("----------WRITE-----------")
     quadList.append(Quadruple("WRITE", None, None, varToWrite))
     quadCounter += 1
-    #printQuadruples()
-    #quadList = deque()
+    
 
 def saveString(s):
     global stringToWrite
@@ -334,11 +331,9 @@ def generateRead():
     global operandsStack, quadList, quadCounter
 
     varToRead = operandsStack.pop()
-    #print("----------READ-----------")
+    
     quadList.append(Quadruple("READ", None, None, varToRead))
     quadCounter += 1
-    #printQuadruples()
-    #quadList = deque()
 
 # ---------------------- END LINEAR STATEMENTS (ASSIGN, WRITE, READ) ---------------------- #
 
@@ -356,8 +351,17 @@ def checkConditionType():
     else:
         left_op = operandsStack.pop()
         quadList.append(Quadruple("GOTOF", left_op, None, None))
-        #quadCounter += 1
         jumpsStack.append(quadCounter-1)
+        quadCounter += 1
+
+def elifCondition():
+    global quadCounter, jumpsStack, quadList
+
+    quadElif = jumpsStack.pop()
+    quadList.append(Quadruple("GOTOF", None, None, None))
+    jumpsStack.append(quadCounter-1)
+    quadCounter += 1
+    quadList[quadElif].tResult = quadCounter-1
 
 def elseCondition():
     global quadCounter, jumpsStack, quadList
@@ -365,13 +369,14 @@ def elseCondition():
     quadElse = jumpsStack.pop()
     quadList.append(Quadruple("GOTO", None, None, None))
     jumpsStack.append(quadCounter-1)
-    quadList[quadElse].tResult = quadCounter
+    quadCounter += 1
+    quadList[quadElse].tResult = quadCounter-1
 
 def endIF():
     global quadCounter, jumpsStack, quadList
     
     quadEnd = jumpsStack.pop()
-    quadList[quadEnd].tResult = quadCounter
+    quadList[quadEnd].tResult = quadCounter-1
 
 # --- END IF --- #
 
@@ -384,7 +389,6 @@ def endIF():
 def printQuadruples():
     global quadList, quadCounter
     i = 0
-    print(quadCounter)
     for quad in quadList:
         print("Quad ", i, " symbol: ", quad.operation, " left: ", quad.left_op, " right: ", quad.right_op, " temp: ", quad.tResult)
         i += 1
