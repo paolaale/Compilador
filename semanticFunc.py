@@ -25,7 +25,7 @@ currentClass = ""
 currentFunct = ""
 lastVarType = ""
 
-stringToWrite = ""
+stringToWrite = None
 quadCounter = 1
 
 # variable de prueba que se borrará después
@@ -308,15 +308,14 @@ def pop_op_assign():
         raise Exception("Cannot assign variable of type %s with %s" % (assignation_type, left_op_type))
 
 def generateWrite():
-    global operandsStack, quadList, stringToWrite, quadCounter
+    global operandsStack, quadList, stringToWrite, quadCounter, typeStack
 
-    if (stringToWrite != ""):
+    if (stringToWrite != None):
         varToWrite = stringToWrite
-        stringToWrite = ""
+        stringToWrite = None
     else:
         varToWrite = operandsStack.pop()
-
-    typesStack.pop()
+        typesStack.pop()
 
     quadList.append(Quadruple("WRITE", None, None, varToWrite))
     quadCounter += 1
@@ -328,9 +327,10 @@ def saveString(s):
     stringToWrite = s
 
 def generateRead():
-    global operandsStack, quadList, quadCounter
+    global operandsStack, quadList, quadCounter, typesStack
 
     varToRead = operandsStack.pop()
+    typesStack.pop()
     
     quadList.append(Quadruple("READ", None, None, varToRead))
     quadCounter += 1
@@ -342,7 +342,7 @@ def generateRead():
 # --- IF --- #
 
 def checkConditionType():
-    global quadCounter, jumpsStack
+    global quadCounter, jumpsStack, typesStack
 
     exp_type = typesStack.pop()
 
@@ -355,13 +355,19 @@ def checkConditionType():
         quadCounter += 1
 
 def elifCondition():
-    global quadCounter, jumpsStack, quadList
+    global quadCounter, jumpsStack, quadList, typesStack
 
-    quadElif = jumpsStack.pop()
-    quadList.append(Quadruple("GOTOF", None, None, None))
-    jumpsStack.append(quadCounter-1)
-    quadCounter += 1
-    quadList[quadElif].tResult = quadCounter-1
+    """ exp_type = typesStack.pop()
+
+    if (exp_type != "bool"):
+        raise Exception("Type mismatch")
+    else:
+        left_op = operandsStack.pop()
+        quadList.append(Quadruple("GOTOF", left_op, None, None))
+        quadElif = jumpsStack.pop()
+        jumpsStack.append(quadCounter-1)
+        quadList[quadElif].tResult = quadCounter-1
+        quadCounter += 1 """
 
 def elseCondition():
     global quadCounter, jumpsStack, quadList
@@ -369,8 +375,8 @@ def elseCondition():
     quadElse = jumpsStack.pop()
     quadList.append(Quadruple("GOTO", None, None, None))
     jumpsStack.append(quadCounter-1)
+    quadList[quadElse].tResult = quadCounter
     quadCounter += 1
-    quadList[quadElse].tResult = quadCounter-1
 
 def endIF():
     global quadCounter, jumpsStack, quadList
