@@ -159,20 +159,16 @@ def p_call_aux(p):
     p[0] = 'program'
 
 def p_condition(p):
-    'condition : IF condition_aux'
+    'condition : IF LPAREN exp RPAREN if_condition THEN LBRACE statutes_aux RBRACE condition_aux_elif condition_aux_else end_if'
     p[0] = 'program'
 
-def p_condition_aux(p):
-    '''condition_aux : LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE condition_aux_3 end_if
-                    | condition_aux_2'''
+def p_condition_aux_elif(p): 
+    '''condition_aux_elif : ELIF LPAREN elif_expression exp RPAREN elif_condition THEN LBRACE statutes_aux RBRACE condition_aux_elif
+                        | empty'''
     p[0] = 'program'
 
-def p_condition_aux_2(p): 
-    '''condition_aux_2 : LPAREN exp RPAREN condition_type THEN LBRACE statutes_aux RBRACE ELIF condition_aux'''
-    p[0] = 'program'
-
-def p_condition_aux_3(p):
-    '''condition_aux_3 : ELSE else_condition LBRACE statutes_aux RBRACE
+def p_condition_aux_else(p):
+    '''condition_aux_else : ELSE else_condition LBRACE statutes_aux RBRACE
                         | empty'''
     p[0] = 'program'
 
@@ -352,9 +348,17 @@ def p_generate_read(self):
     'generate_read :'
     sF.generateRead()
 
-def p_condition_type(self):
-    'condition_type :'
-    sF.checkConditionType()
+def p_if_condition(self):
+    'if_condition :'
+    sF.ifCondition()
+
+def p_elif_condition(self):
+    'elif_condition :'
+    sF.elifCondition()
+
+def p_elif_expression(self):
+    'elif_expression :'
+    sF.elifExpression()
 
 def p_else_condition(self):
     'else_condition :'
