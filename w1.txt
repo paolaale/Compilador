@@ -1,0 +1,19 @@
+program s10 :
+
+    main {
+
+        init {
+            var int a, b, c, d;
+            char x;
+            
+            c = b / c;
+
+            write("hola", a + b);
+            write("adios");
+            write(b * c);
+            
+
+            b = d * a;
+        }
+    }
+end
