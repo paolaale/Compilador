@@ -29,3 +29,6 @@ Alan Zavala Lévaro A01338448
 
 ## Avance 4 (30 abril)
 * Se crean los cuadruplos de asignaciones, write y read
+* Se crean los cuadruplos de ifs y whiles
+* Pruebas funcionales
+* Falta verificar combinacion de estatus no lineas y cuadruplos de for

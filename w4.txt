@@ -1,0 +1,28 @@
+program w4 :
+
+    main {
+
+        init {
+            var int a, b, c, d;
+            
+            while (a > b * c) do {
+                a = a - d;
+                write(a);
+
+                while (9 > d) do {
+                    read(c);
+                }  
+            }
+
+            while (c + a < 5 + 6) do {
+                read(c);
+
+                while (9 > d) do {
+                    read(c);
+                } 
+            }    
+
+            b = c + a;
+        }
+    }
+end

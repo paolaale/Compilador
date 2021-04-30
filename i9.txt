@@ -1,0 +1,23 @@
+program i9 :
+
+    main {
+
+        init {
+           
+           var int a,b,c,d;
+
+            if (a + b > c ) then {
+                a = b + d;
+
+                if ( b > d) then {
+                    a = b + d;
+                }
+                else {
+                    b = 8;
+                }
+            }
+
+           b = a * c + d;
+        }
+    }
+end

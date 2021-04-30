@@ -1,0 +1,49 @@
+program i12 :
+
+    main {
+
+        init {
+           
+           var int a,b,c,d;
+
+            if (a + b > c) then {
+
+                if (a > b) then {
+                    write(a);
+                }
+                elif (c > d) then {
+                    write(a);
+                }
+                else {
+                    b = 8;
+                }
+            } 
+            elif (c > d) {
+                if (b > d) then {
+                    write(a);
+                }
+                elif (d > b) then {
+                    d = 5;
+                }
+                else {
+                    b = 8;
+                }
+            }
+            else {
+
+                if (b > d) then {
+                    write(a);
+                }
+                elif (a > d) then {
+                    d = 5;
+                }
+                else {
+                    b = 8;
+                }
+                
+            }
+
+           b = a * c + d;
+        }
+    }
+end

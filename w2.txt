@@ -1,4 +1,4 @@
-program w1 :
+program w2 :
 
     main {
 
@@ -8,8 +8,13 @@ program w1 :
             while (a > b * c) do {
                 a = a - d;
                 write(a);
+
+                while (b < 7) do {
+                    read(c);
+                }
             }
             
+
             b = c + a;
         }
     }

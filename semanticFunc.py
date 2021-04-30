@@ -19,6 +19,7 @@ typesStack = deque()
 #Quadruples
 quadList = []
 jumpsStack = deque()
+gotoStack = deque()
 
 direcClasses = {} # dictionary of classes
 currentClass = ""
@@ -27,7 +28,7 @@ lastVarType = ""
 
 stringToWrite = None
 quadCounter = 0
-quadElifNumber = None
+quadElifExpression = None
 
 # variable de prueba que se borrará después
 countOfTemps = 1
@@ -356,12 +357,15 @@ def ifCondition():
         jumpsStack.append(quadCounter-1)
 
 def elifExpression():
-    global quadElifNumber
+    global quadElifExpression, quadCounter
 
-    quadElifNumber = quadCounter
+    quadCounter += 1 
+    quadList.append(Quadruple("GOTO", None, None, None))
+    quadElifExpression = quadCounter
+    gotoStack.append(quadCounter-1)
 
 def elifCondition():
-    global quadCounter, jumpsStack, quadList, typesStack, quadElifNumber
+    global quadCounter, jumpsStack, quadList, typesStack, quadElifExpression
 
     exp_type = typesStack.pop()
 
@@ -373,7 +377,7 @@ def elifCondition():
         quadList.append(Quadruple("GOTOF", left_op, None, None))
         quadElif = jumpsStack.pop()
         jumpsStack.append(quadCounter-1)
-        quadList[quadElif].tResult = quadElifNumber
+        quadList[quadElif].tResult = quadElifExpression
 
 def elseCondition():
     global quadCounter, jumpsStack, quadList
@@ -385,10 +389,14 @@ def elseCondition():
     quadList[quadElse].tResult = quadCounter
 
 def endIF():
-    global quadCounter, jumpsStack, quadList
+    global quadCounter, jumpsStack, quadList, gotoStack
     
     quadEnd = jumpsStack.pop()
     quadList[quadEnd].tResult = quadCounter
+
+    while gotoStack:
+        quadEnd = gotoStack.pop()
+        quadList[quadEnd].tResult = quadCounter
 
 # --- END IF --- #
 
@@ -401,7 +409,7 @@ def generateWhileQuad():
     global quadCounter, typesStack, quadList, operandsStack, jumpsStack
 
     resultType = typesStack.pop()
-    print("TYPE WHILE: ", resultType);
+    print("TYPE WHILE: ", resultType)
 
     if resultType != "bool":
         raise Exception("Type mismatch. Expecting bool")
@@ -419,9 +427,6 @@ def defineWhileJumps():
     quadCounter += 1
     quadList.append(Quadruple("GOTO", None, None, whileReturnQuad))
     quadList[endWhile].tResult = quadCounter
-
-    
-
 
 # --- END WHILE --- #
 

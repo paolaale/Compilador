@@ -1,0 +1,20 @@
+program i8 :
+
+    main {
+
+        init {
+           
+           var int a,b,c,d;
+
+            if (a + b > c ) then {
+                a = b + d;
+
+                if ( b > d) then {
+                    a = b + d;
+                }
+            }
+
+           b = a * c + d;
+        }
+    }
+end
