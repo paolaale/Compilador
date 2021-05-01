@@ -11,66 +11,72 @@ from Vars import Vars
 from Quadruple import Quadruple
 from collections import deque
 
-# stacks to solve expressions
-operatorsStack = deque()
-operandsStack = deque()
-typesStack = deque()
+# Dictionaries of classes 
+direcClasses = {} 
 
-#Quadruples
-quadList = []
-jumpsStack = deque()
-gotoStack = deque()
-
-direcClasses = {} # dictionary of classes
+# Helpers to save classes, functions and vars names
 currentClass = ""
 currentFunct = ""
 lastVarType = ""
 
+# Stacks to solve expressions
+operatorsStack = deque()
+operandsStack = deque()
+typesStack = deque()
+
+# List of quadruples
+quadList = []
+
+# Stacks for jumps in the quadruples
+jumpsStack = deque()
+gotoStack = deque()
+
+# Helpers to fill quadruples
 stringToWrite = None
 quadCounter = 0
 quadElifExpression = None
 
-# variable de prueba que se borrará después
+#!!!! variable de prueba que se borrará después
 countOfTemps = 1
 
-# Match type structure where the key is a hashcode of the types
-# and the values is an array where index 0 = OA, index 1 = OR, 
-# index 2 = OL
+# Match type structure where the key is a hashcode of the types 
+# and the values is an array where index 0 = OA, index 1 = OR, index 2 = OL
 typeMatching = {
     'iinntt': ["int", "bool", "error"],
     'afilnott': ["float", "bool", "error"],
     'achinrt': ["error", "error", "error"],
     'aafflloott': ["float", "bool", "error"],
     'aacfhlort': ["error", "error", "error"],
-    'aacchhrr': ["error", "error", "error"], #probablemente consideremos relop bool
+    'aacchhrr': ["error", "error", "error"], #!!!! probablemente consideremos relop bool
     'bblloooo': ["error", "error", "bool"]
 }
 
+# Dictionaries to determine each operator
 oA = {"+", "-", "*", "/"}
 oR = {"<", ">", "<=", ">=", "==", "!="}
 oL = {"and", "or"}
 
 # ---------------------- START ADDING ELEMENTS (FUNCT, CLASSES, VARS) ---------------------- #
 
-# function that recieves the name of class, 
+# Function that recieves the name of class, 
 # a boolean that represents if is inherit 
 # and the name of the parent if is inherit, otherwise recieve None
 def addClass(cName, cInherits, cParentName):
     global direcClasses, currentClass, currentFunct
     currentClass = cName 
     currentFunct = ""
-    # add to the dictionary of classes the class
+    # Add to the dictionary of classes the class
     direcClasses[cName] = Classes(cInherits, cParentName) 
 
-# function that recieves the name of the function 
+# Function that recieves the name of the function 
 # and the type of return
 def addFunction(fName, fType):
     global currentClass, currentFunct
     currentFunct = fName
-    # add to dictionary of classes, in the current class the function
+    # Add to dictionary of classes, in the current class the function
     direcClasses[currentClass].c_funcs[fName] = Functions(fType) 
 
-# fucntion that recieves the name and type of the variable
+# Function that recieves the name and type of the variable
 # size 1 that represents number of rows (array)
 # size 2 that represents number of columns (matrix)
 def addVars(vName, vType, vSize1, vSize2):
@@ -81,20 +87,24 @@ def addVars(vName, vType, vSize1, vSize2):
         lastVarType = vType
 
     if currentFunct != "":
-        # add to dictionary of classes, in the current class and current function the variables
+        # Add to dictionary of classes, in the current class and current function the variables
         direcClasses[currentClass].c_funcs[currentFunct].f_vars[vName] = Vars(vType, vSize1, vSize2)
     else:
-        # add to dictionary of classes, in the current class and global variables "fucntion" the variables
+        # Add to dictionary of classes, in the current class and global variables "function" the variables
         direcClasses[currentClass].c_funcs["vG"].f_vars[vName] = Vars(vType, vSize1, vSize2)
 
 # ---------------------- END ADDING ELEMENTS (FUNCT, CLASSES, VARS) ---------------------- #
     
 # ---------------------- START CHECKING MATCH TYPES ---------------------- #
 
-# function to return the key for the typeMatching dictionaru
+# Function that recieves two strings that represents the operands type
+# and returns the key for the typeMatching dictionary
 def matchTypeHashCode(leftOpType, rightOpType):
     return ''.join(sorted(leftOpType + rightOpType))
 
+# Function that recieves the symbol, 
+# looks for them in each operator dictionary
+# and returns if symbol is arithmetic, logical or relational
 def typeOfMatch(opSymbol):
     global oA, oR, oL 
 
@@ -105,6 +115,9 @@ def typeOfMatch(opSymbol):
     else:
         return 2
 
+# Function that recieves the operands and operator
+# uses the functions established before and 
+# returns the type of match
 def isAMatch(leftOpType, opSymbol, rightOpType):
 
     key = matchTypeHashCode(leftOpType, rightOpType)
@@ -117,7 +130,8 @@ def isAMatch(leftOpType, opSymbol, rightOpType):
 
 # ---------------------- START CHECKING VARIABLES EXIST ---------------------- #
 
-# Validation method for floats
+# Function that recieves a value 
+# and validates if is a float
 def isfloat(value):
   try:
     float(value)
@@ -125,28 +139,9 @@ def isfloat(value):
   except ValueError:
     return False
 
-# verify that a variable exists
-def getVarType(id):
-    global currentFunct, currentClass
-   
-    if id.isdigit():
-        return "int"
-    elif isfloat(id):
-        return "float"
-        
-    #aqui probablemente agregar uno para los chars, para que jale la asignacion a = 'b'
-
-    else:   
-        scope = existsVar(id)
-
-        if scope == None:
-            raise Exception("Variable: ", id, " doesn´t exist")
-            return "no existe"
-        else:
-            #aquí programar para validar que las variables usadas en expresiones sí estén inicializadas
-            return direcClasses[currentClass].c_funcs[scope].f_vars[id].v_type
-        
-
+# Function that recieves an id and looks for them 
+# in the currents function or in the globals
+# returns the function where is found or None
 def existsVar(id):
     global currentFunct, currentClass
 
@@ -158,6 +153,26 @@ def existsVar(id):
         return "vG"
     else:
         return None
+
+# Function that recieves an id and verify that the variable exists 
+# if found returns the variable type, if not returns an exception
+def getVarType(id):
+    global currentFunct, currentClass
+   
+    if id.isdigit():
+        return "int"
+    elif isfloat(id):
+        return "float"     
+    #!!!! aqui probablemente agregar uno para los chars, para que jale la asignacion a = 'b'
+    else:   
+        scope = existsVar(id) # call to previous function
+
+        if scope == None:
+            raise Exception("Variable: ", id, " doesn´t exist")
+            return "no existe"
+        else:
+            #!!! aquí programar para validar que las variables usadas en expresiones sí estén inicializadas
+            return direcClasses[currentClass].c_funcs[scope].f_vars[id].v_type
 
 # ---------------------- END CHECKING VARIABLES EXIST ---------------------- #
 
@@ -173,14 +188,14 @@ def pushOperator(op):
     global operatorsStack, typesStack, quadList
     operatorsStack.append(op)
 
-    # if op == "=":
-    #     print("----------ASSIGNATION-----------")
-    #     quadList = deque()
+    """if op == "=":
+        print("----------ASSIGNATION-----------")
+        quadList = deque() """
 
 def pop_op_lop():
     global operatorsStack, operandsStack, quadList, countOfTemps, quadCounter
 
-    # first we check that the stack isn´t empty
+    # First we check that the stack isn´t empty
     if operatorsStack and (operatorsStack[-1] == "or" or operatorsStack[-1] == "and"):
 
         right_op = operandsStack.pop()
@@ -204,7 +219,7 @@ def pop_op_lop():
         else:
             raise Exception("Type mismatch")
 
-# function to pop from the stack "+"" "-""
+# Function to pop from the stack "+"" "-""
 def pop_op_relop():
     global operatorsStack, operandsStack, quadList, countOfTemps, quadCounter
     
@@ -233,11 +248,11 @@ def pop_paren():
     global operatorsStack
     operatorsStack.pop()
 
-# function to pop from the stack "+"" "-""
+# Function to pop from the stack "+"" "-""
 def pop_op_art_n2():
     global operatorsStack, operandsStack, quadList, countOfTemps, quadCounter
 
-    # first we check that the stack isn´t empty
+    # First we check that the stack isn´t empty
     if operatorsStack and (operatorsStack[-1] == "+" or operatorsStack[-1] == "-"):
 
         right_op = operandsStack.pop()
@@ -261,11 +276,11 @@ def pop_op_art_n2():
         else:
             raise Exception("Type mismatch")
 
-# function to pop from the stack "*"" "/""
+# Function to pop from the stack "*"" "/""
 def pop_op_art_n1():
     global operatorsStack, operandsStack, quadList, countOfTemps, quadCounter
 
-    # first we check that the stack isn´t empty
+    # First we check that the stack isn´t empty
     if operatorsStack and (operatorsStack[-1] == "*" or operatorsStack[-1] == "/"):
 
         right_op = operandsStack.pop()
@@ -309,25 +324,29 @@ def pop_op_assign():
     else:
         raise Exception("Cannot assign variable of type %s with %s" % (assignation_type, left_op_type))
 
+# Function that saves the string to write
+def saveString(s):
+    global stringToWrite
+
+    stringToWrite = s
+
+# Function that generates the write quad
 def generateWrite():
     global operandsStack, quadList, stringToWrite, quadCounter, typeStack
 
+    # If there is a string to write gets it from helper 
     if (stringToWrite != None):
         varToWrite = stringToWrite
         stringToWrite = None
+    # Or if it is an expression gets it from the operands stack
     else:
         varToWrite = operandsStack.pop()
         typesStack.pop()
 
     quadCounter += 1
     quadList.append(Quadruple("WRITE", None, None, varToWrite))
-    
 
-def saveString(s):
-    global stringToWrite
-
-    stringToWrite = s
-
+# Function that generates the read quad
 def generateRead():
     global operandsStack, quadList, quadCounter, typesStack
 
@@ -343,6 +362,8 @@ def generateRead():
 
 # --- IF --- #
 
+# Function that generates the if GOTOF quad 
+# only if the there is a match type otherwise raise exception 
 def ifCondition():
     global quadCounter, jumpsStack, typesStack
 
@@ -356,6 +377,8 @@ def ifCondition():
         quadList.append(Quadruple("GOTOF", left_op, None, None))
         jumpsStack.append(quadCounter-1)
 
+# Function that generates the if GOTO quad 
+# only if there is an elif condition 
 def elifExpression():
     global quadElifExpression, quadCounter
 
@@ -364,6 +387,8 @@ def elifExpression():
     quadElifExpression = quadCounter
     gotoStack.append(quadCounter-1)
 
+# Function that generates the elif GOTOF quad 
+# only if the there is a match type otherwise raise exception
 def elifCondition():
     global quadCounter, jumpsStack, quadList, typesStack, quadElifExpression
 
@@ -379,6 +404,7 @@ def elifCondition():
         jumpsStack.append(quadCounter-1)
         quadList[quadElif].tResult = quadElifExpression
 
+# Function that generates the else GOTO quad 
 def elseCondition():
     global quadCounter, jumpsStack, quadList
 
@@ -388,6 +414,7 @@ def elseCondition():
     jumpsStack.append(quadCounter-1)
     quadList[quadElse].tResult = quadCounter
 
+# Function that fills the empty GOTO quads left on the if statement 
 def endIF():
     global quadCounter, jumpsStack, quadList, gotoStack
     
@@ -401,15 +428,18 @@ def endIF():
 # --- END IF --- #
 
 # --- WHILE --- #
-def pushWhileJump():
+
+# Function that saves the quad where the expression of the while starts on the stack
+def whileJump():
     global quadCounter, jumpsStack
     jumpsStack.append(quadCounter)
 
-def generateWhileQuad():
+# Function that generates the while GOTOF quad 
+# only if the there is a match type otherwise raise exception
+def whileCondition():
     global quadCounter, typesStack, quadList, operandsStack, jumpsStack
 
     resultType = typesStack.pop()
-    print("TYPE WHILE: ", resultType)
 
     if resultType != "bool":
         raise Exception("Type mismatch. Expecting bool")
@@ -419,7 +449,9 @@ def generateWhileQuad():
         quadList.append(Quadruple("GOTOF", expResult, None, None))
         jumpsStack.append(quadCounter - 1)
 
-def defineWhileJumps():
+# Function that generates the while GOTO quad 
+# to return to the expression and check it again (cycle)
+def endWhile():
     global quadCounter, typesStack, quadList, operandsStack, jumpsStack
 
     endWhile = jumpsStack.pop()
@@ -430,16 +462,55 @@ def defineWhileJumps():
 
 # --- END WHILE --- #
 
+# --- FOR --- #
+
+# Function that saves the quad where the expression of the for starts on the stack
+def forJump():
+    global quadCounter, jumpsStack
+    jumpsStack.append(quadCounter)
+
+# Function that generates the for GOTOF quad 
+# only if the there is a match type otherwise raise exception
+def forCondition():
+    global quadCounter, jumpsStack, typesStack
+
+    exp_type = typesStack.pop()
+
+    if (exp_type != "bool"):
+        raise Exception("Type mismatch")
+    else:
+        left_op = operandsStack.pop()
+        quadCounter += 1
+        quadList.append(Quadruple("GOTOF", left_op, None, None))
+        jumpsStack.append(quadCounter-1)
+
+# Function that generates the for GOTO quad 
+# to return to the expression and check it again (cycle)
+def endFor():
+    global quadCounter, jumpsStack, quadList, gotoStack
+    
+    quadCounter += 1
+    quadEnd = jumpsStack.pop()
+    returnFor = jumpsStack.pop()
+    quadList.append(Quadruple("GOTO", None, None, returnFor))
+    quadList[quadEnd].tResult = quadCounter
+
+# --- END FOR --- #
+
 # ---------------------- END NON-LINEAR STATEMENTS (IF, WHILE, FOR) ---------------------- #
 
+# ---------------------- PROGRAM END ---------------------- #
+
+# Function that generates the END of the program quad
+def endProgram():
+    quadList.append(Quadruple("END", None, None, None))
+
+
+#!!!! se borrara después  
 def printQuadruples():
     global quadList, quadCounter
     i = 0
     for quad in quadList:
         print("Quad ", i, " symbol: ", quad.operation, " left: ", quad.left_op, " right: ", quad.right_op, " temp: ", quad.tResult)
         i += 1
-    """ while quadList:
-        tempQuad = quadList.popleft()
-        print("Quad ", i, " symbol: ", tempQuad.operation, " left: ", tempQuad.left_op, " right: ", tempQuad.right_op, " temp: ", tempQuad.tResult)
-        i += 1 """
 

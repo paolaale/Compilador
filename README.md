@@ -28,6 +28,7 @@ Alan Zavala Lévaro A01338448
 * Falta hacer asignación de resultados
 
 ## Avance 4 (30 abril)
+* Cambios en la sintaxis de los if del programa
 * Se crean los cuadruplos de asignaciones, write y read
 * Se crean los cuadruplos de ifs y whiles
 * Pruebas funcionales

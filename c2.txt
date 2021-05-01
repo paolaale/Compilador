@@ -1,0 +1,24 @@
+program c2 :
+
+    main {
+
+        init {
+           
+           var int a,b,c,d;
+
+            while (b > c ) do {
+                a = b + d;
+
+                if (b > d) then {
+                    d = b + d;
+
+                    while (c < 8) do {
+                        write(c);
+                    }
+                }
+            }
+
+           b = a * c + d;
+        }
+    }
+end

@@ -9,7 +9,7 @@ from lexer import tokens # Get the token list from the lexer
 import semanticFunc as sF
 
 def p_program(p):
-    'program : PROGRAM ID TWOPOINTS program_classes MAIN add_class LBRACE program_body init RBRACE END'
+    'program : PROGRAM ID TWOPOINTS program_classes MAIN add_class LBRACE program_body init RBRACE END end_program'
     p[0] = 'program'
 
 def p_program_classes(p):
@@ -193,11 +193,11 @@ def p_write_aux(p):
     p[0] = 'program'
 
 def p_while(p):
-    'while : WHILE push_while_jump LPAREN exp RPAREN generate_while_quad DO LBRACE statutes_aux RBRACE define_while_jumps'
+    'while : WHILE while_jump LPAREN exp RPAREN while_condition DO LBRACE statutes_aux RBRACE end_while'
     p[0] = 'program'
 
 def p_for(p):
-    'for : FROM LPAREN assignation RPAREN UNTIL LPAREN exp RPAREN DO LBRACE statutes_aux RBRACE'
+    'for : FROM LPAREN assignation RPAREN UNTIL for_jump LPAREN exp RPAREN for_condition DO LBRACE statutes_aux RBRACE end_for'
     p[0] = 'program'
 
 def p_exp(p):
@@ -370,17 +370,35 @@ def p_end_if(self):
     'end_if :'
     sF.endIF()
 
-def p_push_while_jump(self):
-    'push_while_jump :'
-    sF.pushWhileJump()
+def p_while_jump(self):
+    'while_jump :'
+    sF.whileJump()
 
-def p_generate_while_quad(self):
-    'generate_while_quad :'
-    sF.generateWhileQuad()
+def p_while_condition(self):
+    'while_condition :'
+    sF.whileCondition()
 
-def p_define_while_jumps(self):
-    'define_while_jumps :'
-    sF.defineWhileJumps()
+def p_end_while(self):
+    'end_while :'
+    sF.endWhile()
+
+def p_for_jump(self):
+    'for_jump :'
+    sF.forJump()
+
+def p_for_condition(self):
+    'for_condition :'
+    sF.forCondition()
+
+def p_end_for(self):
+    'end_for :'
+    sF.endFor()
+
+# Function of end
+
+def p_end_program(self):
+    'end_program :'
+    sF.endProgram()
 
 if __name__ == '__main__':
     

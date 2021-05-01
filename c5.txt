@@ -1,0 +1,40 @@
+program c5 :
+
+    main {
+
+        init {
+           
+           var int a,b,c,d;
+
+            while (b > c ) do {
+                a = b + d;
+
+                if (b > d) then {
+                    d = b + d;
+
+                    from (c = 0) until (c < 8) do {
+                        write(c);
+                    }
+                }
+                else {
+
+                    while (8 < c) do {
+                        read(c);
+
+                        if (5 < 6) then {
+                            write("hola");
+                        }
+                        elif (9 < 10) then {
+
+                            from (d = 10) until (d > 8 + 9) do {
+                                write("adios");
+                            }
+                        }
+                    }
+                }
+            }
+
+           b = a * c + d;
+        }
+    }
+end

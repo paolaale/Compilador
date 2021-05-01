@@ -10,7 +10,6 @@ program w1 :
                 write(a);
             }
             
-            b = c + a;
         }
     }
 end

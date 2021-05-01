@@ -1,0 +1,24 @@
+program c9 :
+
+    main {
+
+        init {
+           
+           var int a,b,c,d;
+
+            from (c = 0) until (c < 8) do {
+                write(c);
+
+                if (b > d) then {
+                    d = b + d;        
+                }
+                elif (a > b) then {
+                    read(b);
+                }
+                else {
+                    d = 0;
+                }
+            }
+        }
+    }
+end

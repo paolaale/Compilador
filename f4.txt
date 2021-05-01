@@ -1,0 +1,24 @@
+program f4 :
+
+    main {
+
+        init {
+           
+           var int i, a;
+
+            from (i = 0) until (i < 9) do {
+                write("hola");
+
+                from (i = 10) until (i > 8 + 1) do {
+                    write("adios");
+                }
+
+                from (i = 2) until (i > 9) do {
+                    write("mil besitos");
+                }
+            }
+
+            a = 4 + 5;
+        }
+    }
+end

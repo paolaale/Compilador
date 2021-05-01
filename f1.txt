@@ -1,0 +1,14 @@
+program f1 :
+
+    main {
+
+        init {
+           
+           var int i;
+
+            from (i = 0) until (i < 9) do {
+                write("hola");
+            }
+        }
+    }
+end
