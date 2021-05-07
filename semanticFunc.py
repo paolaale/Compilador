@@ -178,58 +178,63 @@ def getVarType(id):
 
 # ---------------------- START EXPRESSION SOLVING ---------------------- #
 
+# Function to push the operand and its type in their corresponding stacks
 def pushOperand(op):
     global operandsStack, quadList
     operandsStack.append(op)
     typesStack.append(getVarType(op))
 
+# Function to push the operator to the operatorsStack
 def pushOperator(op):
     global operatorsStack, typesStack, quadList
     operatorsStack.append(op)
 
-    """if op == "=":
-        print("----------ASSIGNATION-----------")
-        quadList = deque() """
-
+# function to validate and create a quadruaple of logical operators
 def pop_op_lop():
-    global operatorsStack, operandsStack, quadList, countOfTemps, quadCounter
+    global operatorsStack
 
     # First we check that the stack isn´t empty
     if operatorsStack and (operatorsStack[-1] == "or" or operatorsStack[-1] == "and"):
+        generateExpQuad()
 
-        right_op = operandsStack.pop()
-        right_op_type = typesStack.pop()
-        left_op = operandsStack.pop()
-        left_op_type = typesStack.pop()
-        operator = operatorsStack.pop()
+# function to validate and create a quadruaple of relational operators
+def pop_op_relop():
+    generateExpQuad()
 
-        operandsMatch = isAMatch(left_op_type, operator, right_op_type)
-
-        if operandsMatch != "error":
-            result = "TEMP" + str(countOfTemps)
-            countOfTemps += 1
-
-            quadCounter += 1
-            quadList.append(Quadruple(operator, left_op, right_op, result))
-
-            operandsStack.append(result)
-            typesStack.append(operandsMatch)
-    
-        else:
-            raise Exception("Type mismatch")
+# function to pop from our OperatorsStack our fake background when found "("
+def pop_paren():
+    global operatorsStack
+    operatorsStack.pop()
 
 # Function to pop from the stack "+"" "-""
-def pop_op_relop():
-    global operatorsStack, operandsStack, quadList, countOfTemps, quadCounter
-    
+def pop_op_art_n2():
+    global operatorsStack
+
+    # First we check that the stack isn´t empty
+    if operatorsStack and (operatorsStack[-1] == "+" or operatorsStack[-1] == "-"):
+        generateExpQuad()
+
+# Function to pop from the stack "*"" "/""
+def pop_op_art_n1():
+    global operatorsStack
+
+    # First we check that the stack isn´t empty
+    if operatorsStack and (operatorsStack[-1] == "*" or operatorsStack[-1] == "/"):
+        generateExpQuad()
+
+# Function to generate th corresponding quadruple of an expression
+def generateExpQuad():
+    global operatorsStack, operandsStack, quadList, countOfTemps, quadCounter, typesStack
+
     right_op = operandsStack.pop()
     right_op_type = typesStack.pop()
     left_op = operandsStack.pop()
     left_op_type = typesStack.pop()
     operator = operatorsStack.pop()
 
-    operandsMatch = isAMatch(left_op_type, operator, right_op_type)
+    operandsMatch = isAMatch(left_op_type, operator, right_op_type) # get the matching compatibility of both operands types
 
+    # If operands types are compatible, generate quadruple and update quadcounter, else, throw exception
     if operandsMatch != "error":
         result = "TEMP" + str(countOfTemps)
         countOfTemps += 1
@@ -243,71 +248,11 @@ def pop_op_relop():
     else:
         raise Exception("Type mismatch")
 
-def pop_paren():
-    global operatorsStack
-    operatorsStack.pop()
-
-# Function to pop from the stack "+"" "-""
-def pop_op_art_n2():
-    global operatorsStack, operandsStack, quadList, countOfTemps, quadCounter
-
-    # First we check that the stack isn´t empty
-    if operatorsStack and (operatorsStack[-1] == "+" or operatorsStack[-1] == "-"):
-
-        right_op = operandsStack.pop()
-        right_op_type = typesStack.pop()
-        left_op = operandsStack.pop()
-        left_op_type = typesStack.pop()
-        operator = operatorsStack.pop()
-
-        operandsMatch = isAMatch(left_op_type, operator, right_op_type)
-
-        if operandsMatch != "error":
-            result = "TEMP" + str(countOfTemps)
-            countOfTemps += 1
-
-            quadCounter += 1
-            quadList.append(Quadruple(operator, left_op, right_op, result))
-
-            operandsStack.append(result)
-            typesStack.append(operandsMatch)
-    
-        else:
-            raise Exception("Type mismatch")
-
-# Function to pop from the stack "*"" "/""
-def pop_op_art_n1():
-    global operatorsStack, operandsStack, quadList, countOfTemps, quadCounter
-
-    # First we check that the stack isn´t empty
-    if operatorsStack and (operatorsStack[-1] == "*" or operatorsStack[-1] == "/"):
-
-        right_op = operandsStack.pop()
-        right_op_type = typesStack.pop()
-        left_op = operandsStack.pop()
-        left_op_type = typesStack.pop()
-        operator = operatorsStack.pop()
-
-        operandsMatch = isAMatch(left_op_type, operator, right_op_type)
-
-        if operandsMatch != "error":
-            result = "TEMP" + str(countOfTemps)
-            countOfTemps += 1
-
-            quadCounter += 1
-            quadList.append(Quadruple(operator, left_op, right_op, result))
-
-            operandsStack.append(result)
-            typesStack.append(operandsMatch)
-    
-        else:
-            raise Exception("Type mismatch")
-
 # ---------------------- END EXPRESSION SOLVING ---------------------- #
 
 # ---------------------- START LINEAR STATEMENTS (ASSIGN, WRITE, READ) ---------------------- #
 
-#Aquí el cuadruplo debe quedar como =, TEMP, None, z 
+# function to generate que assignation and add it to out quadList
 def pop_op_assign():
     global operatorsStack, operandsStack, quadList, quadCounter
 
@@ -316,7 +261,8 @@ def pop_op_assign():
     var_to_assign = operandsStack.pop()
     assignation_type = typesStack.pop()
     operator = operatorsStack.pop()   
-
+    
+    # Validate that the type of the exp result is the same of the variable to assign
     if assignation_type == left_op_type:
         quadCounter += 1
         quadList.append(Quadruple(operator, left_op, None, var_to_assign))
