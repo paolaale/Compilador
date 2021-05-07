@@ -34,9 +34,11 @@ Alan Zavala Lévaro A01338448
 * Pruebas funcionales
 * Falta verificar combinacion de estatus no lineas y cuadruplos de for
 
-## Avance 5 (06 mayo)
+## Avance 5 (07 mayo)
 * Se crean los cuadruplos de fors
 * Pruebas funcionales para condicionales combinados
 * Simplifico el código
 * Se comento el código
 * Se hizo la documentación de lo que se lleva actualmente
+
+## Avance 5 (14 mayo)
