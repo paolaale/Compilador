@@ -180,7 +180,6 @@ def getVarType(id):
 
 def pushOperand(op):
     global operandsStack, quadList
-
     operandsStack.append(op)
     typesStack.append(getVarType(op))
 

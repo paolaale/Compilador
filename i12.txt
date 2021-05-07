@@ -18,7 +18,7 @@ program i12 :
                     b = 8;
                 }
             } 
-            elif (c > d) {
+            elif (c > d) then {
                 if (b > d) then {
                     write(a);
                 }

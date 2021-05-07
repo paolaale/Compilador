@@ -1,0 +1,47 @@
+program i13 :
+
+    main {
+
+        init {
+           
+           var int a,b,c,d;
+
+           if (a > b) then {
+               if (a > b) then {
+                    if (a > b) then {
+                        a = 7;
+                    }
+                    elif (b == c) then {
+                        a = 8;
+                    }
+                    elif (c < 7) then {
+                        a = 9;
+                    }
+                    else {
+                        a = 10;
+                    }
+                }
+                elif (b < c) then {
+                    a = 8;
+                }
+                elif (c < 16) then {
+                    a = 9;
+                }
+                else {
+                    a = 10;
+                }
+           }
+           elif (b > c) then {
+               a = 8;
+           }
+           elif (c < 7) then {
+               a = 9;
+           }
+           else {
+               a = 10;
+           }
+
+           b = a * c + d;
+        }
+    }
+end

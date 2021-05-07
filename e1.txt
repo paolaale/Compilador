@@ -1,0 +1,15 @@
+program c8 :
+
+    main {
+
+        init {
+           
+            var int a,b,c,d,e,f,g,h,i,j,k,l,m,n;
+
+            if (a * (b + c) * d / (e - f + g * h) > (a + b) * c and (d - e * f) < h + j) then {
+                write(a);
+            }
+
+        }
+    }
+end

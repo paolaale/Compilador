@@ -12,7 +12,7 @@ program c8 :
                 while (b > c) do {
                     a = b + d;
 
-                    from (b = 10) until (b > 4 + 5 + 6) {
+                    from (b = 10) until (b > 4 + 5 + 6) do {
                         read(d);
                     }
                 }
