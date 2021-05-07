@@ -33,3 +33,10 @@ Alan Zavala Lévaro A01338448
 * Se crean los cuadruplos de ifs y whiles
 * Pruebas funcionales
 * Falta verificar combinacion de estatus no lineas y cuadruplos de for
+
+## Avance 5 (06 mayo)
+* Se crean los cuadruplos de fors
+* Pruebas funcionales para condicionales combinados
+* Simplifico el código
+* Se comento el código
+* Se hizo la documentación de lo que se lleva actualmente
