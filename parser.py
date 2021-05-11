@@ -9,7 +9,7 @@ from lexer import tokens # Get the token list from the lexer
 import semanticFunc as sF
 
 def p_program(p):
-    'program : PROGRAM ID TWOPOINTS program_classes MAIN add_class LBRACE program_body init RBRACE END end_program'
+    'program : PROGRAM ID TWOPOINTS check_init program_classes MAIN add_class LBRACE program_body init RBRACE END end_program'
     p[0] = 'program'
 
 def p_program_classes(p):
@@ -91,15 +91,15 @@ def p_functions(p):
     p[0] = 'program'
 
 def p_functions_aux(p):
-    '''functions_aux : VOID ID add_function LPAREN params RPAREN body
+    '''functions_aux : VOID ID add_function LPAREN params RPAREN insert_number_params body
                     | VOID ID add_function LPAREN RPAREN body
                     | simple_type ID add_function LPAREN RPAREN body
-                    | simple_type ID add_function LPAREN params RPAREN body'''
+                    | simple_type ID add_function LPAREN params RPAREN insert_number_params body'''
     p[0] = 'program'
 
 def p_params(p):
-    '''params : simple_type ID add_variable
-            | simple_type ID add_variable COMMA params
+    '''params : simple_type ID add_param
+            | simple_type ID add_param COMMA params
             | simple_type ID params_aux
             | simple_type ID params_aux COMMA params'''
     p[0] = 'program'
@@ -109,10 +109,10 @@ def p_params_aux(p):
                 | LBRACKET RBRACKET LBRACKET RBRACKET add_matrix_var_params'''
 
 def p_body(p):
-    '''body : LBRACE dec_vars statutes_aux RBRACE
-            | LBRACE statutes_aux RBRACE
-            | LBRACE statutes_aux RETURN ID SEMICOLON RBRACE
-            | LBRACE dec_vars statutes_aux RETURN ID SEMICOLON RBRACE'''
+    '''body : LBRACE start_function dec_vars number_local_vars statutes_aux RBRACE end_function
+            | LBRACE start_function statutes_aux RBRACE end_function
+            | LBRACE start_function statutes_aux RETURN ID SEMICOLON RBRACE end_function
+            | LBRACE start_function dec_vars number_local_vars statutes_aux RETURN ID SEMICOLON RBRACE end_function'''
     p[0] = 'program'
 
 def p_statutes(p):
@@ -147,15 +147,15 @@ def p_var_aux_2(p):
     p[0] = 'program'
 
 def p_call(p):
-    '''call : ID LPAREN RPAREN
+    '''call : ID  exist_function LPAREN era_function RPAREN gosub_function
             | ID POINT ID LPAREN RPAREN
-            | ID LPAREN call_aux RPAREN
+            | ID exist_function LPAREN era_function call_aux RPAREN gosub_function
             | ID POINT ID LPAREN call_aux RPAREN'''
     p[0] = 'program'
 
 def p_call_aux(p):
-    '''call_aux : exp
-                | exp COMMA call_aux'''
+    '''call_aux : exp arg_function
+                | exp arg_function COMMA next_arg call_aux'''
     p[0] = 'program'
 
 def p_condition(p):
@@ -244,8 +244,8 @@ def p_cte(p):
     p[0] = 'program'
 
 def p_init(p):
-    '''init : INIT add_init LBRACE statutes_aux RBRACE
-            | INIT add_init LBRACE dec_vars statutes_aux RBRACE'''
+    '''init : INIT add_init LBRACE start_init statutes_aux RBRACE
+            | INIT add_init LBRACE start_init dec_vars statutes_aux RBRACE'''
     p[0] = 'program'
 
 def p_empty(p):
@@ -336,6 +336,8 @@ def p_pop_paren(p):
     'pop_paren :'
     sF.pop_paren()
 
+# FUNCTIOND FOR LINEAL STATEMENTS
+
 def p_generate_write(self):
     'generate_write :'
     sF.generateWrite()
@@ -348,7 +350,7 @@ def p_generate_read(self):
     'generate_read :'
     sF.generateRead()
 
-# Functions for NO-LINEAL statements
+# FUNCTIONS FOR NO-LINEAL STATEMENTS
 
 def p_if_condition(self):
     'if_condition :'
@@ -394,7 +396,55 @@ def p_end_for(self):
     'end_for :'
     sF.endFor()
 
-# Function of end
+# FUNCTION FOR FUNTCIONS
+
+def p_add_param(p):
+    'add_param :'
+    sF.addParam(p[-1], p[-2], 0, 0)
+
+def p_insert_number_params(self):
+    'insert_number_params :'
+    sF.insertParams()
+
+def p_number_local_vars(self):
+    'number_local_vars :'
+    #!!!! guardar en el directorio el numero de variables
+
+def p_start_function(self):
+    'start_function :'
+    sF.startFunction() 
+
+def p_end_function(self):
+    'end_function :'
+    sF.endFunction()
+
+def p_exist_function(p):
+    'exist_function :'
+    sF.existFunction(p[-1])
+
+def p_era_function(self):
+    'era_function :'
+
+def p_arg_function(self):
+    'arg_function :'
+
+def p_next_arg(self):
+    'next_arg :'
+
+def p_gosub_function(self):
+    'gosub_function :'
+
+# FUNCTION FOR MAIN
+
+def p_check_init(self):
+    'check_init :'
+    sF.checkInit()
+
+def p_start_init(self):
+    'start_init :'
+    sF.startInit()
+
+# FUNCTION FOR END
 
 def p_end_program(self):
     'end_program :'

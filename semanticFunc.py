@@ -36,6 +36,9 @@ stringToWrite = None
 quadCounter = 0
 quadElifExpression = None
 
+# Helpers to fill functions
+numberOfParams = 0
+
 #!!!! variable de prueba que se borrará después
 countOfTemps = 1
 
@@ -71,10 +74,11 @@ def addClass(cName, cInherits, cParentName):
 # Function that recieves the name of the function 
 # and the type of return
 def addFunction(fName, fType):
-    global currentClass, currentFunct
+    global currentClass, currentFunct, numberOfParams
+
     currentFunct = fName
     # Add to dictionary of classes, in the current class the function
-    direcClasses[currentClass].c_funcs[fName] = Functions(fType) 
+    direcClasses[currentClass].c_funcs[fName] = Functions(fType, numberOfParams, None) 
 
 # Function that recieves the name and type of the variable
 # size 1 that represents number of rows (array)
@@ -92,6 +96,13 @@ def addVars(vName, vType, vSize1, vSize2):
     else:
         # Add to dictionary of classes, in the current class and global variables "function" the variables
         direcClasses[currentClass].c_funcs["vG"].f_vars[vName] = Vars(vType, vSize1, vSize2)
+
+def addParam(pName, pType, pSize1, pSize2):
+    global currentFunct, currentClass, numberOfParams
+    
+    # Add to dictionary of classes, in the current class and current function the parameters
+    direcClasses[currentClass].c_funcs[currentFunct].f_vars[pName] = Vars(pType, pSize1, pSize2)
+    numberOfParams += 1
 
 # ---------------------- END ADDING ELEMENTS (FUNCT, CLASSES, VARS) ---------------------- #
     
@@ -444,11 +455,61 @@ def endFor():
 
 # ---------------------- END NON-LINEAR STATEMENTS (IF, WHILE, FOR) ---------------------- #
 
+# ---------------------- FUNCTIONS ---------------------- #
+
+def existFunction(functionCall):
+    global direcClasses
+
+    if functionCall not in direcClasses["main"].c_funcs:
+        raise Exception("Function not found")
+
+def insertParams():
+    global numberOfParams, currentClass, currentFunct, direcClasses
+
+    direcClasses[currentClass].c_funcs[currentFunct].f_number_params = numberOfParams
+    numberOfParams = 0
+
+def startFunction():
+    global currentClass, currentFunct, direcClasses
+
+    direcClasses[currentClass].c_funcs[currentFunct].f_start_quadruple = quadCounter
+
+def endFunction():
+    global quadCounter
+
+    quadCounter += 1
+    quadList.append(Quadruple("END FUNCTION", None, None, None))
+    #!!!! matar a current directorio de variables
+    #!!!! guardar numero de temporales usados
+
+
+#---------------------- END FUNCTIONS ---------------------- #
+
+#---------------------- MAIN ---------------------- #
+
+def checkInit():
+    global quadCounter, quadList, jumpsStack
+
+    quadCounter += 1
+    quadList.append(Quadruple("GOTO", None, None, None))
+    jumpsStack.append(quadCounter-1)
+
+def startInit():
+    global quadCounter, quadList, jumpsStack
+
+    quadCounter += 1
+    quadInit = jumpsStack.pop()
+    quadList[quadInit].tResult = quadCounter-1
+
+#---------------------- END MAIN ---------------------- #
+
 # ---------------------- PROGRAM END ---------------------- #
 
 # Function that generates the END of the program quad
 def endProgram():
-    quadList.append(Quadruple("END", None, None, None))
+    global quadList
+
+    quadList.append(Quadruple("END PROGRAM", None, None, None))
 
 
 #!!!! se borrara después  
