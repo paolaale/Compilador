@@ -38,6 +38,8 @@ quadElifExpression = None
 
 # Helpers to fill functions
 numberOfParams = 0
+functionToCall = ""
+numberOfArgs = 0
 
 #!!!! variable de prueba que se borrará después
 countOfTemps = 1
@@ -78,7 +80,7 @@ def addFunction(fName, fType):
 
     currentFunct = fName
     # Add to dictionary of classes, in the current class the function
-    direcClasses[currentClass].c_funcs[fName] = Functions(fType, numberOfParams, None) 
+    direcClasses[currentClass].c_funcs[fName] = Functions(fType, [], numberOfParams, None) 
 
 # Function that recieves the name and type of the variable
 # size 1 that represents number of rows (array)
@@ -97,12 +99,18 @@ def addVars(vName, vType, vSize1, vSize2):
         # Add to dictionary of classes, in the current class and global variables "function" the variables
         direcClasses[currentClass].c_funcs["vG"].f_vars[vName] = Vars(vType, vSize1, vSize2)
 
+# Function that recieves the name and type of the parameter of the function
+# size 1 that represents number of rows (array)
+# size 2 that represents number of columns (matrix)
 def addParam(pName, pType, pSize1, pSize2):
     global currentFunct, currentClass, numberOfParams
     
     # Add to dictionary of classes, in the current class and current function the parameters
     direcClasses[currentClass].c_funcs[currentFunct].f_vars[pName] = Vars(pType, pSize1, pSize2)
-    numberOfParams += 1
+    # Add to dictionary of classes, in the current class and current function the parameter type in an array
+    direcClasses[currentClass].c_funcs[currentFunct].f_params_type.append(pType)
+    # Count the numer of parameters in current function for later use
+    numberOfParams += 1 
 
 # ---------------------- END ADDING ELEMENTS (FUNCT, CLASSES, VARS) ---------------------- #
     
@@ -237,13 +245,13 @@ def pop_op_art_n1():
 def generateExpQuad():
     global operatorsStack, operandsStack, quadList, countOfTemps, quadCounter, typesStack
 
-    right_op = operandsStack.pop()
-    right_op_type = typesStack.pop()
-    left_op = operandsStack.pop()
-    left_op_type = typesStack.pop()
+    rightOp = operandsStack.pop()
+    rightOpType = typesStack.pop()
+    leftOp = operandsStack.pop()
+    leftOpType = typesStack.pop()
     operator = operatorsStack.pop()
 
-    operandsMatch = isAMatch(left_op_type, operator, right_op_type) # get the matching compatibility of both operands types
+    operandsMatch = isAMatch(leftOpType, operator, rightOpType) # get the matching compatibility of both operands types
 
     # If operands types are compatible, generate quadruple and update quadcounter, else, throw exception
     if operandsMatch != "error":
@@ -251,7 +259,7 @@ def generateExpQuad():
         countOfTemps += 1
 
         quadCounter += 1
-        quadList.append(Quadruple(operator, left_op, right_op, result))
+        quadList.append(Quadruple(operator, leftOp, rightOp, result))
 
         operandsStack.append(result)
         typesStack.append(operandsMatch)
@@ -267,18 +275,18 @@ def generateExpQuad():
 def pop_op_assign():
     global operatorsStack, operandsStack, quadList, quadCounter
 
-    left_op = operandsStack.pop()
-    left_op_type = typesStack.pop()
-    var_to_assign = operandsStack.pop()
-    assignation_type = typesStack.pop()
+    leftOp = operandsStack.pop()
+    leftOpType = typesStack.pop()
+    varToAssign = operandsStack.pop()
+    assignationType = typesStack.pop()
     operator = operatorsStack.pop()   
     
     # Validate that the type of the exp result is the same of the variable to assign
-    if assignation_type == left_op_type:
+    if assignationType == leftOpType:
         quadCounter += 1
-        quadList.append(Quadruple(operator, left_op, None, var_to_assign))
+        quadList.append(Quadruple(operator, leftOp, None, varToAssign))
     else:
-        raise Exception("Cannot assign variable of type %s with %s" % (assignation_type, left_op_type))
+        raise Exception("Cannot assign variable of type %s with %s" % (assignationType, leftOpType))
 
 # Function that saves the string to write
 def saveString(s):
@@ -323,14 +331,14 @@ def generateRead():
 def ifCondition():
     global quadCounter, jumpsStack, typesStack
 
-    exp_type = typesStack.pop()
+    expType = typesStack.pop()
 
-    if (exp_type != "bool"):
+    if (expType != "bool"):
         raise Exception("Type mismatch")
     else:
-        left_op = operandsStack.pop()
+        leftOp = operandsStack.pop()
         quadCounter += 1
-        quadList.append(Quadruple("GOTOF", left_op, None, None))
+        quadList.append(Quadruple("GOTOF", leftOp, None, None))
         jumpsStack.append(quadCounter-1)
 
 # Function that generates the if GOTO quad 
@@ -348,14 +356,14 @@ def elifExpression():
 def elifCondition():
     global quadCounter, jumpsStack, quadList, typesStack, quadElifExpression
 
-    exp_type = typesStack.pop()
+    expType = typesStack.pop()
 
-    if (exp_type != "bool"):
+    if (expType != "bool"):
         raise Exception("Type mismatch")
     else:
-        left_op = operandsStack.pop()
+        leftOp = operandsStack.pop()
         quadCounter += 1 
-        quadList.append(Quadruple("GOTOF", left_op, None, None))
+        quadList.append(Quadruple("GOTOF", leftOp, None, None))
         quadElif = jumpsStack.pop()
         jumpsStack.append(quadCounter-1)
         quadList[quadElif].tResult = quadElifExpression
@@ -430,14 +438,14 @@ def forJump():
 def forCondition():
     global quadCounter, jumpsStack, typesStack
 
-    exp_type = typesStack.pop()
+    expType = typesStack.pop()
 
-    if (exp_type != "bool"):
+    if (expType != "bool"):
         raise Exception("Type mismatch")
     else:
-        left_op = operandsStack.pop()
+        leftOp = operandsStack.pop()
         quadCounter += 1
-        quadList.append(Quadruple("GOTOF", left_op, None, None))
+        quadList.append(Quadruple("GOTOF", leftOp, None, None))
         jumpsStack.append(quadCounter-1)
 
 # Function that generates the for GOTO quad 
@@ -457,36 +465,86 @@ def endFor():
 
 # ---------------------- FUNCTIONS ---------------------- #
 
+# Function that recieves the name of the function called and verify that exists
+# if not, an exception is shown
 def existFunction(functionCall):
-    global direcClasses
+    global direcClasses, functionToCall
 
     if functionCall not in direcClasses["main"].c_funcs:
         raise Exception("Function not found")
+    else:
+        functionToCall = functionCall
 
+# Function that generates the Activation Record expansion new size
+def eraSizeFunction():
+    global quadCounter, quadList, functionToCall
+
+    quadCounter += 1
+    quadList.append(Quadruple("ERA", None, None, functionToCall))
+
+# Function that recieves the argument that will be send to the parameter of the function
+def argFunction():
+    global quadCounter, quadList, operandsStack, typesStack, functionToCall, numberOfArgs
+
+    numberOfArgs += 1
+    argument = operandsStack.pop()
+    argumentType = typesStack.pop()
+    
+    # Checks that the function to be called has parameters
+    if len(direcClasses["main"].c_funcs[functionToCall].f_params_type) >= numberOfArgs:
+        # Check the parameter type is equal to the argument type 
+        if direcClasses["main"].c_funcs[functionToCall].f_params_type[numberOfArgs-1] == argumentType:
+            quadCounter += 1
+            quadList.append(Quadruple("PARAM", argument, None, numberOfArgs-1))
+        else:
+            raise Exception("Type mismatch")
+    else:
+        # if there are more arguments sent than parameters recieving in the function generate exception
+        raise Exception("Number of arguments mismatch")
+
+# Function that indicates where the code of the function called starts
+def gosubFunction():
+    global quadCounter, quadList, functionToCall, numberOfArgs
+
+    nP = direcClasses["main"].c_funcs[functionToCall].f_number_params
+
+    # Check the number of parameters and arguments match
+    if numberOfArgs == nP:
+        quadCounter += 1
+        functionStart = direcClasses["main"].c_funcs[functionToCall].f_start_quadruple
+        quadList.append(Quadruple("GOSUB", None, None, functionStart))
+        functionToCall = "" 
+        numberOfArgs = 0
+    else:
+        raise Exception("Number of arguments mismatch")
+
+# Function that saves how many parameters the function has
 def insertParams():
     global numberOfParams, currentClass, currentFunct, direcClasses
 
     direcClasses[currentClass].c_funcs[currentFunct].f_number_params = numberOfParams
     numberOfParams = 0
 
+# Function that saves the quadruple where the code of the function starts
 def startFunction():
     global currentClass, currentFunct, direcClasses
 
     direcClasses[currentClass].c_funcs[currentFunct].f_start_quadruple = quadCounter
 
+# Function that indicates where the function end and release the cuurent var table
 def endFunction():
-    global quadCounter
+    global quadCounter, quadList
 
     quadCounter += 1
     quadList.append(Quadruple("END FUNCTION", None, None, None))
     #!!!! matar a current directorio de variables
     #!!!! guardar numero de temporales usados
 
-
 #---------------------- END FUNCTIONS ---------------------- #
 
 #---------------------- MAIN ---------------------- #
 
+# Function that generates the quadruple at the start of the program to go to the init function
 def checkInit():
     global quadCounter, quadList, jumpsStack
 
@@ -494,6 +552,7 @@ def checkInit():
     quadList.append(Quadruple("GOTO", None, None, None))
     jumpsStack.append(quadCounter-1)
 
+# Function that saves where the code of the init function starts
 def startInit():
     global quadCounter, quadList, jumpsStack
 

@@ -155,7 +155,7 @@ def p_call(p):
 
 def p_call_aux(p):
     '''call_aux : exp arg_function
-                | exp arg_function COMMA next_arg call_aux'''
+                | exp arg_function COMMA call_aux'''
     p[0] = 'program'
 
 def p_condition(p):
@@ -424,15 +424,15 @@ def p_exist_function(p):
 
 def p_era_function(self):
     'era_function :'
+    sF.eraSizeFunction()
 
 def p_arg_function(self):
     'arg_function :'
-
-def p_next_arg(self):
-    'next_arg :'
+    sF.argFunction()
 
 def p_gosub_function(self):
     'gosub_function :'
+    sF.gosubFunction()
 
 # FUNCTION FOR MAIN
 
@@ -475,6 +475,7 @@ if __name__ == '__main__':
         print("stack of types: ", sF.typesStack)
         print("stack of jumps: ", sF.jumpsStack)
         sF.printQuadruples()
+        #print(sF.direcClasses["main"].c_funcs["dos"].f_params_type)
 
         if result != None:
             print("Program accepted")

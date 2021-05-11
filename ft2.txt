@@ -28,13 +28,17 @@ program ft1 :
             }
         }
 
-        init {
-           
+        funct void tres() {
             i = 2;
             k = i + 1;
             f = 3.14;
             
             call dos(i + k, f * 3);
+        }
+
+        init {
+            
+            call tres();
         }
     }
 end
