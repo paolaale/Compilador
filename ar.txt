@@ -1,0 +1,12 @@
+program ar1 :
+
+    main {
+
+        init {
+           
+            var int i[5], j[4][9];
+            
+            write("HOLA");
+        }
+    }
+end

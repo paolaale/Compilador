@@ -37,8 +37,9 @@ Alan Zavala Lévaro A01338448
 ## Avance 5 (07 mayo)
 * Se crean los cuadruplos de fors
 * Pruebas funcionales para condicionales combinados
-* Simplifico el código
+* Se simplifico el código
 * Se comento el código
 * Se hizo la documentación de lo que se lleva actualmente
 
 ## Avance 5 (14 mayo)
+* Se crean los cuadruplos de funciones void y llamadas a funciones void

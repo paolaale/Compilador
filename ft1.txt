@@ -6,7 +6,7 @@ program ft1 :
         float f;
 
         funct void uno(int a, int b) {
-
+            
             if (a > 0) then {
                 i = a + b * j + i;
                 write(i + j);
