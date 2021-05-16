@@ -11,6 +11,10 @@ from Vars import Vars
 from Quadruple import Quadruple
 from collections import deque
 
+import MemoryDispatcher as mD
+
+#test = MemoryDispatcher()
+
 # Dictionaries of classes 
 direcClasses = {} 
 
@@ -93,11 +97,12 @@ def addVars(vName, vType, vSize1, vSize2):
         lastVarType = vType
 
     if currentFunct != "":
+
         # Add to dictionary of classes, in the current class and current function the variables
-        direcClasses[currentClass].c_funcs[currentFunct].f_vars[vName] = Vars(vType, vSize1, vSize2)
+        direcClasses[currentClass].c_funcs[currentFunct].f_vars[vName] = Vars(vType, vSize1, vSize2, mD.get_space_avail("local", vType, 1))
     else:
         # Add to dictionary of classes, in the current class and global variables "function" the variables
-        direcClasses[currentClass].c_funcs["vG"].f_vars[vName] = Vars(vType, vSize1, vSize2)
+        direcClasses[currentClass].c_funcs["vG"].f_vars[vName] = Vars(vType, vSize1, vSize2, mD.get_space_avail("global", vType, 1))
 
 # Function that recieves the name and type of the parameter of the function
 # size 1 that represents number of rows (array)

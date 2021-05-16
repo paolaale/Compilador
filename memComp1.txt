@@ -1,0 +1,41 @@
+program p3 :
+   
+    main {
+
+        var int p, h, j, k;
+
+        funct void getTotal() {
+            var int rubs, paola, alan;
+                float omar, ale, edgar;
+                char joe;
+
+            write("pepepe");
+        }
+
+        init {
+        
+            call getTotal();
+            p = 0;
+            write("hola");
+
+            while (p < 7) do {
+                write("adios");
+            }
+
+            if (p < 7) then {
+                write("adios");
+            } 
+            elif (p == 7) then {
+                write("adios");
+            }
+            elif (p > 7) then {
+                write("adios");
+            }
+            else {
+                write("adios");
+            }
+        
+        }
+    }
+   
+end

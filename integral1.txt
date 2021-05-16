@@ -1,0 +1,86 @@
+program p3 :
+   
+    class Animal {
+        var int a, p;
+
+        funct int getEdad() {
+            var int j[8][8];
+
+            write("hola");
+
+            while (p < 7) do {
+                write("adios");
+            }
+
+            return b;
+        }
+    }
+
+    class Gato inherits Animal{
+        var int a, p;
+            Gato gato;
+
+        funct int getEdad() {
+            var int j[8][8];
+
+            write("hola");
+
+            while (p < 7) do {
+                write("adios");
+            }
+
+            return b;
+        }
+    }
+
+    class Perro inherits Animal {
+        var int a, p;
+
+        funct void getEdad() {
+            var int j;
+
+            write("hola");
+
+            while (p < 7) do {
+                write("adios");
+            }
+        }
+    }
+
+    main {
+
+        var int p;
+
+        funct void getTotal() {
+            var int rubs;
+
+            write("pepepe");
+        }
+
+        init {
+        
+            call getTotal();
+            p = 0;
+            write("hola");
+
+            while (p < 7) do {
+                write("adios");
+            }
+
+            if (p < 7) then {
+                write("adios");
+            } 
+            elif (p == 7) then {
+                write("adios");
+            }
+            elif (p > 7) then {
+                write("adios");
+            }
+            else {
+                write("adios");
+            }
+        
+        }
+    }
+   
+end
