@@ -260,17 +260,17 @@ def p_error(p):
 
 def p_add_variable(p):
     'add_variable :'
-    sF.addVars(p[-1], p[-2], False, False, None, None)
+    sF.addVars(p[-1], p[-2], -1, -1)
     p[0] = 'program'
 
 def p_add_array_variable(p):
     'add_array_variable :'
-    sF.addVars(p[-4], p[-5], True, False, p[-2], None)
+    sF.addVars(p[-4], p[-5], p[-2], -1)
     p[0] = 'program'
 
 def p_add_matrix_variable(p):
     'add_matrix_variable :'
-    sF.addVars(p[-7], p[-8], False, True, p[-5], p[-2])
+    sF.addVars(p[-7], p[-8], p[-5], p[-2])
     p[0] = 'program'
 
 def p_add_function(p):
@@ -391,16 +391,16 @@ def p_end_for(self):
 
 def p_add_param(p):
     'add_param :'
-    sF.addParam(p[-1], p[-2], False, False, None, None)
+    sF.addParam(p[-1], p[-2], -1, -1)
 
 def p_add_array_var_params(p):
     'add_array_var_params :'
-    sF.addParam(p[-3], p[-4], True, False, 0, 0)
+    sF.addParam(p[-3], p[-4], 0, 0)
     p[0] = 'program'
 
 def p_add_matrix_var_params(p):
     'add_matrix_var_params :'
-    sF.addParam(p[-5], p[-6], False, True, 0, 0)
+    sF.addParam(p[-5], p[-6], 0, 0)
     p[0] = 'program'
 
 def p_insert_number_params(self):

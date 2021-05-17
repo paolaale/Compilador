@@ -89,7 +89,7 @@ def addFunction(fName, fType):
 # Function that recieves the name and type of the variable
 # size 1 that represents number of rows (array)
 # size 2 that represents number of columns (matrix)
-def addVars(vName, vType, isArray, isMatrix, vSize1, vSize2):
+def addVars(vName, vType, vSize1, vSize2):
     global lastVarType, currentFunct, currentClass
 
     if (vType == ','):
@@ -102,19 +102,9 @@ def addVars(vName, vType, isArray, isMatrix, vSize1, vSize2):
         # Check variable wasn't already declare in the function
         if vName not in direcClasses[currentClass].c_funcs[currentFunct].f_vars:
 
-            if isArray:
-                #!!!! dirección de memoria
-                print("dir memoria para array")
-            elif isMatrix:
-                # matrix = convertMatrixToColumn(vSize1, vSize2)
-                #!!!! dirección de memoria
-                print("dir memoria para matrix")
-            else:
-                #!!!! dirección de memoria
-                print("dir memoria para var normal")
-            
-             # Add to dictionary of classes, in the current class and current function the variables
-            direcClasses[currentClass].c_funcs[currentFunct].f_vars[vName] = Vars(vType, vSize1, vSize2, mD.get_space_avail("local", vType, 1))
+            memorySize = abs(int(vSize1) * int(vSize2))
+            # Add to dictionary of classes, in the current class and current function the variables
+            direcClasses[currentClass].c_funcs[currentFunct].f_vars[vName] = Vars(vType, vSize1, vSize2, mD.get_space_avail("local", vType, memorySize))
 
         else:
             raise Exception("Variable '" + vName + "' already exist")
@@ -122,41 +112,22 @@ def addVars(vName, vType, isArray, isMatrix, vSize1, vSize2):
         # Check variable wasn't already declare as a global variable
         if vName not in direcClasses[currentClass].c_funcs["vG"].f_vars:
 
-            if isArray:
-                #!!!! dirección de memoria
-                print("dir memoria para array")
-            elif isMatrix:
-                # matrix = convertMatrixToColumn(vSize1, vSize2)
-                #!!!! dirección de memoria
-                print("dir memoria para matrix")
-            else:
-                #!!!! dirección de memoria
-                print("dir memoria para var normal")
-
+            memorySize = abs(int(vSize1) * int(vSize2))
             # Add to dictionary of classes, in the current class and global variables "function" the variables
-            direcClasses[currentClass].c_funcs["vG"].f_vars[vName] = Vars(vType, vSize1, vSize2, mD.get_space_avail("global", vType, 1))
+            direcClasses[currentClass].c_funcs["vG"].f_vars[vName] = Vars(vType, vSize1, vSize2, mD.get_space_avail("global", vType, memorySize))
         else:
             raise Exception("Variable '" + vName + "' already exist")
 
 # Function that recieves the name and type of the parameter of the function
 # size 1 that represents number of rows (array)
 # size 2 that represents number of columns (matrix)
-def addParam(pName, pType, isArray, isMatrix, pSize1, pSize2):
+def addParam(pName, pType, pSize1, pSize2):
     global currentFunct, currentClass, numberOfParams
     
-    if isArray:
-        #!!!! dirección de memoria
-        print("dir memoria para array")
-    elif isMatrix:
-        # matrix = convertMatrixToColumn(vSize1, vSize2)
-        #!!!! dirección de memoria
-        print("dir memoria para matrix")
-    else:
-        #!!!! dirección de memoria
-        print("dir memoria para var normal")
+    memorySize = abs(int(pSize1) * int(pSize2))
 
     # Add to dictionary of classes, in the current class and current function the parameters
-    direcClasses[currentClass].c_funcs[currentFunct].f_vars[pName] = Vars(pType, pSize1, pSize2) #!!!! falta var de direccion
+    direcClasses[currentClass].c_funcs[currentFunct].f_vars[pName] = Vars(pType, pSize1, pSize2, mD.get_space_avail("local", pType, memorySize)) 
     # Add to dictionary of classes, in the current class and current function the parameter type in an array
     direcClasses[currentClass].c_funcs[currentFunct].f_params_type.append(pType)
     # Count the numer of parameters in current function for later use
@@ -164,8 +135,6 @@ def addParam(pName, pType, isArray, isMatrix, pSize1, pSize2):
 
 def convertMatrixToColumn(): #!!!! recibe los tamaños
     print("hola")
-    # for s1 in range(size1):
-    # 
 
 # ---------------------- END ADDING ELEMENTS (FUNCT, CLASSES, VARS) ---------------------- #
     
