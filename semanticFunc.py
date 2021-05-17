@@ -11,6 +11,10 @@ from Vars import Vars
 from Quadruple import Quadruple
 from collections import deque
 
+import MemoryDispatcher as mD
+
+#test = MemoryDispatcher()
+
 # Dictionaries of classes 
 direcClasses = {} 
 
@@ -110,7 +114,7 @@ def addVars(vName, vType, isArray, isMatrix, vSize1, vSize2):
                 print("dir memoria para var normal")
             
              # Add to dictionary of classes, in the current class and current function the variables
-            direcClasses[currentClass].c_funcs[currentFunct].f_vars[vName] = Vars(vType, vSize1, vSize2) #!!!! falta var de direccion
+            direcClasses[currentClass].c_funcs[currentFunct].f_vars[vName] = Vars(vType, vSize1, vSize2, mD.get_space_avail("local", vType, 1))
 
         else:
             raise Exception("Variable '" + vName + "' already exist")
@@ -130,7 +134,7 @@ def addVars(vName, vType, isArray, isMatrix, vSize1, vSize2):
                 print("dir memoria para var normal")
 
             # Add to dictionary of classes, in the current class and global variables "function" the variables
-            direcClasses[currentClass].c_funcs["vG"].f_vars[vName] = Vars(vType, vSize1, vSize2) #!!!! falta var de direccion
+            direcClasses[currentClass].c_funcs["vG"].f_vars[vName] = Vars(vType, vSize1, vSize2, mD.get_space_avail("global", vType, 1))
         else:
             raise Exception("Variable '" + vName + "' already exist")
 
