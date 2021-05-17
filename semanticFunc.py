@@ -102,7 +102,7 @@ def addVars(vName, vType, isArray, isMatrix, vSize1, vSize2):
                 #!!!! dirección de memoria
                 print("dir memoria para array")
             elif isMatrix:
-                #!!!! aplstamiento
+                # matrix = convertMatrixToColumn(vSize1, vSize2)
                 #!!!! dirección de memoria
                 print("dir memoria para matrix")
             else:
@@ -122,7 +122,7 @@ def addVars(vName, vType, isArray, isMatrix, vSize1, vSize2):
                 #!!!! dirección de memoria
                 print("dir memoria para array")
             elif isMatrix:
-                #!!!! aplstamiento
+                # matrix = convertMatrixToColumn(vSize1, vSize2)
                 #!!!! dirección de memoria
                 print("dir memoria para matrix")
             else:
@@ -144,19 +144,24 @@ def addParam(pName, pType, isArray, isMatrix, pSize1, pSize2):
         #!!!! dirección de memoria
         print("dir memoria para array")
     elif isMatrix:
-        #!!!! aplstamiento
+        # matrix = convertMatrixToColumn(vSize1, vSize2)
         #!!!! dirección de memoria
         print("dir memoria para matrix")
     else:
         #!!!! dirección de memoria
         print("dir memoria para var normal")
-        
+
     # Add to dictionary of classes, in the current class and current function the parameters
     direcClasses[currentClass].c_funcs[currentFunct].f_vars[pName] = Vars(pType, pSize1, pSize2) #!!!! falta var de direccion
     # Add to dictionary of classes, in the current class and current function the parameter type in an array
     direcClasses[currentClass].c_funcs[currentFunct].f_params_type.append(pType)
     # Count the numer of parameters in current function for later use
     numberOfParams += 1 
+
+def convertMatrixToColumn(): #!!!! recibe los tamaños
+    print("hola")
+    # for s1 in range(size1):
+    # 
 
 # ---------------------- END ADDING ELEMENTS (FUNCT, CLASSES, VARS) ---------------------- #
     
