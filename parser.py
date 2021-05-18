@@ -110,10 +110,10 @@ def p_params_aux(p):
                 | LBRACKET RBRACKET LBRACKET RBRACKET add_matrix_var_params'''
 
 def p_body(p):
-    '''body : LBRACE start_function dec_vars number_local_vars statutes_aux RBRACE end_function
-            | LBRACE start_function statutes_aux RBRACE end_function
-            | LBRACE start_function statutes_aux RETURN ID SEMICOLON RBRACE end_function
-            | LBRACE start_function dec_vars number_local_vars statutes_aux RETURN ID SEMICOLON RBRACE end_function'''
+    '''body : LBRACE start_function dec_vars number_local_vars statutes_aux number_temps_vars RBRACE end_function
+            | LBRACE start_function number_local_vars statutes_aux number_temps_vars RBRACE end_function
+            | LBRACE start_function number_local_vars statutes_aux number_temps_vars RETURN ID SEMICOLON RBRACE end_function
+            | LBRACE start_function dec_vars number_local_vars statutes_aux number_temps_vars RETURN ID SEMICOLON RBRACE end_function'''
     p[0] = 'program'
 
 def p_statutes(p):
@@ -409,7 +409,11 @@ def p_insert_number_params(self):
 
 def p_number_local_vars(self):
     'number_local_vars :'
-    #!!!! guardar en el directorio el numero de variables
+    sF.saveLocalVars()
+
+def p_number_temps_vars(self):
+    'number_temps_vars :'
+    sF.saveTempVars()
 
 def p_start_function(self):
     'start_function :'
@@ -476,19 +480,20 @@ if __name__ == '__main__':
         print("stack of types: ", sF.typesStack)
         print("stack of jumps: ", sF.jumpsStack)
         sF.printQuadruples()
+
         # print("diccionario: ", sF.direcClasses);
         # print("funciones de Gato: ", sF.direcClasses.get("Gato").c_funcs);
         # print("var globales de Gato: ", sF.direcClasses.get("Gato").c_funcs.get("vG").f_vars);
         # print("contenido de clase gato: ", sF.direcClasses.get("Gato"));
 
         ### Memory added to variable tables test ###
-        print("var globales de main: ", sF.direcClasses.get("main").c_funcs.get("vG").f_vars);
-        print("var global p: ", sF.direcClasses.get("main").c_funcs.get("vG").f_vars["p"].memRef);
-        print("var global k: ", sF.direcClasses.get("main").c_funcs.get("vG").f_vars["k"].memRef);
+        """ print("var globales de main: ", sF.direcClasses.get("main").c_funcs.get("vG").f_vars)
+        print("var global p: ", sF.direcClasses.get("main").c_funcs.get("vG").f_vars["p"].memRef)
+        print("var global k: ", sF.direcClasses.get("main").c_funcs.get("vG").f_vars["k"].memRef)
 
-        print("var local paola: ", sF.direcClasses.get("main").c_funcs.get("getTotal").f_vars["paola"].memRef);
-        print("var local omar: ", sF.direcClasses.get("main").c_funcs.get("getTotal").f_vars["omar"].memRef);
-        print("var local joe: ", sF.direcClasses.get("main").c_funcs.get("getTotal").f_vars["joe"].memRef);
+        print("var local paola: ", sF.direcClasses.get("main").c_funcs.get("getTotal").f_vars["paola"].memRef)
+        print("var local omar: ", sF.direcClasses.get("main").c_funcs.get("getTotal").f_vars["omar"].memRef)
+        print("var local joe: ", sF.direcClasses.get("main").c_funcs.get("getTotal").f_vars["joe"].memRef) """
 
         if result != None:
             print("Program accepted")
