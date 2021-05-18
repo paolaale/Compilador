@@ -8,6 +8,7 @@ import ply.yacc as yacc
 from lexer import tokens # Get the token list from the lexer
 import semanticFunc as sF
 import MemoryDispatcher as mD # solo para probar
+import Testing as test
 
 def p_program(p):
     'program : PROGRAM ID TWOPOINTS check_init program_classes MAIN add_class LBRACE program_body init RBRACE END end_program'
@@ -482,13 +483,7 @@ if __name__ == '__main__':
         # print("contenido de clase gato: ", sF.direcClasses.get("Gato"));
 
         ### Memory added to variable tables test ###
-        print("var globales de main: ", sF.direcClasses.get("main").c_funcs.get("vG").f_vars);
-        print("var global p: ", sF.direcClasses.get("main").c_funcs.get("vG").f_vars["p"].memRef);
-        print("var global k: ", sF.direcClasses.get("main").c_funcs.get("vG").f_vars["k"].memRef);
-
-        print("var local paola: ", sF.direcClasses.get("main").c_funcs.get("getTotal").f_vars["paola"].memRef);
-        print("var local omar: ", sF.direcClasses.get("main").c_funcs.get("getTotal").f_vars["omar"].memRef);
-        print("var local joe: ", sF.direcClasses.get("main").c_funcs.get("getTotal").f_vars["joe"].memRef);
+        test.printMemoryInDeclaration()
 
         if result != None:
             print("Program accepted")

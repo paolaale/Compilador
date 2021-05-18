@@ -1,4 +1,14 @@
 program p3 :
+    
+    class Perro {
+        var int a, b, c;
+
+        funct void getTotal(int a, int b){
+            var float k;
+            write("hola");
+        }
+
+    }
    
     main {
 
@@ -16,7 +26,7 @@ program p3 :
             var int p, f, g;
                 float harry, potter;
             call getTotal();
-            p = 0;
+            p = 19;
             write("hola");
 
             while (p < 7) do {

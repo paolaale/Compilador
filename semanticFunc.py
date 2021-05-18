@@ -72,6 +72,7 @@ oL = {"and", "or"}
 # and the name of the parent if is inherit, otherwise recieve None
 def addClass(cName, cInherits, cParentName):
     global direcClasses, currentClass, currentFunct
+    mD.reset_global_space()
     currentClass = cName 
     currentFunct = ""
     # Add to the dictionary of classes the class
@@ -81,7 +82,7 @@ def addClass(cName, cInherits, cParentName):
 # and the type of return
 def addFunction(fName, fType):
     global currentClass, currentFunct, numberOfParams
-
+    mD.reset_local_space()
     currentFunct = fName
     # Add to dictionary of classes, in the current class the function
     direcClasses[currentClass].c_funcs[fName] = Functions(fType, [], numberOfParams, None) 
@@ -111,8 +112,8 @@ def addParam(pName, pType, pSize1, pSize2):
     global currentFunct, currentClass, numberOfParams
     
     # Add to dictionary of classes, in the current class and current function the parameters
-    direcClasses[currentClass].c_funcs[currentFunct].f_vars[pName] = Vars(pType, pSize1, pSize2)
-    # Add to dictionary of classes, in the current class and current function the parameter type in an array
+    direcClasses[currentClass].c_funcs[currentFunct].f_vars[pName] = Vars(pType, pSize1, pSize2, mD.get_space_avail("local", pType, 1))
+    # Add to dictionary of classes, in the current class and current function the parameter type isn an array
     direcClasses[currentClass].c_funcs[currentFunct].f_params_type.append(pType)
     # Count the numer of parameters in current function for later use
     numberOfParams += 1 

@@ -41,4 +41,8 @@ Alan Zavala Lévaro A01338448
 * Se comento el código
 * Se hizo la documentación de lo que se lleva actualmente
 
-## Avance 5 (14 mayo)
+## Avance 6 (14 mayo)
+*  Estructuración de arrays y matrices (diseño y lógica en branch local)
+*  Programación de la generación de cuádruplos de las funciones void
+*  Programación de asignación de memoria a las variables del programa en compilación
+*  Diseño del manejo de memorias para temporales y de la memoria en ejecución en general.

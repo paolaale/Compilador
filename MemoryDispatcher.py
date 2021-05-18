@@ -22,9 +22,18 @@ memoryDispatcher = {
     "local_t_bool": MemoryRange(34000, 34999),
     "const_int": MemoryRange(35000, 35999),
     "const_float": MemoryRange(36000, 36999)
+
+    "objects_int: " MemoryRange(100000, 150000)
+
+    # perro1 var a => 100001      100001
+    # perro2 var a => 100002      100001
+    # gato1 var a => 100003       100001
+
+
 }
 
 def get_space_avail(scope, varType, spaceNeed):
+    global memoryDispatcher
 
     memoryRange = getMemoryRangeOfDec(scope, varType)
 
@@ -58,5 +67,24 @@ def getMemoryRangeOfDec(scope, varType):
         else:
             return "local_char"
 
-def update_space_avail(varType):
-    memoryDispatcher[varType].currentVal = memoryDispatcher[varType].lowerLimit
+def reset_local_space():
+    global memoryDispatcher
+
+    memoryDispatcher["local_int"].currentVal = memoryDispatcher["local_int"].lowerLimit
+    memoryDispatcher["local_t_int"].currentVal = memoryDispatcher["local_t_int"].lowerLimit
+    memoryDispatcher["local_float"].currentVal = memoryDispatcher["local_float"].lowerLimit
+    memoryDispatcher["local_t_float"].currentVal = memoryDispatcher["local_t_float"].lowerLimit
+    memoryDispatcher["local_char"].currentVal = memoryDispatcher["local_char"].lowerLimit
+    memoryDispatcher["local_bool"].currentVal = memoryDispatcher["local_bool"].lowerLimit
+    memoryDispatcher["local_t_bool"].currentVal = memoryDispatcher["local_t_bool"].lowerLimit
+
+def reset_global_space():
+    global memoryDispatcher
+    
+    memoryDispatcher["global_int"].currentVal = memoryDispatcher["global_int"].lowerLimit
+    memoryDispatcher["global_t_int"].currentVal = memoryDispatcher["global_t_int"].lowerLimit
+    memoryDispatcher["global_float"].currentVal = memoryDispatcher["global_float"].lowerLimit
+    memoryDispatcher["global_t_float"].currentVal = memoryDispatcher["global_t_float"].lowerLimit
+    memoryDispatcher["global_char"].currentVal = memoryDispatcher["global_char"].lowerLimit
+    memoryDispatcher["global_bool"].currentVal = memoryDispatcher["global_bool"].lowerLimit
+    memoryDispatcher["global_t_bool"].currentVal = memoryDispatcher["global_t_bool"].lowerLimit
