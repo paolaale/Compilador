@@ -2,7 +2,7 @@
 # Equipo 23, orientado a objetos
 # Paola Villarreal - A00821971
 # Alan Zavala - A01338448
-# Fecha: 14/04/2021
+# Fecha: 14/05/2021
 
 import ply.yacc as yacc
 from lexer import tokens # Get the token list from the lexer
@@ -44,7 +44,7 @@ def p_dec_vars_aux(p):
 
 def p_dec_vars_simple(p):
     '''dec_vars_simple : simple_type vars_simple_type SEMICOLON
-                            | simple_type vars_simple_type SEMICOLON dec_vars_aux'''
+                        | simple_type vars_simple_type SEMICOLON dec_vars_aux'''
     p[0] = 'program'
 
 def p_simple_type(p):
@@ -111,10 +111,10 @@ def p_params_aux(p):
                 | LBRACKET RBRACKET LBRACKET RBRACKET add_matrix_var_params'''
 
 def p_body(p):
-    '''body : LBRACE start_function dec_vars number_local_vars statutes_aux RBRACE end_function
-            | LBRACE start_function statutes_aux RBRACE end_function
-            | LBRACE start_function statutes_aux RETURN ID SEMICOLON RBRACE end_function
-            | LBRACE start_function dec_vars number_local_vars statutes_aux RETURN ID SEMICOLON RBRACE end_function'''
+    '''body : LBRACE start_function dec_vars number_local_vars statutes_aux number_temps_vars RBRACE end_function
+            | LBRACE start_function number_local_vars statutes_aux number_temps_vars RBRACE end_function
+            | LBRACE start_function number_local_vars statutes_aux number_temps_vars RETURN ID SEMICOLON RBRACE end_function
+            | LBRACE start_function dec_vars number_local_vars statutes_aux number_temps_vars RETURN ID SEMICOLON RBRACE end_function'''
     p[0] = 'program'
 
 def p_statutes(p):
@@ -261,27 +261,17 @@ def p_error(p):
 
 def p_add_variable(p):
     'add_variable :'
-    sF.addVars(p[-1], p[-2], 0, 0)
+    sF.addVars(p[-1], p[-2], -1, -1)
     p[0] = 'program'
 
 def p_add_array_variable(p):
     'add_array_variable :'
-    sF.addVars(p[-4], p[-5], p[-2], 0)
+    sF.addVars(p[-4], p[-5], p[-2], -1)
     p[0] = 'program'
 
 def p_add_matrix_variable(p):
     'add_matrix_variable :'
     sF.addVars(p[-7], p[-8], p[-5], p[-2])
-    p[0] = 'program'
-
-def p_add_array_var_params(p):
-    'add_array_var_params :'
-    sF.addVars(p[-3], p[-4], 0, 0)
-    p[0] = 'program'
-
-def p_add_matrix_var_params(p):
-    'add_matrix_var_params :'
-    sF.addVars(p[-5], p[-6], 0, 0)
     p[0] = 'program'
 
 def p_add_function(p):
@@ -402,7 +392,17 @@ def p_end_for(self):
 
 def p_add_param(p):
     'add_param :'
-    sF.addParam(p[-1], p[-2], 0, 0)
+    sF.addParam(p[-1], p[-2], -1, -1)
+
+def p_add_array_var_params(p):
+    'add_array_var_params :'
+    sF.addParam(p[-3], p[-4], 0, 0)
+    p[0] = 'program'
+
+def p_add_matrix_var_params(p):
+    'add_matrix_var_params :'
+    sF.addParam(p[-5], p[-6], 0, 0)
+    p[0] = 'program'
 
 def p_insert_number_params(self):
     'insert_number_params :'
@@ -410,7 +410,11 @@ def p_insert_number_params(self):
 
 def p_number_local_vars(self):
     'number_local_vars :'
-    #!!!! guardar en el directorio el numero de variables
+    sF.saveLocalVars()
+
+def p_number_temps_vars(self):
+    'number_temps_vars :'
+    sF.saveTempVars()
 
 def p_start_function(self):
     'start_function :'
@@ -477,12 +481,8 @@ if __name__ == '__main__':
         print("stack of types: ", sF.typesStack)
         print("stack of jumps: ", sF.jumpsStack)
         sF.printQuadruples()
-        # print("diccionario: ", sF.direcClasses);
-        # print("funciones de Gato: ", sF.direcClasses.get("Gato").c_funcs);
-        # print("var globales de Gato: ", sF.direcClasses.get("Gato").c_funcs.get("vG").f_vars);
-        # print("contenido de clase gato: ", sF.direcClasses.get("Gato"));
 
-        ### Memory added to variable tables test ###
+        # Test memory assignation in declaration
         test.printMemoryInDeclaration()
 
         if result != None:

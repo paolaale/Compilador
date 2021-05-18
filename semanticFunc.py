@@ -2,7 +2,7 @@
 # Equipo 23, orientado a objetos
 # Paola Villarreal - A00821971
 # Alan Zavala - A01338448
-# Fecha: 14/04/2021
+# Fecha: 14/05/2021
 
 from Classes import Classes
 from Functions import Functions
@@ -44,6 +44,8 @@ quadElifExpression = None
 numberOfParams = 0
 functionToCall = ""
 numberOfArgs = 0
+numberOfVars = {"int": 0, "float": 0, "char": 0}
+numberOfTemps = {"int": 0, "float": 0, "char": 0, "bool": 0}
 
 #!!!! variable de prueba que se borrará después
 countOfTemps = 1
@@ -92,18 +94,34 @@ def addFunction(fName, fType):
 # size 2 that represents number of columns (matrix)
 def addVars(vName, vType, vSize1, vSize2):
     global lastVarType, currentFunct, currentClass
+
     if (vType == ','):
         vType = lastVarType
     else:
         lastVarType = vType
 
+    # if we are not in a function it means is a global variable
     if currentFunct != "":
+        # Check variable wasn't already declare in the function
+        if vName not in direcClasses[currentClass].c_funcs[currentFunct].f_vars:
 
-        # Add to dictionary of classes, in the current class and current function the variables
-        direcClasses[currentClass].c_funcs[currentFunct].f_vars[vName] = Vars(vType, vSize1, vSize2, mD.get_space_avail("local", vType, 1))
+            # To know how many spaces it will take on the memory
+            memorySize = abs(int(vSize1) * int(vSize2))
+            # Add to dictionary of classes, in the current class and current function the variables
+            direcClasses[currentClass].c_funcs[currentFunct].f_vars[vName] = Vars(vType, vSize1, vSize2, mD.get_space_avail("local", vType, memorySize))
+            numberOfVars[vType] += 1
+        else:
+            raise Exception("Variable '" + vName + "' already exist")
     else:
-        # Add to dictionary of classes, in the current class and global variables "function" the variables
-        direcClasses[currentClass].c_funcs["vG"].f_vars[vName] = Vars(vType, vSize1, vSize2, mD.get_space_avail("global", vType, 1))
+        # Check variable wasn't already declare as a global variable
+        if vName not in direcClasses[currentClass].c_funcs["vG"].f_vars:
+
+            # To know how many spaces it will take on the memory
+            memorySize = abs(int(vSize1) * int(vSize2))
+            # Add to dictionary of classes, in the current class and global variables "function" the variables
+            direcClasses[currentClass].c_funcs["vG"].f_vars[vName] = Vars(vType, vSize1, vSize2, mD.get_space_avail("global", vType, memorySize))
+        else:
+            raise Exception("Variable '" + vName + "' already exist")
 
 # Function that recieves the name and type of the parameter of the function
 # size 1 that represents number of rows (array)
@@ -111,12 +129,19 @@ def addVars(vName, vType, vSize1, vSize2):
 def addParam(pName, pType, pSize1, pSize2):
     global currentFunct, currentClass, numberOfParams
     
+    # To know how many spaces it will take on the memory
+    memorySize = abs(int(pSize1) * int(pSize2))
+
     # Add to dictionary of classes, in the current class and current function the parameters
-    direcClasses[currentClass].c_funcs[currentFunct].f_vars[pName] = Vars(pType, pSize1, pSize2, mD.get_space_avail("local", pType, 1))
-    # Add to dictionary of classes, in the current class and current function the parameter type isn an array
+    direcClasses[currentClass].c_funcs[currentFunct].f_vars[pName] = Vars(pType, pSize1, pSize2, mD.get_space_avail("local", pType, memorySize))
+    numberOfVars[pType] += 1
+    # Add to dictionary of classes, in the current class and current function the parameter type in an array
     direcClasses[currentClass].c_funcs[currentFunct].f_params_type.append(pType)
     # Count the numer of parameters in current function for later use
     numberOfParams += 1 
+
+def convertMatrixToColumn(): #!!!! recibe los tamaños
+    print("hola")
 
 # ---------------------- END ADDING ELEMENTS (FUNCT, CLASSES, VARS) ---------------------- #
     
@@ -193,8 +218,7 @@ def getVarType(id):
         scope = existsVar(id) # call to previous function
 
         if scope == None:
-            raise Exception("Variable: ", id, " doesn´t exist")
-            return "no existe"
+            raise Exception("Variable '" + id + "' was not declare.")
         else:
             #!!! aquí programar para validar que las variables usadas en expresiones sí estén inicializadas
             return direcClasses[currentClass].c_funcs[scope].f_vars[id].v_type
@@ -249,7 +273,7 @@ def pop_op_art_n1():
 
 # Function to generate th corresponding quadruple of an expression
 def generateExpQuad():
-    global operatorsStack, operandsStack, quadList, countOfTemps, quadCounter, typesStack
+    global operatorsStack, operandsStack, quadList, countOfTemps, quadCounter, typesStack, numberOfTemps
 
     rightOp = operandsStack.pop()
     rightOpType = typesStack.pop()
@@ -269,6 +293,8 @@ def generateExpQuad():
 
         operandsStack.append(result)
         typesStack.append(operandsMatch)
+
+        numberOfTemps[operandsMatch] += 1
     
     else:
         raise Exception("Type mismatch")
@@ -537,12 +563,27 @@ def startFunction():
 
     direcClasses[currentClass].c_funcs[currentFunct].f_start_quadruple = quadCounter
 
+def saveLocalVars():
+    global numberOfVars
+
+    #!!!! calcula la memoria
+    print("funct var types count", numberOfVars)
+    numberOfVars = {"int": 0, "float": 0, "char": 0}
+
+def saveTempVars():
+    global numberOfTemps
+
+    #!!!! calcula la memoria
+    print("funct temp var types count", numberOfTemps)
+    numberOfTemps = {"int": 0, "float": 0, "char": 0, "bool": 0}
+
 # Function that indicates where the function end and release the cuurent var table
 def endFunction():
-    global quadCounter, quadList
+    global quadCounter, quadList, countOfTemps
 
     quadCounter += 1
     quadList.append(Quadruple("END FUNCTION", None, None, None))
+    countOfTemps = 1
     #!!!! matar a current directorio de variables
     #!!!! guardar numero de temporales usados
 
