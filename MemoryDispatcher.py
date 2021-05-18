@@ -23,7 +23,7 @@ memoryDispatcher = {
     "const_int": MemoryRange(35000, 35999),
     "const_float": MemoryRange(36000, 36999)
 
-    "objects_int: " MemoryRange(100000, 150000)
+    # "objects_int: " MemoryRange(100000, 150000)
 
     # perro1 var a => 100001      100001
     # perro2 var a => 100002      100001
