@@ -31,6 +31,9 @@ typesStack = deque()
 # List of quadruples
 quadList = []
 
+# Temps Memory directions Dictionary
+directTemp = {}
+
 # Stacks for jumps in the quadruples
 jumpsStack = deque()
 gotoStack = deque()
@@ -86,6 +89,7 @@ def addFunction(fName, fType):
     global currentClass, currentFunct, numberOfParams
     mD.reset_local_space()
     currentFunct = fName
+    directTemp = {}
     # Add to dictionary of classes, in the current class the function
     direcClasses[currentClass].c_funcs[fName] = Functions(fType, [], numberOfParams, None) 
 
@@ -286,9 +290,11 @@ def generateExpQuad():
     # If operands types are compatible, generate quadruple and update quadcounter, else, throw exception
     if operandsMatch != "error":
         result = "TEMP" + str(countOfTemps)
+        tempResult = mD.get_space_avail("temp", operandsMatch, 1)
         countOfTemps += 1
 
         quadCounter += 1
+
         quadList.append(Quadruple(operator, leftOp, rightOp, result))
 
         operandsStack.append(result)
@@ -616,6 +622,13 @@ def endProgram():
     global quadList
 
     quadList.append(Quadruple("END PROGRAM", None, None, None))
+
+#---------------------- MEMORY REFERENCES START ---------------------- #
+def getMemoryRef(op, className, funcName):
+    global direcClasses
+
+    return direcClasses[className].c_funcs[funcName].f_vars[op].mem_ref;
+#---------------------- MEMORY REFERENCES END ---------------------- #
 
 
 #!!!! se borrara después  
