@@ -1,4 +1,4 @@
-program arr1 :
+program arr2 :
 
     main {
 
@@ -7,8 +7,9 @@ program arr1 :
             var int i[5];
             int a, b;
             
-            a = 3;
-            write(i[2+b]);
+            i[2+b] = 3;
+
+            i[7] = 4 * 8 + i[2];
         }
     }
 end

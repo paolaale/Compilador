@@ -581,8 +581,11 @@ def endFunction():
 
 #---------------------- END FUNCTIONS ---------------------- #
 
-#---------------------- ARRAYS ---------------------- #
+#---------------------- DATA STRUCTURES ---------------------- #
 
+# --- ARRAYS --- #
+
+# Verify that the id is an array and creates a fake bottom
 def accessArray():
     global operandsStack, typesStack, operatorsStack, currentArraySize
 
@@ -595,6 +598,8 @@ def accessArray():
     else:
         raise Exception("Type missmatch")
 
+# Verify that the index of the array to access is an integer and 
+# creates quadruple to check that the position is accesible
 def verifyIndex():
     global quadCounter, quadList, operandsStack, currentArraySize, typesStack
 
@@ -605,6 +610,7 @@ def verifyIndex():
     else:
         raise Exception("Array subscript is not an integer")
 
+# Sum the virtual address to acces the correct and wanted index
 def endArray():
     global quadCounter, quadList, operandsStack, typesStack, operatorsStack, countOfTemps
 
@@ -620,7 +626,13 @@ def endArray():
     typesStack.append(operandsMatch)
     operatorsStack.pop()
 
-#---------------------- END ARRAYS ---------------------- #
+# --- END ARRAYS --- #
+
+# --- MATRIX --- #
+
+# --- END MATRIX --- #
+
+#---------------------- END DATA STRUCTURES ---------------------- #
 
 #---------------------- MAIN ---------------------- #
 

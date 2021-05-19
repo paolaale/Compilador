@@ -1,14 +1,15 @@
-program arr1 :
+program mat1 :
 
     main {
 
         init {
-           
-            var int i[5];
+
+            var int j[4][9];
             int a, b;
             
             a = 3;
-            write(i[2+b]);
+            write(j[2+a][4]);
         }
     }
+
 end
