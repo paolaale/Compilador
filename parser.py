@@ -485,6 +485,8 @@ if __name__ == '__main__':
         print("AAAAAAAAAAAAAAAAAAAAAAAAA")
         sF.printMemoryQuadruples()
         # Test memory assignation in declaration
+        test.printFunctsTable()
+        test.printVarsTable()
         test.printMemoryInDeclaration()
 
         if result != None:
