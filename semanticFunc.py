@@ -336,7 +336,7 @@ def pop_op_assign():
 # Function that saves the string to write
 def saveString(s):
     global stringToWrite
-
+    print("GOKUUUUU: ", s);
     stringToWrite = s
 
 # Function that generates the write quad
