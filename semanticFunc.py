@@ -31,8 +31,14 @@ typesStack = deque()
 # List of quadruples
 quadList = []
 
+# List of quadruples MEMORY
+quadMEM = []
+
 # Temps Memory directions Dictionary
 directTemp = {}
+
+#Temps Memory Constants
+directConstants = {}
 
 # Stacks for jumps in the quadruples
 jumpsStack = deque()
@@ -211,11 +217,15 @@ def existsVar(id):
 # Function that recieves an id and verify that the variable exists 
 # if found returns the variable type, if not returns an exception
 def getVarType(id):
-    global currentFunct, currentClass
+    global currentFunct, currentClass, directConstants
    
     if id.isdigit():
+        if id not in directConstants:
+            directConstants[id] = mD.get_space_avail("const", "int", 1)
         return "int"
     elif isfloat(id):
+        if id not in directConstants:
+            directConstants[id] = mD.get_space_avail("float", "int", 1)
         return "float"     
     #!!!! aqui probablemente agregar uno para los chars, para que jale la asignacion a = 'b'
     else:   
@@ -277,7 +287,7 @@ def pop_op_art_n1():
 
 # Function to generate th corresponding quadruple of an expression
 def generateExpQuad():
-    global operatorsStack, operandsStack, quadList, countOfTemps, quadCounter, typesStack, numberOfTemps
+    global operatorsStack, operandsStack, quadList, countOfTemps, quadCounter, typesStack, numberOfTemps, directConstants
 
     rightOp = operandsStack.pop()
     rightOpType = typesStack.pop()
@@ -290,12 +300,35 @@ def generateExpQuad():
     # If operands types are compatible, generate quadruple and update quadcounter, else, throw exception
     if operandsMatch != "error":
         result = "TEMP" + str(countOfTemps)
-        tempResult = mD.get_space_avail("temp", operandsMatch, 1)
+        tempResult = mD.get_space_avail("temp", operandsMatch, 1);
+        directTemp[result] = tempResult
+
+        scopeLeftOp = ""
+        scopeRightOp = ""
+        memRefLeftOp = ""
+        memRefRightOp = ""
+
+        if leftOp in directConstants:
+            memRefLeftOp = directConstants[leftOp]
+        elif leftOp in directTemp:
+            memRefLeftOp = directConstants[leftOp]
+        else:
+            scopeLeftOp = existsVar(leftOp)
+            memRefLeftOp = getMemoryRef(leftOp, currentClass, scopeLeftOp)
+        if rightOp in directConstants:
+            memRefRightOp = directConstants[rightOp]
+        elif rightOp in directTemp:
+            memRefLeftOp = directConstants[leftOp]
+        else:
+            scopeRightOp = existsVar(rightOp)
+            memRefRightOp = getMemoryRef(rightOp, currentClass, scopeLeftOp)
+
         countOfTemps += 1
 
         quadCounter += 1
 
         quadList.append(Quadruple(operator, leftOp, rightOp, result))
+        quadMEM.append(Quadruple(operator, memRefLeftOp, memRefRightOp, tempResult))
 
         operandsStack.append(result)
         typesStack.append(operandsMatch)
@@ -627,7 +660,7 @@ def endProgram():
 def getMemoryRef(op, className, funcName):
     global direcClasses
 
-    return direcClasses[className].c_funcs[funcName].f_vars[op].mem_ref;
+    return direcClasses[className].c_funcs[funcName].f_vars[op].memRef;
 #---------------------- MEMORY REFERENCES END ---------------------- #
 
 
@@ -639,3 +672,10 @@ def printQuadruples():
         print("Quad ", i, " symbol: ", quad.operation, " left: ", quad.left_op, " right: ", quad.right_op, " temp: ", quad.tResult)
         i += 1
 
+
+def printMemoryQuadruples():
+    global quadList, quadCounter
+    i = 0
+    for quad in quadMEM:
+        print("Quad ", i, " symbol: ", quad.operation, " left: ", quad.left_op, " right: ", quad.right_op, " temp: ", quad.tResult)
+        i += 1

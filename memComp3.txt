@@ -33,13 +33,13 @@ program p3 :
                 write("adios");
             }
 
-            if (p < 7) then {
+            if (k < 7) then {
                 write("adios");
             } 
-            elif (p == 7) then {
+            elif (f == 7) then {
                 write("adios");
             }
-            elif (p > 7) then {
+            elif (g > 7) then {
                 write("adios");
             }
             else {

@@ -35,7 +35,12 @@ memoryDispatcher = {
 def get_space_avail(scope, varType, spaceNeed):
     global memoryDispatcher
 
-    memoryRange = getMemoryRangeOfDec(scope, varType)
+    if scope == "temp":
+        memoryRange = getMemoryTemp(varType);
+    elif scope == "const":
+        memoryRange = getMemoryConst(varType)
+    else:
+        memoryRange = getMemoryRangeOfDec(scope, varType)
 
     currentSpaceVal = memoryDispatcher[memoryRange].currentVal
     directToReturn = currentSpaceVal + spaceNeed - 1
@@ -51,7 +56,7 @@ def get_space_avail(scope, varType, spaceNeed):
 # obtenemos el rango al que pertecene la memoria de variables en declaración
 def getMemoryRangeOfDec(scope, varType):
 
-    if scope == "global":
+    if scope == "vG":
         if varType == "int":
             return "global_int"
         elif varType == "float":
@@ -66,6 +71,20 @@ def getMemoryRangeOfDec(scope, varType):
             return "local_float"
         else:
             return "local_char"
+
+def getMemoryTemp(varType):
+    if varType == "int":
+        return "local_t_int"
+    elif varType == "float":
+        return "local_t_float"
+    else:
+        return "local_t_bool"
+
+def getMemoryConst(varType):
+    if varType == "int":
+        return "const_int"
+    elif varType == "float":
+        return  "const_float"
 
 def reset_local_space():
     global memoryDispatcher
