@@ -144,15 +144,15 @@ def p_var_aux(p):
     p[0] = 'program'
 
 def p_var_aux_2(p):
-    '''var_aux_2 : LBRACKET access_array exp verify_index RBRACKET end_array
-            |  LBRACKET access_matrix_1 exp RBRACKET LBRACKET access_matrix_2 exp RBRACKET'''
+    '''var_aux_2 : LBRACKET access_array exp verify_array_index RBRACKET end_array
+            |  access_matrix LBRACKET exp RBRACKET verify_matrix_index1 LBRACKET exp RBRACKET verify_matrix_index2 end_matrix'''
     p[0] = 'program'
 
 def p_call(p):
     '''call : ID exist_function LPAREN era_function RPAREN gosub_function
-            | ID exist_object POINT ID exist_method LPAREN RPAREN
+            | ID POINT ID LPAREN RPAREN
             | ID exist_function LPAREN era_function call_aux RPAREN gosub_function
-            | ID exist_object POINT ID exist_method LPAREN call_aux RPAREN'''
+            | ID POINT ID LPAREN call_aux RPAREN'''
     p[0] = 'program'
 
 def p_call_aux(p):
@@ -435,27 +435,37 @@ def p_access_array(self):
     'access_array :'
     sF.accessArray()
 
-def p_verify_index(self):
-    'verify_index :'
-    sF.verifyIndex()
+def p_verify_array_index(self):
+    'verify_array_index :'
+    sF.verifyArrayIndex()
 
 def p_end_array(self):
     'end_array :'
     sF.endArray()
-    
-def p_access_matrix_1(self):
-    'access_matrix_1 :'
 
-def p_access_matrix_2(self):
-    'access_matrix_2 :'
+def p_access_matrix(self):
+    'access_matrix :'
+    sF.accessMatrix()
+
+def p_verify_matrix_index1(self):
+    'verify_matrix_index1 :'
+    sF.verifyMatrixIndex1()
+
+def p_verify_matrix_index2(self):
+    'verify_matrix_index2 :'
+    sF.verifyMatrixIndex2()
+
+def p_end_matrix(self):
+    'end_matrix :'
+    sF.endMatrix()
 
 # FUNCTIONS FOR CLASSES
 
-def p_exist_object(p):
+""" def p_exist_object(p):
     'exist_object :'
 
 def p_exist_method(p):
-    'exist_method :'
+    'exist_method :' """
 
 # FUNCTIONS FOR MAIN
 

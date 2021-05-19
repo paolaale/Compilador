@@ -1,0 +1,15 @@
+program mat1 :
+
+    main {
+
+        init {
+
+            var int a, b;
+            
+            if (8 < 15 and 7.3) then {
+                write("HOLA");
+            }
+        }
+    }
+
+end

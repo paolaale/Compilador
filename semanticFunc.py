@@ -47,8 +47,10 @@ numberOfArgs = 0
 numberOfVars = {"int": 0, "float": 0, "char": 0}
 numberOfTemps = {"int": 0, "float": 0, "char": 0, "bool": 0}
 
-# Helpers for arrays
+# Helpers for data structures
 currentArraySize = 0
+currentMatrixSize1 = 0
+currentMatrixSize2 = 0
 
 #!!!! variable de prueba que se borrará después
 countOfTemps = 1
@@ -600,7 +602,7 @@ def accessArray():
 
 # Verify that the index of the array to access is an integer and 
 # creates quadruple to check that the position is accesible
-def verifyIndex():
+def verifyArrayIndex():
     global quadCounter, quadList, operandsStack, currentArraySize, typesStack
 
     if typesStack[-1] == "int":
@@ -629,6 +631,49 @@ def endArray():
 # --- END ARRAYS --- #
 
 # --- MATRIX --- #
+
+# Verify that the id is an array and creates a fake bottom
+def accessMatrix():
+    global operandsStack, typesStack, operatorsStack, currentMatrixSize1, currentMatrixSize2
+
+    currentID = operandsStack.pop()
+    typesStack.pop()
+    currentMatrixSize1 = int(direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentID].rows)
+    currentMatrixSize2 = int(direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentID].cols)
+
+    if currentMatrixSize1 > 0 & currentMatrixSize2 > 0:
+        operatorsStack.append("[")
+    else:
+        raise Exception("Type missmatch")
+
+# Verify that the index of the array to access is an integer and 
+# creates quadruple to check that the position is accesible
+def verifyMatrixIndex1():
+    global quadCounter, quadList, operandsStack, currentMatrixSize1, typesStack
+
+    if typesStack[-1] == "int":
+        quadCounter += 1
+        quadList.append(Quadruple("VERIFY", operandsStack[-1], 0, currentMatrixSize1))
+        currentMatrixSize1 = 0
+    else:
+        raise Exception("Matrix subscript is not an integer")
+
+# Verify that the index of the array to access is an integer and 
+# creates quadruple to check that the position is accesible
+def verifyMatrixIndex2():
+    global quadCounter, quadList, operandsStack, currentMatrixSize2, typesStack
+
+    if typesStack[-1] == "int":
+        quadCounter += 1
+        quadList.append(Quadruple("VERIFY", operandsStack[-1], 0, currentMatrixSize2))
+        currentMatrixSize2 = 0
+    else:
+        raise Exception("Matrix subscript is not an integer")
+
+# Sum the virtual address to acces the correct and wanted index
+def endMatrix():
+    #!!!! sumar los ultimos dos temp + la virtual address (de acuerdo al aplastamiento)
+    print("HOLA")
 
 # --- END MATRIX --- #
 
