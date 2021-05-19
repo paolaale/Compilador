@@ -509,8 +509,12 @@ if __name__ == '__main__':
         print("stack of jumps: ", sF.jumpsStack)
         sF.printQuadruples()
 
+        print("--------------------------------------------")
+        sF.printMemoryQuadruples()
         # Test memory assignation in declaration
-        #test.printMemoryInDeclaration()
+        """ test.printFunctsTable()
+        test.printVarsTable()
+        test.printMemoryInDeclaration() """
 
         if result != None:
             print("Program accepted")
