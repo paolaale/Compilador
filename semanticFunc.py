@@ -393,6 +393,7 @@ def ifCondition():
         quadCounter += 1
         quadList.append(Quadruple("GOTOF", leftOp, None, None))
         quadMEM.append(Quadruple("GOTOF", memLeftOp, None, None))
+        print("QUADQUAD", quadCounter-1);
         jumpsStack.append(quadCounter-1)
 
 # Function that generates the if GOTO quad 
@@ -638,11 +639,11 @@ def endFunction():
 # Function that generates the quadruple at the start of the program to go to the init function
 def checkInit():
     global quadCounter, quadList, jumpsStack, quadMEM
-
+    jumpsStack.append(quadCounter)
     quadCounter += 1
     quadList.append(Quadruple("GOTO", None, None, None))
     quadMEM.append(Quadruple("GOTO", None, None, None))
-    jumpsStack.append(quadCounter-1)
+    
 
 # Function that saves where the code of the init function starts
 def startInit():
