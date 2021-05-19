@@ -5,8 +5,10 @@ program ar1 :
         init {
            
             var int i[5], j[4][9];
+            int a, b;
             
-            write("HOLA");
+            a = 3;
+            write(i[2+b]);
         }
     }
 end

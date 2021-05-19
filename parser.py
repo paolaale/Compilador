@@ -67,7 +67,7 @@ def p_vars_simple_type_aux(p):
 
 def p_dec_vars_complex(p):
     '''dec_vars_complex : OBJECT vars_complex_type SEMICOLON
-                              | OBJECT vars_complex_type SEMICOLON dec_vars_aux'''
+                        | OBJECT vars_complex_type SEMICOLON dec_vars_aux'''
     p[0] = 'program'
 
 def p_vars_complex_type(p):
@@ -111,10 +111,10 @@ def p_params_aux(p):
                 | LBRACKET RBRACKET LBRACKET RBRACKET add_matrix_var_params'''
 
 def p_body(p):
-    '''body : LBRACE start_function dec_vars number_local_vars statutes_aux number_temps_vars RBRACE end_function
-            | LBRACE start_function number_local_vars statutes_aux number_temps_vars RBRACE end_function
-            | LBRACE start_function number_local_vars statutes_aux number_temps_vars RETURN ID SEMICOLON RBRACE end_function
-            | LBRACE start_function dec_vars number_local_vars statutes_aux number_temps_vars RETURN ID SEMICOLON RBRACE end_function'''
+    '''body : LBRACE start_function dec_vars statutes_aux RBRACE end_function
+            | LBRACE start_function statutes_aux RBRACE end_function
+            | LBRACE start_function statutes_aux RETURN ID SEMICOLON RBRACE end_function
+            | LBRACE start_function dec_vars statutes_aux RETURN ID SEMICOLON RBRACE end_function'''
     p[0] = 'program'
 
 def p_statutes(p):
@@ -134,25 +134,25 @@ def p_statutes_aux(p):
 
 def p_assignation(p):
     '''assignation : ID push_var EQUAL push_op exp pop_op_assign
-                    | ID var_aux push_var EQUAL push_op exp pop_op_assign'''
+                    | ID push_var var_aux EQUAL push_op exp pop_op_assign'''
     p[0] = 'program'
 
 def p_var_aux(p):
     '''var_aux : POINT ID 
             |  POINT ID var_aux_2
-            |  var_aux_2'''
+            |  var_aux_2 '''
     p[0] = 'program'
 
 def p_var_aux_2(p):
-    '''var_aux_2 : LBRACKET exp RBRACKET
-            |  LBRACKET exp RBRACKET LBRACKET exp RBRACKET'''
+    '''var_aux_2 : LBRACKET access_array exp verify_index RBRACKET end_array
+            |  LBRACKET access_matrix_1 exp RBRACKET LBRACKET access_matrix_2 exp RBRACKET'''
     p[0] = 'program'
 
 def p_call(p):
-    '''call : ID  exist_function LPAREN era_function RPAREN gosub_function
-            | ID POINT ID LPAREN RPAREN
+    '''call : ID exist_function LPAREN era_function RPAREN gosub_function
+            | ID exist_object POINT ID exist_method LPAREN RPAREN
             | ID exist_function LPAREN era_function call_aux RPAREN gosub_function
-            | ID POINT ID LPAREN call_aux RPAREN'''
+            | ID exist_object POINT ID exist_method LPAREN call_aux RPAREN'''
     p[0] = 'program'
 
 def p_call_aux(p):
@@ -238,8 +238,8 @@ def p_factor_aux(p):
     p[0] = 'program'
 
 def p_cte(p):
-    '''cte : ID push_var
-        | ID var_aux push_var
+    '''cte : ID push_var 
+        | ID push_var var_aux
         | CTEI push_var
         | CTEF push_var
         | CTECHAR push_var'''
@@ -262,17 +262,14 @@ def p_error(p):
 def p_add_variable(p):
     'add_variable :'
     sF.addVars(p[-1], p[-2], -1, -1)
-    p[0] = 'program'
 
 def p_add_array_variable(p):
     'add_array_variable :'
     sF.addVars(p[-4], p[-5], p[-2], -1)
-    p[0] = 'program'
 
 def p_add_matrix_variable(p):
     'add_matrix_variable :'
     sF.addVars(p[-7], p[-8], p[-5], p[-2])
-    p[0] = 'program'
 
 def p_add_function(p):
     'add_function :'
@@ -328,7 +325,7 @@ def p_pop_paren(p):
     'pop_paren :'
     sF.pop_paren()
 
-# FUNCTIOND FOR LINEAL STATEMENTS
+# FUNCTIONS FOR LINEAL STATEMENTS
 
 def p_generate_write(self):
     'generate_write :'
@@ -408,14 +405,6 @@ def p_insert_number_params(self):
     'insert_number_params :'
     sF.insertParams()
 
-def p_number_local_vars(self):
-    'number_local_vars :'
-    sF.saveLocalVars()
-
-def p_number_temps_vars(self):
-    'number_temps_vars :'
-    sF.saveTempVars()
-
 def p_start_function(self):
     'start_function :'
     sF.startFunction() 
@@ -440,7 +429,35 @@ def p_gosub_function(self):
     'gosub_function :'
     sF.gosubFunction()
 
-# FUNCTION FOR MAIN
+# FUNCTIONS FOR ARRAYS
+
+def p_access_array(self):
+    'access_array :'
+    sF.accessArray()
+
+def p_verify_index(self):
+    'verify_index :'
+    sF.verifyIndex()
+
+def p_end_array(self):
+    'end_array :'
+    sF.endArray()
+    
+def p_access_matrix_1(self):
+    'access_matrix_1 :'
+
+def p_access_matrix_2(self):
+    'access_matrix_2 :'
+
+# FUNCTIONS FOR CLASSES
+
+def p_exist_object(p):
+    'exist_object :'
+
+def p_exist_method(p):
+    'exist_method :'
+
+# FUNCTIONS FOR MAIN
 
 def p_check_init(self):
     'check_init :'
@@ -483,7 +500,7 @@ if __name__ == '__main__':
         sF.printQuadruples()
 
         # Test memory assignation in declaration
-        test.printMemoryInDeclaration()
+        #test.printMemoryInDeclaration()
 
         if result != None:
             print("Program accepted")

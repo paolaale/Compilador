@@ -47,6 +47,9 @@ numberOfArgs = 0
 numberOfVars = {"int": 0, "float": 0, "char": 0}
 numberOfTemps = {"int": 0, "float": 0, "char": 0, "bool": 0}
 
+# Helpers for arrays
+currentArraySize = 0
+
 #!!!! variable de prueba que se borrará después
 countOfTemps = 1
 
@@ -563,31 +566,61 @@ def startFunction():
 
     direcClasses[currentClass].c_funcs[currentFunct].f_start_quadruple = quadCounter
 
-def saveLocalVars():
-    global numberOfVars
-
-    #!!!! calcula la memoria
-    print("funct var types count", numberOfVars)
-    numberOfVars = {"int": 0, "float": 0, "char": 0}
-
-def saveTempVars():
-    global numberOfTemps
-
-    #!!!! calcula la memoria
-    print("funct temp var types count", numberOfTemps)
-    numberOfTemps = {"int": 0, "float": 0, "char": 0, "bool": 0}
-
 # Function that indicates where the function end and release the cuurent var table
 def endFunction():
-    global quadCounter, quadList, countOfTemps
+    global quadCounter, quadList, countOfTemps, numberOfVars, numberOfTemps
 
     quadCounter += 1
     quadList.append(Quadruple("END FUNCTION", None, None, None))
     countOfTemps = 1
+    #!!!! calcula la memoria
+    numberOfVars = {"int": 0, "float": 0, "char": 0}
+    numberOfTemps = {"int": 0, "float": 0, "char": 0, "bool": 0}
     #!!!! matar a current directorio de variables
     #!!!! guardar numero de temporales usados
 
 #---------------------- END FUNCTIONS ---------------------- #
+
+#---------------------- ARRAYS ---------------------- #
+
+def accessArray():
+    global operandsStack, typesStack, operatorsStack, currentArraySize
+
+    currentID = operandsStack.pop()
+    typesStack.pop()
+    currentArraySize = int(direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentID].rows)
+
+    if currentArraySize > 0:
+        operatorsStack.append("[")
+    else:
+        raise Exception("Type missmatch")
+
+def verifyIndex():
+    global quadCounter, quadList, operandsStack, currentArraySize, typesStack
+
+    if typesStack[-1] == "int":
+        quadCounter += 1
+        quadList.append(Quadruple("VERIFY", operandsStack[-1], 0, currentArraySize))
+        currentArraySize = 0
+    else:
+        raise Exception("Array subscript is not an integer")
+
+def endArray():
+    global quadCounter, quadList, operandsStack, typesStack, operatorsStack, countOfTemps
+
+    leftOp = operandsStack.pop()
+    leftOpType = typesStack.pop()
+    result = "TEMP" + str(countOfTemps)
+    countOfTemps += 1
+
+    quadCounter += 1
+    quadList.append(Quadruple("+", leftOp, "dirr virtual incial de array", result))
+    operandsMatch = isAMatch(leftOpType, "+", "int")
+    operandsStack.append(result)
+    typesStack.append(operandsMatch)
+    operatorsStack.pop()
+
+#---------------------- END ARRAYS ---------------------- #
 
 #---------------------- MAIN ---------------------- #
 
