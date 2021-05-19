@@ -649,10 +649,9 @@ def checkInit():
 def startInit():
     global quadCounter, quadList, jumpsStack, quadMEM
 
-    quadCounter += 1
     quadInit = jumpsStack.pop()
-    quadList[quadInit].tResult = quadCounter-1
-    quadMEM[quadInit].tResult = quadCounter-1
+    quadList[quadInit].tResult = quadCounter
+    quadMEM[quadInit].tResult = quadCounter
 
 #---------------------- END MAIN ---------------------- #
 
