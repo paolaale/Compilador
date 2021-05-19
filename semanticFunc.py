@@ -20,7 +20,7 @@ direcClasses = {}
 
 # Helpers to save classes, functions and vars names
 currentClass = ""
-currentFunct = ""
+currentFunct = "vG"
 lastVarType = ""
 
 # Stacks to solve expressions
@@ -85,7 +85,7 @@ def addClass(cName, cInherits, cParentName):
     global direcClasses, currentClass, currentFunct
     mD.reset_global_space()
     currentClass = cName 
-    currentFunct = ""
+    currentFunct = "vG"
     # Add to the dictionary of classes the class
     direcClasses[cName] = Classes(cInherits, cParentName) 
 
@@ -110,28 +110,17 @@ def addVars(vName, vType, vSize1, vSize2):
     else:
         lastVarType = vType
 
-    # if we are not in a function it means is a global variable
-    if currentFunct != "":
-        # Check variable wasn't already declare in the function
-        if vName not in direcClasses[currentClass].c_funcs[currentFunct].f_vars:
 
-            # To know how many spaces it will take on the memory
-            memorySize = abs(int(vSize1) * int(vSize2))
-            # Add to dictionary of classes, in the current class and current function the variables
-            direcClasses[currentClass].c_funcs[currentFunct].f_vars[vName] = Vars(vType, vSize1, vSize2, mD.get_space_avail("local", vType, memorySize))
-            numberOfVars[vType] += 1
-        else:
-            raise Exception("Variable '" + vName + "' already exist")
+    # Check variable wasn't already declare in the function
+    if vName not in direcClasses[currentClass].c_funcs[currentFunct].f_vars:
+
+        # To know how many spaces it will take on the memory
+        memorySize = abs(int(vSize1) * int(vSize2))
+        # Add to dictionary of classes, in the current class and current function the variables
+        direcClasses[currentClass].c_funcs[currentFunct].f_vars[vName] = Vars(vType, vSize1, vSize2, mD.get_space_avail(currentFunct, vType, memorySize))
+        numberOfVars[vType] += 1
     else:
-        # Check variable wasn't already declare as a global variable
-        if vName not in direcClasses[currentClass].c_funcs["vG"].f_vars:
-
-            # To know how many spaces it will take on the memory
-            memorySize = abs(int(vSize1) * int(vSize2))
-            # Add to dictionary of classes, in the current class and global variables "function" the variables
-            direcClasses[currentClass].c_funcs["vG"].f_vars[vName] = Vars(vType, vSize1, vSize2, mD.get_space_avail("global", vType, memorySize))
-        else:
-            raise Exception("Variable '" + vName + "' already exist")
+        raise Exception("Variable '" + vName + "' already exist")
 
 # Function that recieves the name and type of the parameter of the function
 # size 1 that represents number of rows (array)
@@ -303,25 +292,8 @@ def generateExpQuad():
         tempResult = mD.get_space_avail("temp", operandsMatch, 1);
         directTemp[result] = tempResult
 
-        scopeLeftOp = ""
-        scopeRightOp = ""
-        memRefLeftOp = ""
-        memRefRightOp = ""
-
-        if leftOp in directConstants:
-            memRefLeftOp = directConstants[leftOp]
-        elif leftOp in directTemp:
-            memRefLeftOp = directConstants[leftOp]
-        else:
-            scopeLeftOp = existsVar(leftOp)
-            memRefLeftOp = getMemoryRef(leftOp, currentClass, scopeLeftOp)
-        if rightOp in directConstants:
-            memRefRightOp = directConstants[rightOp]
-        elif rightOp in directTemp:
-            memRefLeftOp = directConstants[leftOp]
-        else:
-            scopeRightOp = existsVar(rightOp)
-            memRefRightOp = getMemoryRef(rightOp, currentClass, scopeLeftOp)
+        memRefLeftOp = getMemoryRef(leftOp, currentClass)
+        memRefRightOp = getMemoryRef(rightOp, currentClass)
 
         countOfTemps += 1
 
@@ -657,10 +629,19 @@ def endProgram():
     quadList.append(Quadruple("END PROGRAM", None, None, None))
 
 #---------------------- MEMORY REFERENCES START ---------------------- #
-def getMemoryRef(op, className, funcName):
-    global direcClasses
+def getMemoryRef(op, className):
+    global direcClasses, directConstants, directTemp
 
-    return direcClasses[className].c_funcs[funcName].f_vars[op].memRef;
+    scopeOfOp = ""
+
+    if op in directConstants:
+        return directConstants[op]
+    elif op in directTemp:
+        return directConstants[op]
+    else:
+        scopeOfOp = existsVar(op)
+
+    return direcClasses[className].c_funcs[scopeOfOp].f_vars[op].memRef;
 #---------------------- MEMORY REFERENCES END ---------------------- #
 
 
