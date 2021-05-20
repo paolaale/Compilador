@@ -187,13 +187,22 @@ def isAMatch(leftOpType, opSymbol, rightOpType):
 # ---------------------- START CHECKING VARIABLES EXIST ---------------------- #
 
 # Function that recieves a value 
+# and validates if is a int
+def isInt(value):
+    try:
+        int(value)
+        return True
+    except ValueError:
+        return False
+
+# Function that recieves a value 
 # and validates if is a float
-def isfloat(value):
-  try:
-    float(value)
-    return True
-  except ValueError:
-    return False
+def isFloat(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
 
 # Function that recieves an id and looks for them 
 # in the currents function or in the globals
@@ -215,11 +224,13 @@ def existsVar(id):
 def getVarType(id):
     global currentFunct, currentClass, directConstants
    
-    if id.isdigit():
+    if isInt(id):
+        print("ENTRE A DIGIT")
         if id not in directConstants:
             directConstants[id] = mD.get_space_avail("const", "int", 1)
         return "int"
-    elif isfloat(id):
+    elif isFloat(id):
+        print("ENTRE A FLOAT")
         if id not in directConstants:
             directConstants[id] = mD.get_space_avail("float", "int", 1)
         return "float"     
