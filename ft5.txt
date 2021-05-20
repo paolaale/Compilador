@@ -1,0 +1,41 @@
+program ft1 :
+
+    main {
+
+        var int j, k;
+        float i, f;
+
+        funct float uno(int a, float b) {
+            
+            if (a > 0) then {
+                i = a + b * j + i;
+                write(i + j);
+            }
+            else {
+                write(a + b);
+            }
+
+            return b;
+        }
+
+        funct void dos(int a, float g) {
+            
+            var float i;
+
+            while (a > 0) do {
+                a = a - k * j;
+                g = g * j - k;
+                i = uno(a, g);
+            }
+        }
+
+        init {
+           
+            j = 2;
+            k = j + 1;
+            f = 3.14;
+            
+            call dos(j + k, f * 3);
+        }
+    }
+end

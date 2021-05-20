@@ -36,7 +36,7 @@ def get_space_avail(scope, varType, spaceNeed):
     global memoryDispatcher
 
     if scope == "temp":
-        memoryRange = getMemoryTemp(varType);
+        memoryRange = getMemoryTemp(varType)
     elif scope == "const":
         memoryRange = getMemoryConst(varType)
     else:
@@ -46,7 +46,6 @@ def get_space_avail(scope, varType, spaceNeed):
     directToReturn = currentSpaceVal + spaceNeed - 1
 
     if directToReturn <= memoryDispatcher[memoryRange].upperLimit:
-
         memoryDispatcher[memoryRange].currentVal = currentSpaceVal + spaceNeed
         return directToReturn
     else:
@@ -63,7 +62,6 @@ def getMemoryRangeOfDec(scope, varType):
             return "global_float"
         else:
             return "global_char"
-
     else:
         if varType == "int":
             return "local_int"
