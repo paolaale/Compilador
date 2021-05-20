@@ -2,7 +2,7 @@
 # Equipo 23, orientado a objetos
 # Paola Villarreal - A00821971
 # Alan Zavala - A01338448
-# Fecha: 14/05/2021
+# Fecha: 21/05/2021
 
 from Classes import Classes
 from Functions import Functions
@@ -336,7 +336,7 @@ def pop_op_assign():
 # Function that saves the string to write
 def saveString(s):
     global stringToWrite
-    print("GOKUUUUU: ", s);
+    print("GOKUUUUU: ", s)
     stringToWrite = s
 
 # Function that generates the write quad
@@ -393,7 +393,7 @@ def ifCondition():
         quadCounter += 1
         quadList.append(Quadruple("GOTOF", leftOp, None, None))
         quadMEM.append(Quadruple("GOTOF", memLeftOp, None, None))
-        print("QUADQUAD", quadCounter-1);
+        print("QUADQUAD", quadCounter-1)
         jumpsStack.append(quadCounter-1)
 
 # Function that generates the if GOTO quad 
@@ -683,7 +683,7 @@ def getMemoryRef(op):
 
 #!!!! se borrara después  
 def printQuadruples():
-    global quadList, quadCounter
+    global quadList
     i = 0
     for quad in quadList:
         print("Quad ", i, " symbol: ", quad.operation, " left: ", quad.left_op, " right: ", quad.right_op, " temp: ", quad.tResult)
@@ -691,7 +691,7 @@ def printQuadruples():
 
 
 def printMemoryQuadruples():
-    global quadMEM, quadCounter
+    global quadMEM
     i = 0
     for quad in quadMEM:
         print("Quad ", i, " symbol: ", quad.operation, " left: ", quad.left_op, " right: ", quad.right_op, " temp: ", quad.tResult)
