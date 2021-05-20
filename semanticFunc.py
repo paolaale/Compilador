@@ -225,12 +225,10 @@ def getVarType(id):
     global currentFunct, currentClass, directConstants
    
     if isInt(id):
-        print("ENTRE A DIGIT")
         if id not in directConstants:
             directConstants[id] = mD.get_space_avail("const", "int", 1)
         return "int"
     elif isFloat(id):
-        print("ENTRE A FLOAT")
         if id not in directConstants:
             directConstants[id] = mD.get_space_avail("float", "int", 1)
         return "float"     
@@ -411,7 +409,6 @@ def ifCondition():
         quadCounter += 1
         quadList.append(Quadruple("GOTOF", leftOp, None, None))
         quadMEM.append(Quadruple("GOTOF", memLeftOp, None, None))
-        print("QUADQUAD", quadCounter-1)
         jumpsStack.append(quadCounter-1)
 
 # Function that generates the if GOTO quad 
@@ -625,28 +622,16 @@ def startFunction():
 
     direcClasses[currentClass].c_funcs[currentFunct].f_start_quadruple = quadCounter
 
-def saveLocalVars():
-    global numberOfVars
-
-    #!!!! calcula la memoria
-    print("funct var types count", numberOfVars)
-    numberOfVars = {"int": 0, "float": 0, "char": 0}
-
-def saveTempVars():
-    global numberOfTemps
-
-    #!!!! calcula la memoria
-    print("funct temp var types count", numberOfTemps)
-    numberOfTemps = {"int": 0, "float": 0, "char": 0, "bool": 0}
-
 # Function that indicates where the function end and release the cuurent var table
 def endFunction():
-    global quadCounter, quadList, countOfTemps, quadMEM
+    global quadCounter, quadList, countOfTemps, quadMEM, numberOfVars, numberOfTemps
 
     quadCounter += 1
     quadList.append(Quadruple("END FUNCTION", None, None, None))
     quadMEM.append(Quadruple("END FUNCTION", None, None, None))
     countOfTemps = 1
+    numberOfVars = {"int": 0, "float": 0, "char": 0}
+    numberOfTemps = {"int": 0, "float": 0, "char": 0, "bool": 0}
     #!!!! matar a current directorio de variables
     #!!!! guardar numero de temporales usados
 

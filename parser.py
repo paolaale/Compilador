@@ -112,10 +112,10 @@ def p_params_aux(p):
                 | LBRACKET RBRACKET LBRACKET RBRACKET add_matrix_var_params'''
 
 def p_body(p):
-    '''body : LBRACE start_function dec_vars number_local_vars statutes_aux number_temps_vars RBRACE end_function
-            | LBRACE start_function number_local_vars statutes_aux number_temps_vars RBRACE end_function
-            | LBRACE start_function number_local_vars statutes_aux number_temps_vars RETURN ID SEMICOLON RBRACE end_function
-            | LBRACE start_function dec_vars number_local_vars statutes_aux number_temps_vars RETURN ID SEMICOLON RBRACE end_function'''
+    '''body : LBRACE start_function dec_vars statutes_aux RBRACE end_function
+            | LBRACE start_function statutes_aux RBRACE end_function
+            | LBRACE start_function statutes_aux RETURN ID SEMICOLON RBRACE end_function
+            | LBRACE start_function dec_vars statutes_aux RETURN ID SEMICOLON RBRACE end_function'''
     p[0] = 'program'
 
 def p_statutes(p):
@@ -408,14 +408,6 @@ def p_add_matrix_var_params(p):
 def p_insert_number_params(self):
     'insert_number_params :'
     sF.insertParams()
-
-def p_number_local_vars(self):
-    'number_local_vars :'
-    sF.saveLocalVars()
-
-def p_number_temps_vars(self):
-    'number_temps_vars :'
-    sF.saveTempVars()
 
 def p_start_function(self):
     'start_function :'
