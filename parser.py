@@ -481,9 +481,10 @@ if __name__ == '__main__':
         print("stack of types: ", sF.typesStack)
         print("stack of jumps: ", sF.jumpsStack)
         sF.printQuadruples()
-
-        print("AAAAAAAAAAAAAAAAAAAAAAAAA")
+        print("-----------------------------------")
+        print("-----------------------------------")
         sF.printMemoryQuadruples()
+
         # Test memory assignation in declaration
         test.printFunctsTable()
         test.printVarsTable()

@@ -48,6 +48,13 @@ gotoStack = deque()
 stringToWrite = None
 quadCounter = 0
 quadElifExpression = None
+direcOperators = {
+                    "+": 1, "-": 2, "*": 3, "/": 4, "=": 5, 
+                    "and": 6, "or": 7, ">": 8, ">=": 9, "<": 10, 
+                    "<=": 11, "==": 12, "!=": 13, "VERIFY": 14, "WRITE": 15, 
+                    "READ": 16, "GOTO": 17, "GOTOF": 18, "ERA": 19, "PARAM": 20, 
+                    "GOSUB": 21, "END FUNCTION": 22, "END PROGRAM": 23
+                }
 
 # Helpers to fill functions
 numberOfParams = 0
@@ -289,7 +296,7 @@ def generateExpQuad():
     # If operands types are compatible, generate quadruple and update quadcounter, else, throw exception
     if operandsMatch != "error":
         result = "TEMP" + str(countOfTemps)
-        tempResult = mD.get_space_avail("temp", operandsMatch, 1);
+        tempResult = mD.get_space_avail("temp", operandsMatch, 1)
         directTemp[result] = tempResult
 
         memRefLeftOp = getMemoryRef(leftOp)
@@ -336,7 +343,7 @@ def pop_op_assign():
 # Function that saves the string to write
 def saveString(s):
     global stringToWrite
-    print("GOKUUUUU: ", s);
+    print("GOKUUUUU: ", s)
     stringToWrite = s
 
 # Function that generates the write quad
@@ -393,7 +400,7 @@ def ifCondition():
         quadCounter += 1
         quadList.append(Quadruple("GOTOF", leftOp, None, None))
         quadMEM.append(Quadruple("GOTOF", memLeftOp, None, None))
-        print("QUADQUAD", quadCounter-1);
+        print("QUADQUAD", quadCounter-1)
         jumpsStack.append(quadCounter-1)
 
 # Function that generates the if GOTO quad 
