@@ -653,6 +653,7 @@ def gosubFunction():
 
         if direcClasses["main"].c_funcs[functionToCall].f_type != "void":
 
+            # Creates cuadruple to assign the returnable function to a temp
             quadCounter += 1
             result = "TEMP" + str(countOfTemps)
             functType = direcClasses[currentClass].c_funcs["vG"].f_vars[functionToCall].v_type
@@ -720,7 +721,7 @@ def getMemoryRef(op):
         scopeOfOp = existsVar(op)
 
     return direcClasses[currentClass].c_funcs[scopeOfOp].f_vars[op].memRef
-    
+
 #---------------------- MEMORY REFERENCES END ---------------------- #
 
 
