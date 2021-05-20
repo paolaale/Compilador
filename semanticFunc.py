@@ -48,6 +48,13 @@ gotoStack = deque()
 stringToWrite = None
 quadCounter = 0
 quadElifExpression = None
+direcOperators = {
+                    "+": 1, "-": 2, "*": 3, "/": 4, "=": 5, 
+                    "and": 6, "or": 7, ">": 8, ">=": 9, "<": 10, 
+                    "<=": 11, "==": 12, "!=": 13, "VERIFY": 14, "WRITE": 15, 
+                    "READ": 16, "GOTO": 17, "GOTOF": 18, "ERA": 19, "PARAM": 20, 
+                    "GOSUB": 21, "END FUNCTION": 22, "END PROGRAM": 23
+                }
 
 # Helpers to fill functions
 numberOfParams = 0
@@ -180,13 +187,22 @@ def isAMatch(leftOpType, opSymbol, rightOpType):
 # ---------------------- START CHECKING VARIABLES EXIST ---------------------- #
 
 # Function that recieves a value 
+# and validates if is a int
+def isInt(value):
+    try:
+        int(value)
+        return True
+    except ValueError:
+        return False
+
+# Function that recieves a value 
 # and validates if is a float
-def isfloat(value):
-  try:
-    float(value)
-    return True
-  except ValueError:
-    return False
+def isFloat(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
 
 # Function that recieves an id and looks for them 
 # in the currents function or in the globals
@@ -208,11 +224,13 @@ def existsVar(id):
 def getVarType(id):
     global currentFunct, currentClass, directConstants
    
-    if id.isdigit():
+    if isInt(id):
+        print("ENTRE A DIGIT")
         if id not in directConstants:
             directConstants[id] = mD.get_space_avail("const", "int", 1)
         return "int"
-    elif isfloat(id):
+    elif isFloat(id):
+        print("ENTRE A FLOAT")
         if id not in directConstants:
             directConstants[id] = mD.get_space_avail("float", "int", 1)
         return "float"     
@@ -289,7 +307,7 @@ def generateExpQuad():
     # If operands types are compatible, generate quadruple and update quadcounter, else, throw exception
     if operandsMatch != "error":
         result = "TEMP" + str(countOfTemps)
-        tempResult = mD.get_space_avail("temp", operandsMatch, 1);
+        tempResult = mD.get_space_avail("temp", operandsMatch, 1)
         directTemp[result] = tempResult
 
         memRefLeftOp = getMemoryRef(leftOp)
