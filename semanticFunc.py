@@ -765,7 +765,7 @@ def getMemoryRef(op):
     else:
         scopeOfOp = existsVar(op)
 
-    return direcClasses[currentClass].c_funcs[scopeOfOp].f_vars[op].memRef;
+    return direcClasses[currentClass].c_funcs[scopeOfOp].f_vars[op].memRef
 #---------------------- MEMORY REFERENCES END ---------------------- #
 
 
