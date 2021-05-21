@@ -48,7 +48,7 @@ t_CTEI = r'[+-]?[0-9]+'
 t_CTEF = r'[+-]?([0-9]+)(\.)([0-9]+)?'
 t_CTESTRING = r'\".*?\"' 
 t_CTECHAR = r'\'.?\'' 
-t_RELOP = r'(<)|(>)|(>=)|(<=)|(==)|(!=)'
+t_RELOP = r'(>=)|(<=)|(<)|(>)|(==)|(!=)'
 t_PLUS = r'\+'
 t_MINUS = r'-'
 t_DIVIDE = r'/'
@@ -86,15 +86,15 @@ def t_error(t):
 # Build lexer
 lexer = lex.lex()
 
-""" # Test 
-data = ''' > + 4.5 * "abc" 3 , . : ; 'a' int = -20 -709.89 ({)} A00821971 if do then # array[] inherits class $ . and or alan'''
+#  # Test 
+# data = ''' > + 4.5 >= * == "abc" 3 , . : ; 'a' int = -20 -709.89 ({)} A00821971 if do then # array[] inherits class $ . and or alan'''
  
-# Give the lexer some input
-lexer.input(data)
+# # Give the lexer some input
+# lexer.input(data)
  
-# Tokenize
-while True:
-    tok = lexer.token()
-    if not tok: 
-        break # No more input
-    print(tok)  """
+# # Tokenize
+# while True:
+#     tok = lexer.token()
+#     if not tok: 
+#         break # No more input
+#     print(tok) 

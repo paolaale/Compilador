@@ -21,6 +21,7 @@ initMemory = MemoryAllocator()
 constDictionary = dict()
 
 exeStack.append(initMemory)
+exeGoSubStack = deque()
 #print("CONST DICT: ", constDictionary)
 
 ### Functions for quadruples ###
@@ -45,8 +46,7 @@ def getValue(memRef):
 
 def assignValue(val1, container):
     valToAsign = getValue(val1)
-    if (container >= 0 and container < 4000) or (container >= 5000 and container < 8999):
-        print("EPPA EPPA: ", valToAsign);
+    if (container >= 0 and container < 4000) or (container >= 5000 and container < 8999):        
         globalMemories[currentGlobalMemory].vars[container] = valToAsign
     else:
         exeStack[-1].vars[container] = valToAsign
@@ -70,7 +70,7 @@ def readValue(container):
 
 ### Read and execute quadruples
 def execute(quadList):
-    global exeStack, globalMemories
+    global exeStack, globalMemories, exeGoSubStack
     dataInit()
 
     i = 0
@@ -97,16 +97,40 @@ def execute(quadList):
         elif quadList[i].operation == 7:
             print("OR")
         elif quadList[i].operation == 8:
+            if getValue(quadList[i].left_op) > getValue(quadList[i].right_op):
+                exeStack[-1].vars[quadList[i].tResult] = True
+            else:
+                exeStack[-1].vars[quadList[i].tResult] = False
             print("MAYOR QUE")
         elif quadList[i].operation == 10:
+            if getValue(quadList[i].left_op) < getValue(quadList[i].right_op):
+                exeStack[-1].vars[quadList[i].tResult] = True
+            else:
+                exeStack[-1].vars[quadList[i].tResult] = False
             print("MENOR QUE")
         elif quadList[i].operation == 9:
+            if getValue(quadList[i].left_op) >= getValue(quadList[i].right_op):
+                exeStack[-1].vars[quadList[i].tResult] = True
+            else:
+                exeStack[-1].vars[quadList[i].tResult] = False
             print("MAYOR O IGUAL QUE")
         elif quadList[i].operation == 11:
+            if getValue(quadList[i].left_op) <= getValue(quadList[i].right_op):
+                exeStack[-1].vars[quadList[i].tResult] = True
+            else:
+                exeStack[-1].vars[quadList[i].tResult] = False
             print("MENOR O IGUAL QUE")
         elif quadList[i].operation == 12:
+            if getValue(quadList[i].left_op) == getValue(quadList[i].right_op):
+                exeStack[-1].vars[quadList[i].tResult] = True
+            else:
+                exeStack[-1].vars[quadList[i].tResult] = False
             print("IGUAL QUE")
         elif quadList[i].operation == 13:
+            if getValue(quadList[i].left_op) != getValue(quadList[i].right_op):
+                exeStack[-1].vars[quadList[i].tResult] = True
+            else:
+                exeStack[-1].vars[quadList[i].tResult] = False
             print("DIFERENTE QUE")
         elif quadList[i].operation == 15:
             print("WRITE: ", getValue(quadList[i].tResult))
@@ -118,7 +142,8 @@ def execute(quadList):
             i = quadList[i].tResult - 1
             print("GOTO")
         elif quadList[i].operation == 18:
-            i = quadList[i].tResult - 1
+            if getValue(quadList[i].left_op) == False:
+                i = quadList[i].tResult - 1
             print("GOTOF")
         elif quadList[i].operation == 19:
             exeStack.append(MemoryAllocator())
@@ -126,12 +151,17 @@ def execute(quadList):
         elif quadList[i].operation == 20:
             print("PARAM")
         elif quadList[i].operation == 21:
+            exeGoSubStack.append(i)
+            exeGoSubStack.append(i) # we save where to jump back
             i = quadList[i].tResult - 1
+            
+           
             print("GOSUB")
         elif quadList[i].operation == 14:
             print("VERIFY")
         elif quadList[i].operation == 23:
             exeStack.pop()
+            i = exeGoSubStack.pop()
             #print("quadToGoAfter: ", sF.direcClasses[currentGlobalMemory].c_funcs["getTotal"])
             print("END FUNCTION")
         elif quadList[i].operation == 24:

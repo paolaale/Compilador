@@ -481,7 +481,7 @@ if __name__ == '__main__':
         print("------------------------------------")
         sF.printMemoryQuadruples()
         print("------------------------------------")
-        #vM.execute(sF.quadMEM)
+        vM.execute(sF.quadMEM)
         #print("direct al revés: ", vM.constDictionary)
 
         # Test memory assignation in declaration

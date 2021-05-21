@@ -1,21 +1,31 @@
-program memComp4 :
+program vm3 :
     main {
 
         var int p, h, j, k, a;
+        funct void testFor() {
+            var int i;
+            j = 1;
+            from (i = 1) until (i <= 9) do {
+                j = j * i;
+                i = i + 1;
+            }
+            write(j);
 
-        funct void whiles() {
-            if (8 < 10) then {
-                write(1000);
-            }
-            elif (15 < 23) then {
-                write(2000);
-            }
-            else {
-                write(3000);
-            }
-
+            write(h + 15);
         }
-        funct void getTotal() {
+        
+        funct void testWhile() {
+            h = 1;
+            p = 1;
+            while (p <= 8) do {
+                h = h * p;
+                p = p + 1;
+            }
+            write(h);
+
+            call testFor();
+        }
+        funct void testIfs() {
             var int rubs, paola, alan;
                 float omar, ale, edgar;
                 char joe;
@@ -40,18 +50,13 @@ program memComp4 :
                  
             read(a);
             
-            read(f, g, h, i, j, harry);
-            
-            potter = (f + g * h - i + j) * harry;
-     
-            write(potter);
             write(a * 12);
 
             if (a < 10) then {
-                if (a <5) then {
+                if (a <= 8) then {
                     write(-1);
                 }
-                elif (a <3) then {
+                elif (a < 3) then {
                     write(-2);
                 }
             }
@@ -63,14 +68,14 @@ program memComp4 :
                     write(-4);
                 }
                 elif (a < 30) then {
-                    write(-5)
+                    write(-5);
                 }
             }
             else {
                 write(-6);
             }
-
-            call getTotal();
+            call testWhile();
+            call testIfs();
             
         
         }

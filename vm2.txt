@@ -40,18 +40,13 @@ program memComp4 :
                  
             read(a);
             
-            read(f, g, h, i, j, harry);
-            
-            potter = (f + g * h - i + j) * harry;
-     
-            write(potter);
             write(a * 12);
 
             if (a < 10) then {
-                if (a <5) then {
+                if (a <= 8) then {
                     write(-1);
                 }
-                elif (a <3) then {
+                elif (a < 3) then {
                     write(-2);
                 }
             }
@@ -63,12 +58,13 @@ program memComp4 :
                     write(-4);
                 }
                 elif (a < 30) then {
-                    write(-5)
+                    write(-5);
                 }
             }
             else {
                 write(-6);
             }
+            
 
             call getTotal();
             

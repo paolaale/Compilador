@@ -397,7 +397,7 @@ def generateRead():
 # Function that generates the if GOTOF quad 
 # only if the there is a match type otherwise raise exception 
 def ifCondition():
-    global quadCounter, jumpsStack, typesStack
+    global quadCounter, jumpsStack, typesStack, expType
 
     expType = typesStack.pop()
 
