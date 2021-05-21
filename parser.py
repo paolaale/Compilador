@@ -144,8 +144,8 @@ def p_var_aux(p):
     p[0] = 'program'
 
 def p_var_aux_2(p):
-    '''var_aux_2 : LBRACKET access_array exp verify_array_index RBRACKET end_array
-            |  access_matrix LBRACKET exp RBRACKET verify_matrix_index1 LBRACKET exp RBRACKET verify_matrix_index2 end_matrix'''
+    '''var_aux_2 : LBRACKET access_array exp verify_array_index RBRACKET end_array'''
+    """ |  LBRACKET exp RBRACKET LBRACKET exp RBRACKET """
     p[0] = 'program'
 
 def p_call(p):
@@ -447,7 +447,7 @@ def p_end_array(self):
     'end_array :'
     sF.endArray()
 
-def p_access_matrix(self):
+""" def p_access_matrix(self):
     'access_matrix :'
     sF.accessMatrix()
 
@@ -461,7 +461,7 @@ def p_verify_matrix_index2(self):
 
 def p_end_matrix(self):
     'end_matrix :'
-    sF.endMatrix()
+    sF.endMatrix() """
 
 # FUNCTIONS FOR CLASSES
 

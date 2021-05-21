@@ -698,7 +698,7 @@ def accessArray():
     if currentArraySize > 0:
         operatorsStack.append("[")
     else:
-        raise Exception("Type missmatch")
+        raise Exception("Type mismatch")
 
 # Verify that the index of the array to access is an integer and 
 # creates quadruple to check that the position is accesible
@@ -724,7 +724,7 @@ def endArray():
     quadCounter += 1
     quadList.append(Quadruple("+", leftOp, "dirr virtual incial de array", result))
     operandsMatch = isAMatch(leftOpType, "+", "int")
-    operandsStack.append(result)
+    operandsStack.append("(" + result + ")")
     typesStack.append(operandsMatch)
     operatorsStack.pop()
 
