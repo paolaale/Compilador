@@ -114,8 +114,8 @@ def p_params_aux(p):
 def p_body(p):
     '''body : LBRACE start_function dec_vars statutes_aux RBRACE end_function
             | LBRACE start_function statutes_aux RBRACE end_function
-            | LBRACE start_function statutes_aux RETURN ID SEMICOLON RBRACE end_function
-            | LBRACE start_function dec_vars statutes_aux RETURN ID SEMICOLON RBRACE end_function'''
+            | LBRACE start_function statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function
+            | LBRACE start_function dec_vars statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function'''
     p[0] = 'program'
 
 def p_statutes(p):
@@ -413,6 +413,10 @@ def p_start_function(self):
     'start_function :'
     sF.startFunction() 
 
+def p_return_function(p):
+    'return_function :'
+    sF.returnFunction(p[-1])
+    
 def p_end_function(self):
     'end_function :'
     sF.endFunction()
@@ -477,7 +481,8 @@ if __name__ == '__main__':
         print("------------------------------------")
         sF.printMemoryQuadruples()
         print("------------------------------------")
-        vM.execute(sF.quadList)
+        #vM.execute(sF.quadMEM)
+        #print("direct al revés: ", vM.constDictionary)
 
         # Test memory assignation in declaration
         """ test.printFunctsTable()

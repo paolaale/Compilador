@@ -49,8 +49,8 @@ Rule 43    params_aux -> LBRACKET RBRACKET add_array_var_params
 Rule 44    params_aux -> LBRACKET RBRACKET LBRACKET RBRACKET add_matrix_var_params
 Rule 45    body -> LBRACE start_function dec_vars statutes_aux RBRACE end_function
 Rule 46    body -> LBRACE start_function statutes_aux RBRACE end_function
-Rule 47    body -> LBRACE start_function statutes_aux RETURN ID SEMICOLON RBRACE end_function
-Rule 48    body -> LBRACE start_function dec_vars statutes_aux RETURN ID SEMICOLON RBRACE end_function
+Rule 47    body -> LBRACE start_function statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function
+Rule 48    body -> LBRACE start_function dec_vars statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function
 Rule 49    statutes -> assignation SEMICOLON
 Rule 50    statutes -> CALL call SEMICOLON
 Rule 51    statutes -> read
@@ -148,14 +148,15 @@ Rule 142   add_array_var_params -> <empty>
 Rule 143   add_matrix_var_params -> <empty>
 Rule 144   insert_number_params -> <empty>
 Rule 145   start_function -> <empty>
-Rule 146   end_function -> <empty>
-Rule 147   exist_function -> <empty>
-Rule 148   era_function -> <empty>
-Rule 149   arg_function -> <empty>
-Rule 150   gosub_function -> <empty>
-Rule 151   check_init -> <empty>
-Rule 152   start_init -> <empty>
-Rule 153   end_program -> <empty>
+Rule 146   return_function -> <empty>
+Rule 147   end_function -> <empty>
+Rule 148   exist_function -> <empty>
+Rule 149   era_function -> <empty>
+Rule 150   arg_function -> <empty>
+Rule 151   gosub_function -> <empty>
+Rule 152   check_init -> <empty>
+Rule 153   start_init -> <empty>
+Rule 154   end_program -> <empty>
 
 Terminals, with rules where they appear
 
@@ -282,6 +283,7 @@ push_paren           : 97
 push_var             : 58 59 77 78 103 104 105 106 107
 read                 : 51
 read_aux             : 76 78
+return_function      : 47 48
 save_string          : 82 83
 simple_type          : 12 13 37 38 39 40 41 42
 start_function       : 45 46 47 48
@@ -334,10 +336,10 @@ state 3
 state 4
 
     (1) program -> PROGRAM ID TWOPOINTS . check_init program_classes MAIN add_class LBRACE program_body init RBRACE END end_program
-    (151) check_init -> .
+    (152) check_init -> .
 
-    CLASS           reduce using rule 151 (check_init -> .)
-    MAIN            reduce using rule 151 (check_init -> .)
+    CLASS           reduce using rule 152 (check_init -> .)
+    MAIN            reduce using rule 152 (check_init -> .)
 
     check_init                     shift and go to state 5
 
@@ -906,9 +908,9 @@ state 59
 state 60
 
     (1) program -> PROGRAM ID TWOPOINTS check_init program_classes MAIN add_class LBRACE program_body init RBRACE END . end_program
-    (153) end_program -> .
+    (154) end_program -> .
 
-    $end            reduce using rule 153 (end_program -> .)
+    $end            reduce using rule 154 (end_program -> .)
 
     end_program                    shift and go to state 72
 
@@ -916,16 +918,16 @@ state 61
 
     (108) init -> INIT add_init LBRACE . start_init statutes_aux RBRACE
     (109) init -> INIT add_init LBRACE . start_init dec_vars statutes_aux RBRACE
-    (152) start_init -> .
+    (153) start_init -> .
 
-    VAR             reduce using rule 152 (start_init -> .)
-    CALL            reduce using rule 152 (start_init -> .)
-    ID              reduce using rule 152 (start_init -> .)
-    READ            reduce using rule 152 (start_init -> .)
-    WRITE           reduce using rule 152 (start_init -> .)
-    IF              reduce using rule 152 (start_init -> .)
-    WHILE           reduce using rule 152 (start_init -> .)
-    FROM            reduce using rule 152 (start_init -> .)
+    VAR             reduce using rule 153 (start_init -> .)
+    CALL            reduce using rule 153 (start_init -> .)
+    ID              reduce using rule 153 (start_init -> .)
+    READ            reduce using rule 153 (start_init -> .)
+    WRITE           reduce using rule 153 (start_init -> .)
+    IF              reduce using rule 153 (start_init -> .)
+    WHILE           reduce using rule 153 (start_init -> .)
+    FROM            reduce using rule 153 (start_init -> .)
 
     start_init                     shift and go to state 73
 
@@ -1508,8 +1510,8 @@ state 104
     (36) functions_aux -> VOID ID add_function LPAREN RPAREN . body
     (45) body -> . LBRACE start_function dec_vars statutes_aux RBRACE end_function
     (46) body -> . LBRACE start_function statutes_aux RBRACE end_function
-    (47) body -> . LBRACE start_function statutes_aux RETURN ID SEMICOLON RBRACE end_function
-    (48) body -> . LBRACE start_function dec_vars statutes_aux RETURN ID SEMICOLON RBRACE end_function
+    (47) body -> . LBRACE start_function statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function
+    (48) body -> . LBRACE start_function dec_vars statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function
 
     LBRACE          shift and go to state 128
 
@@ -1530,8 +1532,8 @@ state 106
     (37) functions_aux -> simple_type ID add_function LPAREN RPAREN . body
     (45) body -> . LBRACE start_function dec_vars statutes_aux RBRACE end_function
     (46) body -> . LBRACE start_function statutes_aux RBRACE end_function
-    (47) body -> . LBRACE start_function statutes_aux RETURN ID SEMICOLON RBRACE end_function
-    (48) body -> . LBRACE start_function dec_vars statutes_aux RETURN ID SEMICOLON RBRACE end_function
+    (47) body -> . LBRACE start_function statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function
+    (48) body -> . LBRACE start_function dec_vars statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function
 
     LBRACE          shift and go to state 128
 
@@ -1594,10 +1596,10 @@ state 113
     (66) call -> ID . POINT ID LPAREN RPAREN
     (67) call -> ID . exist_function LPAREN era_function call_aux RPAREN gosub_function
     (68) call -> ID . POINT ID LPAREN call_aux RPAREN
-    (147) exist_function -> .
+    (148) exist_function -> .
 
     POINT           shift and go to state 135
-    LPAREN          reduce using rule 147 (exist_function -> .)
+    LPAREN          reduce using rule 148 (exist_function -> .)
 
     exist_function                 shift and go to state 134
 
@@ -1855,8 +1857,8 @@ state 128
 
     (45) body -> LBRACE . start_function dec_vars statutes_aux RBRACE end_function
     (46) body -> LBRACE . start_function statutes_aux RBRACE end_function
-    (47) body -> LBRACE . start_function statutes_aux RETURN ID SEMICOLON RBRACE end_function
-    (48) body -> LBRACE . start_function dec_vars statutes_aux RETURN ID SEMICOLON RBRACE end_function
+    (47) body -> LBRACE . start_function statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function
+    (48) body -> LBRACE . start_function dec_vars statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function
     (145) start_function -> .
 
     VAR             reduce using rule 145 (start_function -> .)
@@ -2155,7 +2157,7 @@ state 149
     (68) call -> ID . POINT ID LPAREN call_aux RPAREN
     (103) cte -> ID . push_var
     (104) cte -> ID . var_aux push_var
-    (147) exist_function -> .
+    (148) exist_function -> .
     (118) push_var -> .
     (60) var_aux -> . POINT ID
     (61) var_aux -> . POINT ID var_aux_2
@@ -2164,7 +2166,7 @@ state 149
     (64) var_aux_2 -> . LBRACKET exp RBRACKET LBRACKET exp RBRACKET
 
     POINT           shift and go to state 183
-    LPAREN          reduce using rule 147 (exist_function -> .)
+    LPAREN          reduce using rule 148 (exist_function -> .)
     TIMES           reduce using rule 118 (push_var -> .)
     DIVIDE          reduce using rule 118 (push_var -> .)
     PLUS            reduce using rule 118 (push_var -> .)
@@ -2375,8 +2377,8 @@ state 163
     (35) functions_aux -> VOID ID add_function LPAREN params RPAREN insert_number_params . body
     (45) body -> . LBRACE start_function dec_vars statutes_aux RBRACE end_function
     (46) body -> . LBRACE start_function statutes_aux RBRACE end_function
-    (47) body -> . LBRACE start_function statutes_aux RETURN ID SEMICOLON RBRACE end_function
-    (48) body -> . LBRACE start_function dec_vars statutes_aux RETURN ID SEMICOLON RBRACE end_function
+    (47) body -> . LBRACE start_function statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function
+    (48) body -> . LBRACE start_function dec_vars statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function
 
     LBRACE          shift and go to state 128
 
@@ -2386,8 +2388,8 @@ state 164
 
     (45) body -> LBRACE start_function . dec_vars statutes_aux RBRACE end_function
     (46) body -> LBRACE start_function . statutes_aux RBRACE end_function
-    (47) body -> LBRACE start_function . statutes_aux RETURN ID SEMICOLON RBRACE end_function
-    (48) body -> LBRACE start_function . dec_vars statutes_aux RETURN ID SEMICOLON RBRACE end_function
+    (47) body -> LBRACE start_function . statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function
+    (48) body -> LBRACE start_function . dec_vars statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function
     (9) dec_vars -> . VAR dec_vars_aux
     (56) statutes_aux -> . statutes
     (57) statutes_aux -> . statutes statutes_aux
@@ -2456,8 +2458,8 @@ state 168
     (38) functions_aux -> simple_type ID add_function LPAREN params RPAREN insert_number_params . body
     (45) body -> . LBRACE start_function dec_vars statutes_aux RBRACE end_function
     (46) body -> . LBRACE start_function statutes_aux RBRACE end_function
-    (47) body -> . LBRACE start_function statutes_aux RETURN ID SEMICOLON RBRACE end_function
-    (48) body -> . LBRACE start_function dec_vars statutes_aux RETURN ID SEMICOLON RBRACE end_function
+    (47) body -> . LBRACE start_function statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function
+    (48) body -> . LBRACE start_function dec_vars statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function
 
     LBRACE          shift and go to state 128
 
@@ -2467,16 +2469,16 @@ state 169
 
     (65) call -> ID exist_function LPAREN . era_function RPAREN gosub_function
     (67) call -> ID exist_function LPAREN . era_function call_aux RPAREN gosub_function
-    (148) era_function -> .
+    (149) era_function -> .
 
-    RPAREN          reduce using rule 148 (era_function -> .)
-    LPAREN          reduce using rule 148 (era_function -> .)
-    ID              reduce using rule 148 (era_function -> .)
-    PLUS            reduce using rule 148 (era_function -> .)
-    MINUS           reduce using rule 148 (era_function -> .)
-    CTEI            reduce using rule 148 (era_function -> .)
-    CTEF            reduce using rule 148 (era_function -> .)
-    CTECHAR         reduce using rule 148 (era_function -> .)
+    RPAREN          reduce using rule 149 (era_function -> .)
+    LPAREN          reduce using rule 149 (era_function -> .)
+    ID              reduce using rule 149 (era_function -> .)
+    PLUS            reduce using rule 149 (era_function -> .)
+    MINUS           reduce using rule 149 (era_function -> .)
+    CTEI            reduce using rule 149 (era_function -> .)
+    CTEF            reduce using rule 149 (era_function -> .)
+    CTECHAR         reduce using rule 149 (era_function -> .)
 
     era_function                   shift and go to state 205
 
@@ -2953,7 +2955,7 @@ state 198
 state 199
 
     (45) body -> LBRACE start_function dec_vars . statutes_aux RBRACE end_function
-    (48) body -> LBRACE start_function dec_vars . statutes_aux RETURN ID SEMICOLON RBRACE end_function
+    (48) body -> LBRACE start_function dec_vars . statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function
     (56) statutes_aux -> . statutes
     (57) statutes_aux -> . statutes statutes_aux
     (49) statutes -> . assignation SEMICOLON
@@ -2991,7 +2993,7 @@ state 199
 state 200
 
     (46) body -> LBRACE start_function statutes_aux . RBRACE end_function
-    (47) body -> LBRACE start_function statutes_aux . RETURN ID SEMICOLON RBRACE end_function
+    (47) body -> LBRACE start_function statutes_aux . RETURN ID return_function SEMICOLON RBRACE end_function
 
     RBRACE          shift and go to state 230
     RETURN          shift and go to state 231
@@ -3589,7 +3591,7 @@ state 228
 state 229
 
     (45) body -> LBRACE start_function dec_vars statutes_aux . RBRACE end_function
-    (48) body -> LBRACE start_function dec_vars statutes_aux . RETURN ID SEMICOLON RBRACE end_function
+    (48) body -> LBRACE start_function dec_vars statutes_aux . RETURN ID return_function SEMICOLON RBRACE end_function
 
     RBRACE          shift and go to state 260
     RETURN          shift and go to state 261
@@ -3598,17 +3600,17 @@ state 229
 state 230
 
     (46) body -> LBRACE start_function statutes_aux RBRACE . end_function
-    (146) end_function -> .
+    (147) end_function -> .
 
-    FUNCT           reduce using rule 146 (end_function -> .)
-    RBRACE          reduce using rule 146 (end_function -> .)
-    INIT            reduce using rule 146 (end_function -> .)
+    FUNCT           reduce using rule 147 (end_function -> .)
+    RBRACE          reduce using rule 147 (end_function -> .)
+    INIT            reduce using rule 147 (end_function -> .)
 
     end_function                   shift and go to state 262
 
 state 231
 
-    (47) body -> LBRACE start_function statutes_aux RETURN . ID SEMICOLON RBRACE end_function
+    (47) body -> LBRACE start_function statutes_aux RETURN . ID return_function SEMICOLON RBRACE end_function
 
     ID              shift and go to state 263
 
@@ -3645,19 +3647,19 @@ state 235
 state 236
 
     (65) call -> ID exist_function LPAREN era_function RPAREN . gosub_function
-    (150) gosub_function -> .
+    (151) gosub_function -> .
 
-    SEMICOLON       reduce using rule 150 (gosub_function -> .)
-    TIMES           reduce using rule 150 (gosub_function -> .)
-    DIVIDE          reduce using rule 150 (gosub_function -> .)
-    PLUS            reduce using rule 150 (gosub_function -> .)
-    MINUS           reduce using rule 150 (gosub_function -> .)
-    RELOP           reduce using rule 150 (gosub_function -> .)
-    OR              reduce using rule 150 (gosub_function -> .)
-    AND             reduce using rule 150 (gosub_function -> .)
-    RBRACKET        reduce using rule 150 (gosub_function -> .)
-    COMMA           reduce using rule 150 (gosub_function -> .)
-    RPAREN          reduce using rule 150 (gosub_function -> .)
+    SEMICOLON       reduce using rule 151 (gosub_function -> .)
+    TIMES           reduce using rule 151 (gosub_function -> .)
+    DIVIDE          reduce using rule 151 (gosub_function -> .)
+    PLUS            reduce using rule 151 (gosub_function -> .)
+    MINUS           reduce using rule 151 (gosub_function -> .)
+    RELOP           reduce using rule 151 (gosub_function -> .)
+    OR              reduce using rule 151 (gosub_function -> .)
+    AND             reduce using rule 151 (gosub_function -> .)
+    RBRACKET        reduce using rule 151 (gosub_function -> .)
+    COMMA           reduce using rule 151 (gosub_function -> .)
+    RPAREN          reduce using rule 151 (gosub_function -> .)
 
     gosub_function                 shift and go to state 265
 
@@ -3672,10 +3674,10 @@ state 238
 
     (69) call_aux -> exp . arg_function
     (70) call_aux -> exp . arg_function COMMA call_aux
-    (149) arg_function -> .
+    (150) arg_function -> .
 
-    COMMA           reduce using rule 149 (arg_function -> .)
-    RPAREN          reduce using rule 149 (arg_function -> .)
+    COMMA           reduce using rule 150 (arg_function -> .)
+    RPAREN          reduce using rule 150 (arg_function -> .)
 
     arg_function                   shift and go to state 267
 
@@ -4131,17 +4133,17 @@ state 259
 state 260
 
     (45) body -> LBRACE start_function dec_vars statutes_aux RBRACE . end_function
-    (146) end_function -> .
+    (147) end_function -> .
 
-    FUNCT           reduce using rule 146 (end_function -> .)
-    RBRACE          reduce using rule 146 (end_function -> .)
-    INIT            reduce using rule 146 (end_function -> .)
+    FUNCT           reduce using rule 147 (end_function -> .)
+    RBRACE          reduce using rule 147 (end_function -> .)
+    INIT            reduce using rule 147 (end_function -> .)
 
     end_function                   shift and go to state 284
 
 state 261
 
-    (48) body -> LBRACE start_function dec_vars statutes_aux RETURN . ID SEMICOLON RBRACE end_function
+    (48) body -> LBRACE start_function dec_vars statutes_aux RETURN . ID return_function SEMICOLON RBRACE end_function
 
     ID              shift and go to state 285
 
@@ -4157,10 +4159,12 @@ state 262
 
 state 263
 
-    (47) body -> LBRACE start_function statutes_aux RETURN ID . SEMICOLON RBRACE end_function
+    (47) body -> LBRACE start_function statutes_aux RETURN ID . return_function SEMICOLON RBRACE end_function
+    (146) return_function -> .
 
-    SEMICOLON       shift and go to state 286
+    SEMICOLON       reduce using rule 146 (return_function -> .)
 
+    return_function                shift and go to state 286
 
 state 264
 
@@ -4192,19 +4196,19 @@ state 265
 state 266
 
     (67) call -> ID exist_function LPAREN era_function call_aux RPAREN . gosub_function
-    (150) gosub_function -> .
+    (151) gosub_function -> .
 
-    SEMICOLON       reduce using rule 150 (gosub_function -> .)
-    TIMES           reduce using rule 150 (gosub_function -> .)
-    DIVIDE          reduce using rule 150 (gosub_function -> .)
-    PLUS            reduce using rule 150 (gosub_function -> .)
-    MINUS           reduce using rule 150 (gosub_function -> .)
-    RELOP           reduce using rule 150 (gosub_function -> .)
-    OR              reduce using rule 150 (gosub_function -> .)
-    AND             reduce using rule 150 (gosub_function -> .)
-    RBRACKET        reduce using rule 150 (gosub_function -> .)
-    COMMA           reduce using rule 150 (gosub_function -> .)
-    RPAREN          reduce using rule 150 (gosub_function -> .)
+    SEMICOLON       reduce using rule 151 (gosub_function -> .)
+    TIMES           reduce using rule 151 (gosub_function -> .)
+    DIVIDE          reduce using rule 151 (gosub_function -> .)
+    PLUS            reduce using rule 151 (gosub_function -> .)
+    MINUS           reduce using rule 151 (gosub_function -> .)
+    RELOP           reduce using rule 151 (gosub_function -> .)
+    OR              reduce using rule 151 (gosub_function -> .)
+    AND             reduce using rule 151 (gosub_function -> .)
+    RBRACKET        reduce using rule 151 (gosub_function -> .)
+    COMMA           reduce using rule 151 (gosub_function -> .)
+    RPAREN          reduce using rule 151 (gosub_function -> .)
 
     gosub_function                 shift and go to state 288
 
@@ -4481,16 +4485,18 @@ state 284
 
 state 285
 
-    (48) body -> LBRACE start_function dec_vars statutes_aux RETURN ID . SEMICOLON RBRACE end_function
+    (48) body -> LBRACE start_function dec_vars statutes_aux RETURN ID . return_function SEMICOLON RBRACE end_function
+    (146) return_function -> .
 
-    SEMICOLON       shift and go to state 293
+    SEMICOLON       reduce using rule 146 (return_function -> .)
 
+    return_function                shift and go to state 293
 
 state 286
 
-    (47) body -> LBRACE start_function statutes_aux RETURN ID SEMICOLON . RBRACE end_function
+    (47) body -> LBRACE start_function statutes_aux RETURN ID return_function . SEMICOLON RBRACE end_function
 
-    RBRACE          shift and go to state 294
+    SEMICOLON       shift and go to state 294
 
 
 state 287
@@ -4621,21 +4627,17 @@ state 292
 
 state 293
 
-    (48) body -> LBRACE start_function dec_vars statutes_aux RETURN ID SEMICOLON . RBRACE end_function
+    (48) body -> LBRACE start_function dec_vars statutes_aux RETURN ID return_function . SEMICOLON RBRACE end_function
 
-    RBRACE          shift and go to state 299
+    SEMICOLON       shift and go to state 299
 
 
 state 294
 
-    (47) body -> LBRACE start_function statutes_aux RETURN ID SEMICOLON RBRACE . end_function
-    (146) end_function -> .
+    (47) body -> LBRACE start_function statutes_aux RETURN ID return_function SEMICOLON . RBRACE end_function
 
-    FUNCT           reduce using rule 146 (end_function -> .)
-    RBRACE          reduce using rule 146 (end_function -> .)
-    INIT            reduce using rule 146 (end_function -> .)
+    RBRACE          shift and go to state 300
 
-    end_function                   shift and go to state 300
 
 state 295
 
@@ -4684,23 +4686,21 @@ state 298
 
 state 299
 
-    (48) body -> LBRACE start_function dec_vars statutes_aux RETURN ID SEMICOLON RBRACE . end_function
-    (146) end_function -> .
+    (48) body -> LBRACE start_function dec_vars statutes_aux RETURN ID return_function SEMICOLON . RBRACE end_function
 
-    FUNCT           reduce using rule 146 (end_function -> .)
-    RBRACE          reduce using rule 146 (end_function -> .)
-    INIT            reduce using rule 146 (end_function -> .)
+    RBRACE          shift and go to state 306
 
-    end_function                   shift and go to state 306
 
 state 300
 
-    (47) body -> LBRACE start_function statutes_aux RETURN ID SEMICOLON RBRACE end_function .
+    (47) body -> LBRACE start_function statutes_aux RETURN ID return_function SEMICOLON RBRACE . end_function
+    (147) end_function -> .
 
-    FUNCT           reduce using rule 47 (body -> LBRACE start_function statutes_aux RETURN ID SEMICOLON RBRACE end_function .)
-    RBRACE          reduce using rule 47 (body -> LBRACE start_function statutes_aux RETURN ID SEMICOLON RBRACE end_function .)
-    INIT            reduce using rule 47 (body -> LBRACE start_function statutes_aux RETURN ID SEMICOLON RBRACE end_function .)
+    FUNCT           reduce using rule 147 (end_function -> .)
+    RBRACE          reduce using rule 147 (end_function -> .)
+    INIT            reduce using rule 147 (end_function -> .)
 
+    end_function                   shift and go to state 307
 
 state 301
 
@@ -4709,7 +4709,7 @@ state 301
     (75) condition_aux_else -> . empty
     (110) empty -> .
 
-    ELSE            shift and go to state 308
+    ELSE            shift and go to state 309
     CALL            reduce using rule 110 (empty -> .)
     ID              reduce using rule 110 (empty -> .)
     READ            reduce using rule 110 (empty -> .)
@@ -4720,14 +4720,14 @@ state 301
     RBRACE          reduce using rule 110 (empty -> .)
     RETURN          reduce using rule 110 (empty -> .)
 
-    condition_aux_else             shift and go to state 307
-    empty                          shift and go to state 309
+    condition_aux_else             shift and go to state 308
+    empty                          shift and go to state 310
 
 state 302
 
     (72) condition_aux_elif -> ELIF . LPAREN elif_expression exp RPAREN elif_condition THEN LBRACE statutes_aux RBRACE condition_aux_elif
 
-    LPAREN          shift and go to state 310
+    LPAREN          shift and go to state 311
 
 
 state 303
@@ -4761,25 +4761,36 @@ state 304
     RBRACE          reduce using rule 137 (end_while -> .)
     RETURN          reduce using rule 137 (end_while -> .)
 
-    end_while                      shift and go to state 311
+    end_while                      shift and go to state 312
 
 state 305
 
     (85) for -> FROM LPAREN assignation RPAREN UNTIL for_jump LPAREN exp RPAREN for_condition . DO LBRACE statutes_aux RBRACE end_for
 
-    DO              shift and go to state 312
+    DO              shift and go to state 313
 
 
 state 306
 
-    (48) body -> LBRACE start_function dec_vars statutes_aux RETURN ID SEMICOLON RBRACE end_function .
+    (48) body -> LBRACE start_function dec_vars statutes_aux RETURN ID return_function SEMICOLON RBRACE . end_function
+    (147) end_function -> .
 
-    FUNCT           reduce using rule 48 (body -> LBRACE start_function dec_vars statutes_aux RETURN ID SEMICOLON RBRACE end_function .)
-    RBRACE          reduce using rule 48 (body -> LBRACE start_function dec_vars statutes_aux RETURN ID SEMICOLON RBRACE end_function .)
-    INIT            reduce using rule 48 (body -> LBRACE start_function dec_vars statutes_aux RETURN ID SEMICOLON RBRACE end_function .)
+    FUNCT           reduce using rule 147 (end_function -> .)
+    RBRACE          reduce using rule 147 (end_function -> .)
+    INIT            reduce using rule 147 (end_function -> .)
 
+    end_function                   shift and go to state 314
 
 state 307
+
+    (47) body -> LBRACE start_function statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function .
+
+    FUNCT           reduce using rule 47 (body -> LBRACE start_function statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function .)
+    RBRACE          reduce using rule 47 (body -> LBRACE start_function statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function .)
+    INIT            reduce using rule 47 (body -> LBRACE start_function statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function .)
+
+
+state 308
 
     (71) condition -> IF LPAREN exp RPAREN if_condition THEN LBRACE statutes_aux RBRACE condition_aux_elif condition_aux_else . end_if
     (134) end_if -> .
@@ -4794,18 +4805,18 @@ state 307
     RBRACE          reduce using rule 134 (end_if -> .)
     RETURN          reduce using rule 134 (end_if -> .)
 
-    end_if                         shift and go to state 313
+    end_if                         shift and go to state 315
 
-state 308
+state 309
 
     (74) condition_aux_else -> ELSE . else_condition LBRACE statutes_aux RBRACE
     (133) else_condition -> .
 
     LBRACE          reduce using rule 133 (else_condition -> .)
 
-    else_condition                 shift and go to state 314
+    else_condition                 shift and go to state 316
 
-state 309
+state 310
 
     (75) condition_aux_else -> empty .
 
@@ -4820,7 +4831,7 @@ state 309
     RETURN          reduce using rule 75 (condition_aux_else -> empty .)
 
 
-state 310
+state 311
 
     (72) condition_aux_elif -> ELIF LPAREN . elif_expression exp RPAREN elif_condition THEN LBRACE statutes_aux RBRACE condition_aux_elif
     (132) elif_expression -> .
@@ -4833,9 +4844,9 @@ state 310
     CTEF            reduce using rule 132 (elif_expression -> .)
     CTECHAR         reduce using rule 132 (elif_expression -> .)
 
-    elif_expression                shift and go to state 315
+    elif_expression                shift and go to state 317
 
-state 311
+state 312
 
     (84) while -> WHILE while_jump LPAREN exp RPAREN while_condition DO LBRACE statutes_aux RBRACE end_while .
 
@@ -4850,14 +4861,23 @@ state 311
     RETURN          reduce using rule 84 (while -> WHILE while_jump LPAREN exp RPAREN while_condition DO LBRACE statutes_aux RBRACE end_while .)
 
 
-state 312
+state 313
 
     (85) for -> FROM LPAREN assignation RPAREN UNTIL for_jump LPAREN exp RPAREN for_condition DO . LBRACE statutes_aux RBRACE end_for
 
-    LBRACE          shift and go to state 316
+    LBRACE          shift and go to state 318
 
 
-state 313
+state 314
+
+    (48) body -> LBRACE start_function dec_vars statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function .
+
+    FUNCT           reduce using rule 48 (body -> LBRACE start_function dec_vars statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function .)
+    RBRACE          reduce using rule 48 (body -> LBRACE start_function dec_vars statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function .)
+    INIT            reduce using rule 48 (body -> LBRACE start_function dec_vars statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function .)
+
+
+state 315
 
     (71) condition -> IF LPAREN exp RPAREN if_condition THEN LBRACE statutes_aux RBRACE condition_aux_elif condition_aux_else end_if .
 
@@ -4872,14 +4892,14 @@ state 313
     RETURN          reduce using rule 71 (condition -> IF LPAREN exp RPAREN if_condition THEN LBRACE statutes_aux RBRACE condition_aux_elif condition_aux_else end_if .)
 
 
-state 314
+state 316
 
     (74) condition_aux_else -> ELSE else_condition . LBRACE statutes_aux RBRACE
 
-    LBRACE          shift and go to state 317
+    LBRACE          shift and go to state 319
 
 
-state 315
+state 317
 
     (72) condition_aux_elif -> ELIF LPAREN elif_expression . exp RPAREN elif_condition THEN LBRACE statutes_aux RBRACE condition_aux_elif
     (86) exp -> . l_exp pop_op_lop
@@ -4917,7 +4937,7 @@ state 315
     CTEF            shift and go to state 152
     CTECHAR         shift and go to state 153
 
-    exp                            shift and go to state 318
+    exp                            shift and go to state 320
     l_exp                          shift and go to state 140
     a_exp                          shift and go to state 141
     term                           shift and go to state 142
@@ -4926,7 +4946,7 @@ state 315
     factor_aux                     shift and go to state 148
     cte                            shift and go to state 150
 
-state 316
+state 318
 
     (85) for -> FROM LPAREN assignation RPAREN UNTIL for_jump LPAREN exp RPAREN for_condition DO LBRACE . statutes_aux RBRACE end_for
     (56) statutes_aux -> . statutes
@@ -4955,7 +4975,7 @@ state 316
     FROM            shift and go to state 98
 
     assignation                    shift and go to state 86
-    statutes_aux                   shift and go to state 319
+    statutes_aux                   shift and go to state 321
     statutes                       shift and go to state 85
     read                           shift and go to state 88
     write                          shift and go to state 89
@@ -4963,7 +4983,7 @@ state 316
     while                          shift and go to state 91
     for                            shift and go to state 92
 
-state 317
+state 319
 
     (74) condition_aux_else -> ELSE else_condition LBRACE . statutes_aux RBRACE
     (56) statutes_aux -> . statutes
@@ -4991,7 +5011,7 @@ state 317
     WHILE           shift and go to state 97
     FROM            shift and go to state 98
 
-    statutes_aux                   shift and go to state 320
+    statutes_aux                   shift and go to state 322
     statutes                       shift and go to state 85
     assignation                    shift and go to state 86
     read                           shift and go to state 88
@@ -5000,37 +5020,37 @@ state 317
     while                          shift and go to state 91
     for                            shift and go to state 92
 
-state 318
+state 320
 
     (72) condition_aux_elif -> ELIF LPAREN elif_expression exp . RPAREN elif_condition THEN LBRACE statutes_aux RBRACE condition_aux_elif
 
-    RPAREN          shift and go to state 321
-
-
-state 319
-
-    (85) for -> FROM LPAREN assignation RPAREN UNTIL for_jump LPAREN exp RPAREN for_condition DO LBRACE statutes_aux . RBRACE end_for
-
-    RBRACE          shift and go to state 322
-
-
-state 320
-
-    (74) condition_aux_else -> ELSE else_condition LBRACE statutes_aux . RBRACE
-
-    RBRACE          shift and go to state 323
+    RPAREN          shift and go to state 323
 
 
 state 321
+
+    (85) for -> FROM LPAREN assignation RPAREN UNTIL for_jump LPAREN exp RPAREN for_condition DO LBRACE statutes_aux . RBRACE end_for
+
+    RBRACE          shift and go to state 324
+
+
+state 322
+
+    (74) condition_aux_else -> ELSE else_condition LBRACE statutes_aux . RBRACE
+
+    RBRACE          shift and go to state 325
+
+
+state 323
 
     (72) condition_aux_elif -> ELIF LPAREN elif_expression exp RPAREN . elif_condition THEN LBRACE statutes_aux RBRACE condition_aux_elif
     (131) elif_condition -> .
 
     THEN            reduce using rule 131 (elif_condition -> .)
 
-    elif_condition                 shift and go to state 324
+    elif_condition                 shift and go to state 326
 
-state 322
+state 324
 
     (85) for -> FROM LPAREN assignation RPAREN UNTIL for_jump LPAREN exp RPAREN for_condition DO LBRACE statutes_aux RBRACE . end_for
     (140) end_for -> .
@@ -5045,9 +5065,9 @@ state 322
     RBRACE          reduce using rule 140 (end_for -> .)
     RETURN          reduce using rule 140 (end_for -> .)
 
-    end_for                        shift and go to state 325
+    end_for                        shift and go to state 327
 
-state 323
+state 325
 
     (74) condition_aux_else -> ELSE else_condition LBRACE statutes_aux RBRACE .
 
@@ -5062,14 +5082,14 @@ state 323
     RETURN          reduce using rule 74 (condition_aux_else -> ELSE else_condition LBRACE statutes_aux RBRACE .)
 
 
-state 324
+state 326
 
     (72) condition_aux_elif -> ELIF LPAREN elif_expression exp RPAREN elif_condition . THEN LBRACE statutes_aux RBRACE condition_aux_elif
 
-    THEN            shift and go to state 326
+    THEN            shift and go to state 328
 
 
-state 325
+state 327
 
     (85) for -> FROM LPAREN assignation RPAREN UNTIL for_jump LPAREN exp RPAREN for_condition DO LBRACE statutes_aux RBRACE end_for .
 
@@ -5084,14 +5104,14 @@ state 325
     RETURN          reduce using rule 85 (for -> FROM LPAREN assignation RPAREN UNTIL for_jump LPAREN exp RPAREN for_condition DO LBRACE statutes_aux RBRACE end_for .)
 
 
-state 326
+state 328
 
     (72) condition_aux_elif -> ELIF LPAREN elif_expression exp RPAREN elif_condition THEN . LBRACE statutes_aux RBRACE condition_aux_elif
 
-    LBRACE          shift and go to state 327
+    LBRACE          shift and go to state 329
 
 
-state 327
+state 329
 
     (72) condition_aux_elif -> ELIF LPAREN elif_expression exp RPAREN elif_condition THEN LBRACE . statutes_aux RBRACE condition_aux_elif
     (56) statutes_aux -> . statutes
@@ -5119,7 +5139,7 @@ state 327
     WHILE           shift and go to state 97
     FROM            shift and go to state 98
 
-    statutes_aux                   shift and go to state 328
+    statutes_aux                   shift and go to state 330
     statutes                       shift and go to state 85
     assignation                    shift and go to state 86
     read                           shift and go to state 88
@@ -5128,14 +5148,14 @@ state 327
     while                          shift and go to state 91
     for                            shift and go to state 92
 
-state 328
+state 330
 
     (72) condition_aux_elif -> ELIF LPAREN elif_expression exp RPAREN elif_condition THEN LBRACE statutes_aux . RBRACE condition_aux_elif
 
-    RBRACE          shift and go to state 329
+    RBRACE          shift and go to state 331
 
 
-state 329
+state 331
 
     (72) condition_aux_elif -> ELIF LPAREN elif_expression exp RPAREN elif_condition THEN LBRACE statutes_aux RBRACE . condition_aux_elif
     (72) condition_aux_elif -> . ELIF LPAREN elif_expression exp RPAREN elif_condition THEN LBRACE statutes_aux RBRACE condition_aux_elif
@@ -5154,10 +5174,10 @@ state 329
     RBRACE          reduce using rule 110 (empty -> .)
     RETURN          reduce using rule 110 (empty -> .)
 
-    condition_aux_elif             shift and go to state 330
+    condition_aux_elif             shift and go to state 332
     empty                          shift and go to state 303
 
-state 330
+state 332
 
     (72) condition_aux_elif -> ELIF LPAREN elif_expression exp RPAREN elif_condition THEN LBRACE statutes_aux RBRACE condition_aux_elif .
 

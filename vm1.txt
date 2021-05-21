@@ -1,0 +1,39 @@
+program memComp4 :
+    main {
+
+        var int p, h, j, k, a;
+
+        funct void getTotal() {
+            var int rubs, paola, alan;
+                float omar, ale, edgar;
+                char joe;
+
+                rubs = 19;
+                alan = 19;
+
+                paola = rubs * alan;
+
+            
+            write(paola);
+
+        }
+
+        init {
+            var int p, f, g, h, i, j, k;
+                float harry, potter;
+            read(a);
+            
+            read(f, g, h, i, j, harry);
+            
+            potter = (f + g * h - i + j) * harry;
+     
+            write(potter);
+            write(a * 12);
+
+            call getTotal();
+            
+        
+        }
+    }
+   
+end

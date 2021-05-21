@@ -21,7 +21,8 @@ memoryDispatcher = {
     "local_bool": MemoryRange(32000, 33999),
     "local_t_bool": MemoryRange(34000, 34999),
     "const_int": MemoryRange(35000, 35999),
-    "const_float": MemoryRange(36000, 36999)
+    "const_float": MemoryRange(36000, 36999),
+    "const_char": MemoryRange(37000, 37999)
 
     # "objects_int: " MemoryRange(100000, 150000)
 
@@ -36,7 +37,7 @@ def get_space_avail(scope, varType, spaceNeed):
     global memoryDispatcher
 
     if scope == "temp":
-        memoryRange = getMemoryTemp(varType);
+        memoryRange = getMemoryTemp(varType)
     elif scope == "const":
         memoryRange = getMemoryConst(varType)
     else:
@@ -46,7 +47,6 @@ def get_space_avail(scope, varType, spaceNeed):
     directToReturn = currentSpaceVal + spaceNeed - 1
 
     if directToReturn <= memoryDispatcher[memoryRange].upperLimit:
-
         memoryDispatcher[memoryRange].currentVal = currentSpaceVal + spaceNeed
         return directToReturn
     else:
@@ -63,7 +63,6 @@ def getMemoryRangeOfDec(scope, varType):
             return "global_float"
         else:
             return "global_char"
-
     else:
         if varType == "int":
             return "local_int"
