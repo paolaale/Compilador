@@ -485,9 +485,10 @@ if __name__ == '__main__':
         #print("direct al revés: ", vM.constDictionary)
 
         # Test memory assignation in declaration
+        # test.printMemoryInDeclaration()
+        # test.printVarsTable()
         """ test.printFunctsTable()
-        test.printVarsTable()
-        test.printMemoryInDeclaration() """
+        test.printVarsTable()"""
 
         if result != None:
             print("Program accepted")

@@ -231,7 +231,7 @@ def getVarType(id):
         return "int"
     elif isFloat(id):
         if id not in directConstants:
-            directConstants[id] = mD.get_space_avail("float", "int", 1)
+            directConstants[id] = mD.get_space_avail("const", "float", 1)
         return "float"     
     #!!!! AGREGAR PARA LOS CHARS, para que jale la asignacion a = 'b'
     else:   
@@ -561,18 +561,25 @@ def startFunction():
 def returnFunction(variableToReturn):
     global quadCounter, quadList, quadMEM
 
+    functWhereVarExists = existsVar(variableToReturn)
+    
     cFunct = direcClasses[currentClass].c_funcs[currentFunct]
+    print("MESSI: ", cFunct.f_vars);
 
     # Validate that the function is not a void type
     if cFunct.f_type != "void":
         #Validates the type of the returnable variable is the same as the type of the function
-        if cFunct.f_vars[variableToReturn].v_type == cFunct.f_type:
+        if direcClasses[currentClass].c_funcs[functWhereVarExists].f_vars[variableToReturn].v_type == cFunct.f_type:
             quadCounter += 1
             memVarToReturn = getMemoryRef(variableToReturn)
-            quadList.append(Quadruple("RETURN", None, None, variableToReturn))
-            quadMEM.append(Quadruple(direcOperators["RETURN"], None, None, memVarToReturn))
+
             # Because has a return, we add a variable to the global variables that will represent the returnable variable
-            direcClasses[currentClass].c_funcs["vG"].f_vars[currentFunct] = Vars(cFunct.f_type, -1, -1, mD.get_space_avail("local", cFunct.f_type, 1))
+            direcClasses[currentClass].c_funcs["vG"].f_vars[currentFunct] = Vars(cFunct.f_type, -1, -1, mD.get_space_avail("vG", cFunct.f_type, 1))
+            memVarToReturnCurrentFunct = getMemoryRef(currentFunct) # here we set the global var for the return function that will be updated with the return result
+
+            quadList.append(Quadruple("RETURN", currentFunct, None, variableToReturn))
+            quadMEM.append(Quadruple(direcOperators["RETURN"], memVarToReturnCurrentFunct, None, memVarToReturn))
+            
         else:
             raise Exception("Function is expecting " + cFunct.f_type + " an is given a " + cFunct.f_vars[variableToReturn].v_type)
     else:
@@ -656,11 +663,16 @@ def gosubFunction():
             # Creates cuadruple to assign the returnable function to a temp
             quadCounter += 1
             result = "TEMP" + str(countOfTemps)
+            countOfTemps += 1;
             functType = direcClasses[currentClass].c_funcs["vG"].f_vars[functionToCall].v_type
             quadList.append(Quadruple("=", functionToCall, None, result))
             tempResult = mD.get_space_avail("temp", functType, 1)
             directTemp[result] = tempResult
-            quadMEM.append(Quadruple(direcOperators["="], functionToCall, None, tempResult))
+
+            ## global var that saves "value" of return function ##
+            memReturnResult = getMemoryRef(functionToCall);
+
+            quadMEM.append(Quadruple(direcOperators["="], memReturnResult, None, tempResult))
             operandsStack.append(result)
             typesStack.append(functType)
 

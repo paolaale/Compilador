@@ -24,6 +24,8 @@ program vm3 :
             write(h);
 
             call testFor();
+
+            write(19 * 10);
         }
         funct void testIfs() {
             var int rubs, paola, alan;

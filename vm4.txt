@@ -1,0 +1,30 @@
+program vm3 :
+    main {
+
+        var int p, h, j, k, a;
+
+        funct int testReturn() {
+            var int j;
+                float k;
+            
+            j = 12;
+            read(a);
+
+            return a;
+        }
+        init {
+            var int p, f, g, h, i, j, k;
+                float harry, potter;
+                 
+            read(a);
+            
+            write(a * 12);
+
+            a = testReturn() + 5 * testReturn();
+
+            write(a);
+        
+        }
+    }
+   
+end

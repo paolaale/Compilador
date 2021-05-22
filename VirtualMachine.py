@@ -45,11 +45,17 @@ def getValue(memRef):
         return globalMemories[currentGlobalMemory].vars[memRef]
 
 def assignValue(val1, container):
+    
     valToAsign = getValue(val1)
-    if (container >= 0 and container < 4000) or (container >= 5000 and container < 8999):        
+     
+    if (container >= 0 and container < 4000) or (container >= 5000 and container < 8999):   
+
         globalMemories[currentGlobalMemory].vars[container] = valToAsign
+        
     else:
+
         exeStack[-1].vars[container] = valToAsign
+
 
 def assignReadValue(container, newValue):
     if (container >= 0 and container < 4000) or (container >= 5000 and container < 8999):
@@ -151,14 +157,18 @@ def execute(quadList):
         elif quadList[i].operation == 20:
             print("PARAM")
         elif quadList[i].operation == 21:
-            exeGoSubStack.append(i)
+            
             exeGoSubStack.append(i) # we save where to jump back
             i = quadList[i].tResult - 1
             
-           
             print("GOSUB")
         elif quadList[i].operation == 14:
             print("VERIFY")
+        elif quadList[i].operation == 22:
+            print("llegue aquí 1");
+            globalMemories[currentGlobalMemory].vars[quadList[i].left_op] =  getValue(quadList[i].tResult)
+            
+            print("RETURN")
         elif quadList[i].operation == 23:
             exeStack.pop()
             i = exeGoSubStack.pop()

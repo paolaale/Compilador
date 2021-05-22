@@ -23,10 +23,10 @@ program memComp4 :
                 rubs = 19;
                 alan = 19;
                 paola = rubs * alan;
-
+                a = 35555;
                 if (18 > 12) then {
                     write(paola);
-                    write(30501);
+                    write(a);
                 }
                 else {
                     write(181818);
@@ -67,6 +67,10 @@ program memComp4 :
             
 
             call getTotal();
+
+            a = 34 + 10 * 10;
+
+            write(a);
             
         
         }
