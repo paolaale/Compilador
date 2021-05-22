@@ -4,11 +4,16 @@ program arr1 :
 
         init {
            
-            var int i[5];
-            int a, b;
+            var int i[5], a[3];    
+            int b; 
+            char c;
+         
+            b = 1; 
+
+            i[b] = 4; 
+
+            write(i[1+b]); 
             
-            a = 3;
-            write(i[2+b]);
         }
     }
 end

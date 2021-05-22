@@ -65,6 +65,7 @@ numberOfTemps = {"int": 0, "float": 0, "char": 0, "bool": 0}
 
 # Helpers for data structures
 currentArraySize = 0
+currentArrayLowerLimit = 0
 currentMatrixSize1 = 0
 currentMatrixSize2 = 0
 
@@ -124,6 +125,14 @@ def addVars(vName, vType, vSize1, vSize2):
 
     # Check variable wasn't already declare in the function
     if vName not in direcClasses[currentClass].c_funcs[currentFunct].f_vars:
+
+        # Add the size of the first dimension of the var in the dictionary of constants
+        if isInt(vSize1) and vSize1 not in directConstants:
+            directConstants[vSize1] = mD.get_space_avail("const", "int", 1)
+        
+        # Add the size of the second dimension of the var in the dictionary of constants
+        if isInt(vSize2) and vSize2 not in directConstants:
+            directConstants[vSize2] = mD.get_space_avail("const", "int", 1)
 
         # To know how many spaces it will take on the memory
         memorySize = abs(int(vSize1) * int(vSize2))
@@ -210,6 +219,14 @@ def isFloat(value):
     except ValueError:
         return False
 
+# Function that recieves a value 
+# and validates if is a char
+def isChar(value):
+    if len(value) == 3 and (value[0] == "'" and value[2] == "'"):
+        return True
+    else:
+        return False
+
 # Function that recieves an id and looks for them 
 # in the currents function or in the globals
 # returns the function where is found or None
@@ -236,9 +253,13 @@ def getVarType(id):
         return "int"
     elif isFloat(id):
         if id not in directConstants:
-            directConstants[id] = mD.get_space_avail("float", "int", 1)
-        return "float"     
-    #!!!! AGREGAR PARA LOS CHARS, para que jale la asignacion a = 'b'
+            directConstants[id] = mD.get_space_avail("const", "float", 1)
+        return "float"
+    elif isChar(id):
+        if id not in directConstants:
+            id = id.replace("'", '')
+            directConstants[id] = mD.get_space_avail("const", "char", 1)
+        return "char"
     else:   
         scope = existsVar(id) # call to previous function
 
@@ -306,8 +327,9 @@ def generateExpQuad():
     leftOpType = typesStack.pop()
     operator = operatorsStack.pop()
 
-    operandsMatch = isAMatch(leftOpType, operator, rightOpType) # get the matching compatibility of both operands types
-
+    # get the matching compatibility of both operands types
+    operandsMatch = isAMatch(leftOpType, operator, rightOpType) 
+    
     # If operands types are compatible, generate quadruple and update quadcounter, else, throw exception
     if operandsMatch != "error":
 
@@ -345,6 +367,10 @@ def pop_op_assign():
     varToAssign = operandsStack.pop()
     assignationType = typesStack.pop()
     operator = operatorsStack.pop()   
+
+    if leftOpType == "char":
+        leftOp = leftOp.replace("'", '') #!!!! creo que se puede quitar cuando solo quede lo de memoria
+
     memRefLeftOp = getMemoryRef(leftOp)
     memVarToAsign = getMemoryRef(varToAssign)
 
@@ -368,9 +394,11 @@ def generateWrite():
     # If there is a string to write gets it from helper 
     if (stringToWrite != None):
         varToWrite = stringToWrite
-        memVarToWrite = stringToWrite
+        varToWrite = varToWrite.replace('"', '')
+        if stringToWrite not in directConstants:
+            directConstants[varToWrite] = mD.get_space_avail("const", "string", 1)
+            memVarToWrite = getMemoryRef(varToWrite)
         stringToWrite = None
-
     # Or if it is an expression gets it from the operands stack
     else:
         varToWrite = operandsStack.pop()
@@ -689,11 +717,12 @@ def insertParams():
 
 # Verify that the id is an array and creates a fake bottom
 def accessArray():
-    global operandsStack, typesStack, operatorsStack, currentArraySize
+    global operandsStack, typesStack, operatorsStack, currentArraySize, currentArrayLowerLimit
 
     currentID = operandsStack.pop()
     typesStack.pop()
     currentArraySize = int(direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentID].rows)
+    currentArrayLowerLimit = direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentID].lowerMemRef
 
     if currentArraySize > 0:
         operatorsStack.append("[")
@@ -703,28 +732,43 @@ def accessArray():
 # Verify that the index of the array to access is an integer and 
 # creates quadruple to check that the position is accesible
 def verifyArrayIndex():
-    global quadCounter, quadList, operandsStack, currentArraySize, typesStack
+    global quadCounter, quadList, operandsStack, currentArraySize, typesStack, quadMEM
+
+    memTopOperand = getMemoryRef(operandsStack[-1])
 
     if typesStack[-1] == "int":
         quadCounter += 1
         quadList.append(Quadruple("VERIFY", operandsStack[-1], 0, currentArraySize))
+        quadMEM.append(Quadruple(direcOperators["VERIFY"], memTopOperand, 0, currentArraySize))
         currentArraySize = 0
     else:
         raise Exception("Array subscript is not an integer")
 
 # Sum the virtual address to acces the correct and wanted index
 def endArray():
-    global quadCounter, quadList, operandsStack, typesStack, operatorsStack, countOfTemps
+    global quadCounter, quadList, operandsStack, typesStack, operatorsStack, countOfTemps, quadMEM
 
     leftOp = operandsStack.pop()
     leftOpType = typesStack.pop()
+    operandsMatch = isAMatch(leftOpType, "+", "int")
     result = "TEMP" + str(countOfTemps)
     countOfTemps += 1
 
+    # Get the direction memory of the variables
+    memLeftOp = getMemoryRef(leftOp)
+    memResult = mD.get_space_avail("temp", operandsMatch, 1)
+    directTemp[result] = memResult
+
+    # Add to the dictionary of constants the lower direction memory that represents the index of array
+    if currentArrayLowerLimit not in directConstants:
+            directConstants[currentArrayLowerLimit] = mD.get_space_avail("const", "int", 1)
+    memCurrArrLowLim = getMemoryRef(currentArrayLowerLimit)
+
     quadCounter += 1
-    quadList.append(Quadruple("+", leftOp, "dirr virtual incial de array", result))
-    operandsMatch = isAMatch(leftOpType, "+", "int")
-    operandsStack.append("(" + result + ")")
+    quadList.append(Quadruple("+", leftOp, currentArrayLowerLimit, result))
+    quadMEM.append(Quadruple("+", memLeftOp, memCurrArrLowLim, memResult))
+    
+    operandsStack.append(result)
     typesStack.append(operandsMatch)
     operatorsStack.pop()
 

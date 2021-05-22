@@ -12,7 +12,7 @@ program ft1 :
                 write(i + j);
             }
             else {
-                write(a + b);
+                write("HOLA");
             }
         }
 

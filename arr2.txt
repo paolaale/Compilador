@@ -6,6 +6,8 @@ program arr2 :
            
             var int i[5];
             int a, b;
+
+            b = 1;
             
             i[2+b] = 3;
 

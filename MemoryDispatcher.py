@@ -21,15 +21,9 @@ memoryDispatcher = {
     "local_bool": MemoryRange(32000, 33999),
     "local_t_bool": MemoryRange(34000, 34999),
     "const_int": MemoryRange(35000, 35999),
-    "const_float": MemoryRange(36000, 36999)
-
-    # "objects_int: " MemoryRange(100000, 150000)
-
-    # perro1 var a => 100001      100001
-    # perro2 var a => 100002      100001
-    # gato1 var a => 100003       100001
-
-
+    "const_float": MemoryRange(36000, 36999),
+    "const_char": MemoryRange(37000, 37999),
+    "const_string": MemoryRange(38000, 38999)
 }
 
 def get_space_avail(scope, varType, spaceNeed):
@@ -40,7 +34,7 @@ def get_space_avail(scope, varType, spaceNeed):
     elif scope == "const":
         memoryRange = getMemoryConst(varType)
     else:
-        memoryRange = getMemoryRangeOfDec(scope, varType)
+        memoryRange = getMemoryInDeclaration(scope, varType)
 
     currentSpaceVal = memoryDispatcher[memoryRange].currentVal
     directToReturn = currentSpaceVal + spaceNeed - 1
@@ -52,8 +46,8 @@ def get_space_avail(scope, varType, spaceNeed):
         raise Exception("Too many variables")
 
 
-# obtenemos el rango al que pertecene la memoria de variables en declaración
-def getMemoryRangeOfDec(scope, varType):
+# Obtenemos el rango al que pertecene la memoria de variables en declaración
+def getMemoryInDeclaration(scope, varType):
 
     if scope == "vG":
         if varType == "int":
@@ -83,6 +77,10 @@ def getMemoryConst(varType):
         return "const_int"
     elif varType == "float":
         return  "const_float"
+    elif varType == "char":
+        return "const_char"
+    else:
+        return "const_string"
 
 def reset_local_space():
     global memoryDispatcher
