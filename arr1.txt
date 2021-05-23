@@ -5,8 +5,7 @@ program arr1 :
         init {
            
             var int i[5], a[3];    
-            int b; 
-            char c;
+            int b, c;
          
             b = 1; 
 

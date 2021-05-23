@@ -8,9 +8,9 @@ program arr3 :
             int b;
             
             b = 1;
-            i[2+b] = a[3];
+            i[b + 2] = a[3];
 
-            write(i[a[1+b]]);
+            write(i[a[b + 1]]);
         }
     }
 end

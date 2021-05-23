@@ -65,6 +65,7 @@ numberOfTemps = {"int": 0, "float": 0, "char": 0, "bool": 0}
 
 # Helpers for data structures
 currentArraySize = 0
+dimensionsStack = deque()
 currentArrayLowerLimit = 0
 currentMatrixSize1 = 0
 currentMatrixSize2 = 0
@@ -122,7 +123,7 @@ def addVars(vName, vType, vSize1, vSize2):
         vType = lastVarType
     else:
         lastVarType = vType
-
+    
     # Check variable wasn't already declare in the function
     if vName not in direcClasses[currentClass].c_funcs[currentFunct].f_vars:
 
@@ -248,6 +249,7 @@ def getVarType(id):
     global currentFunct, currentClass, directConstants
    
     if isInt(id):
+        print("ENTRE INT = ", id)
         if id not in directConstants:
             directConstants[id] = mD.get_space_avail("const", "int", 1)
         return "int"
@@ -256,6 +258,7 @@ def getVarType(id):
             directConstants[id] = mD.get_space_avail("const", "float", 1)
         return "float"
     elif isChar(id):
+        print("ENTRE CHAR = ", id)
         if id not in directConstants:
             id = id.replace("'", '')
             directConstants[id] = mD.get_space_avail("const", "char", 1)
@@ -277,6 +280,7 @@ def getVarType(id):
 def pushOperand(op):
     global operandsStack, quadList
     operandsStack.append(op)
+    print("OP ", op, " TYPE ", getVarType(op))
     typesStack.append(getVarType(op))
 
 # Function to push the operator to the operatorsStack
@@ -380,6 +384,7 @@ def pop_op_assign():
         quadList.append(Quadruple(operator, leftOp, None, varToAssign))
         quadMEM.append(Quadruple(operator, memRefLeftOp, None, memVarToAsign))
     else:
+        print("LEFT OP = ", leftOp, " VAR TO ASSIGN = ", varToAssign)
         raise Exception("Cannot assign variable of type %s with %s" % (assignationType, leftOpType))
 
 # Function that saves the string to write
@@ -717,7 +722,7 @@ def insertParams():
 
 # Verify that the id is an array and creates a fake bottom
 def accessArray():
-    global operandsStack, typesStack, operatorsStack, currentArraySize, currentArrayLowerLimit
+    global operandsStack, typesStack, operatorsStack, currentArraySize, currentArrayLowerLimit, dimensionsStack
 
     currentID = operandsStack.pop()
     typesStack.pop()
@@ -726,6 +731,7 @@ def accessArray():
 
     if currentArraySize > 0:
         operatorsStack.append("[")
+        dimensionsStack.append(currentArraySize)
     else:
         raise Exception("Type mismatch")
 
@@ -735,11 +741,12 @@ def verifyArrayIndex():
     global quadCounter, quadList, operandsStack, currentArraySize, typesStack, quadMEM
 
     memTopOperand = getMemoryRef(operandsStack[-1])
+    currSize = dimensionsStack.pop()
 
     if typesStack[-1] == "int":
         quadCounter += 1
-        quadList.append(Quadruple("VERIFY", operandsStack[-1], 0, currentArraySize))
-        quadMEM.append(Quadruple(direcOperators["VERIFY"], memTopOperand, 0, currentArraySize))
+        quadList.append(Quadruple("VERIFY", operandsStack[-1], 0, currSize))
+        quadMEM.append(Quadruple(direcOperators["VERIFY"], memTopOperand, 0, currSize))
         currentArraySize = 0
     else:
         raise Exception("Array subscript is not an integer")

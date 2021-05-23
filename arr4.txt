@@ -1,0 +1,17 @@
+program arr1 :
+
+    main {
+
+        init {
+           
+            var char c[3];
+            int b;
+
+            b = 1;
+            c[b] = 'p'; 
+
+            write(c[1]);
+            
+        }
+    }
+end
