@@ -1,0 +1,79 @@
+program memComp4 :
+    main {
+
+        var int p, h, j, k, a;
+
+        funct void whiles() {
+            if (8 < 10) then {
+                write(1000);
+            }
+            elif (15 < 23) then {
+                write(2000);
+            }
+            else {
+                write(3000);
+            }
+
+        }
+        funct void getTotal() {
+            var int rubs, paola, alan;
+                float omar, ale, edgar;
+                char joe;
+            
+                rubs = 19;
+                alan = 19;
+                paola = rubs * alan;
+
+                if (18 > 12) then {
+                    write(paola);
+                    write(30501);
+                }
+                else {
+                    write(181818);
+                }
+
+        }
+
+        init {
+            var int p, f, g, h, i, j, k;
+                float harry, potter;
+                 
+            read(a);
+            
+            read(f, g, h, i, j, harry);
+            
+            potter = (f + g * h - i + j) * harry;
+     
+            write(potter);
+            write(a * 12);
+
+            if (a < 10) then {
+                if (a <5) then {
+                    write(-1);
+                }
+                elif (a <3) then {
+                    write(-2);
+                }
+            }
+            elif (a < 20) then {
+                write(-3);
+            }
+            elif (a < 40) then {
+                if (a < 35) then {
+                    write(-4);
+                }
+                elif (a < 30) then {
+                    write(-5)
+                }
+            }
+            else {
+                write(-6);
+            }
+
+            call getTotal();
+            
+        
+        }
+    }
+   
+end

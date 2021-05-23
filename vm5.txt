@@ -1,0 +1,85 @@
+program vm3 :
+    class Perro {
+        var int p, j;
+
+        funct int getEdad() {
+            var int j;
+                float k;
+            
+            j = 10;
+
+            return j;
+        } 
+        funct float getFloat() {
+            var int j;
+                float k;
+            k = 12.0;
+            j = 10;
+
+            return k;
+        }
+        funct int getTotal() {
+            var int j;
+                float k;
+            
+            j = 10;
+
+            return j;
+
+        }
+    }
+    main {
+
+        var int p, h, j, k, a;
+
+        funct int getEdad() {
+            var int j;
+                float k;
+            
+            j = 10;
+
+            return j;
+        } 
+        funct float getFloat() {
+            var int j;
+                float k;
+            k = 12.0;
+            j = 10;
+
+            return k;
+        }
+        funct int getTotal() {
+            var int j;
+                float k;
+            
+            j = 10;
+
+            j = getEdad();
+            k = getFloat();
+
+            return j;
+
+        }
+
+        funct int testReturn() {
+            var int j;
+                float k;
+            
+            j = 10;
+
+            return j;
+        }
+        init {
+            var int p, f, g, h, i, j, k;
+                float harry, potter;
+                 
+            read(a);
+            
+            write(a * 12);
+
+            a = testReturn() + testReturn();
+        
+        }
+    }
+   
+end

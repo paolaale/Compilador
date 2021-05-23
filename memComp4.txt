@@ -14,7 +14,7 @@ program memComp4 :
 
         var int p, h, j, k;
 
-        funct void getTotal() {
+        funct int getTotal(int a, int b) {
             var int rubs, paola, alan;
                 float omar, ale, edgar;
                 char joe;
@@ -32,7 +32,7 @@ program memComp4 :
         init {
             var int p, f, g;
                 float harry, potter;
-            call getTotal();
+            call getTotal(5, 19);
             p = 19;
             write("hola");
 

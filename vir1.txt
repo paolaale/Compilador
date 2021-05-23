@@ -1,0 +1,13 @@
+program vir3 :
+
+    main {
+
+        init {
+            
+            var int i, j;
+            
+            i = 5;
+            j = i * 2 + i; 
+        }
+    }
+end
