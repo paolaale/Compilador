@@ -11,8 +11,8 @@ from MemoryAllocator import MemoryAllocator
 exeStack = deque()
 executionStack = dict()
 
-currentGlobalMemory = "main";
-currentLocalMemory = "";
+currentGlobalMemory = "main"
+currentLocalMemory = ""
 
 globalMemories = dict()
 globalMemories["main"] = MemoryAllocator()
@@ -72,7 +72,7 @@ def readValue(container):
     else:
         newValue = input()#aquí falta implementar bien la lógica para los chars
 
-    assignReadValue(container, newValue);
+    assignReadValue(container, newValue)
 
 ### Read and execute quadruples
 def execute(quadList):
@@ -142,7 +142,7 @@ def execute(quadList):
             print("WRITE: ", getValue(quadList[i].tResult))
         elif quadList[i].operation == 16:
             print("insert value: ")
-            readValue(quadList[i].tResult);
+            readValue(quadList[i].tResult)
             print("READ")
         elif quadList[i].operation == 17:
             i = quadList[i].tResult - 1
