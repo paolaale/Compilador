@@ -63,7 +63,7 @@ program memComp4 :
                     write(-4);
                 }
                 elif (a < 30) then {
-                    write(-5)
+                    write(-5);
                 }
             }
             else {

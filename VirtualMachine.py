@@ -165,7 +165,7 @@ def execute(quadList):
         elif quadList[i].operation == 14:
             print("VERIFY")
         elif quadList[i].operation == 22:
-            print("llegue aquí 1");
+            print("llegue aquí 1")
             globalMemories[currentGlobalMemory].vars[quadList[i].left_op] =  getValue(quadList[i].tResult)
             
             print("RETURN")

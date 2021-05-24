@@ -2,7 +2,7 @@
 # Equipo 23, orientado a objetos
 # Paola Villarreal - A00821971
 # Alan Zavala - A01338448
-# Fecha: 14/05/2021
+# Fecha: 21/05/2021
 
 from Classes import Classes
 from Functions import Functions
@@ -348,7 +348,7 @@ def generateExpQuad():
         quadCounter += 1
 
         quadList.append(Quadruple(operator, leftOp, rightOp, result))
-        quadMEM.append(Quadruple(operator, memRefLeftOp, memRefRightOp, tempResult))
+        quadMEM.append(Quadruple(direcOperators[operator], memRefLeftOp, memRefRightOp, tempResult))
 
         operandsStack.append(result)
         typesStack.append(operandsMatch)
@@ -382,7 +382,7 @@ def pop_op_assign():
     if assignationType == leftOpType:
         quadCounter += 1
         quadList.append(Quadruple(operator, leftOp, None, varToAssign))
-        quadMEM.append(Quadruple(operator, memRefLeftOp, None, memVarToAsign))
+        quadMEM.append(Quadruple(direcOperators[operator], memRefLeftOp, None, memVarToAsign))
     else:
         print("LEFT OP = ", leftOp, " VAR TO ASSIGN = ", varToAssign)
         raise Exception("Cannot assign variable of type %s with %s" % (assignationType, leftOpType))
@@ -412,7 +412,7 @@ def generateWrite():
 
     quadCounter += 1
     quadList.append(Quadruple("WRITE", None, None, varToWrite))
-    quadMEM.append(Quadruple("WRITE", None, None, memVarToWrite))
+    quadMEM.append(Quadruple(direcOperators["WRITE"], None, None, memVarToWrite))
 
 # Function that generates the read quad
 def generateRead():
@@ -424,7 +424,7 @@ def generateRead():
     
     quadCounter += 1
     quadList.append(Quadruple("READ", None, None, varToRead))
-    quadMEM.append(Quadruple("READ", None, None, memVarToRead))
+    quadMEM.append(Quadruple(direcOperators["READ"], None, None, memVarToRead))
 
 # ---------------------- END LINEAR STATEMENTS (ASSIGN, WRITE, READ) ---------------------- #
 
@@ -435,7 +435,7 @@ def generateRead():
 # Function that generates the if GOTOF quad 
 # only if the there is a match type otherwise raise exception 
 def ifCondition():
-    global quadCounter, jumpsStack, typesStack
+    global quadCounter, jumpsStack, typesStack, expType
 
     expType = typesStack.pop()
 
@@ -446,7 +446,7 @@ def ifCondition():
         memLeftOp = getMemoryRef(leftOp)
         quadCounter += 1
         quadList.append(Quadruple("GOTOF", leftOp, None, None))
-        quadMEM.append(Quadruple("GOTOF", memLeftOp, None, None))
+        quadMEM.append(Quadruple(direcOperators["GOTOF"], memLeftOp, None, None))
         jumpsStack.append(quadCounter-1)
 
 # Function that generates the if GOTO quad 
@@ -456,7 +456,7 @@ def elifExpression():
 
     quadCounter += 1 
     quadList.append(Quadruple("GOTO", None, None, None))
-    quadMEM.append(Quadruple("GOTO", None, None, None))
+    quadMEM.append(Quadruple(direcOperators["GOTO"], None, None, None))
     quadElifExpression = quadCounter
     gotoStack.append(quadCounter-1)
 
@@ -474,7 +474,7 @@ def elifCondition():
         memLeftOp = getMemoryRef(leftOp)
         quadCounter += 1 
         quadList.append(Quadruple("GOTOF", leftOp, None, None))
-        quadMEM.append(Quadruple("GOTOF", memLeftOp, None, None))
+        quadMEM.append(Quadruple(direcOperators["GOTOF"], memLeftOp, None, None))
         quadElif = jumpsStack.pop()
         jumpsStack.append(quadCounter-1)
         quadList[quadElif].tResult = quadElifExpression
@@ -487,7 +487,7 @@ def elseCondition():
     quadElse = jumpsStack.pop()
     quadCounter += 1
     quadList.append(Quadruple("GOTO", None, None, None))
-    quadMEM.append(Quadruple("GOTO", None, None, None))
+    quadMEM.append(Quadruple(direcOperators["GOTO"], None, None, None))
     jumpsStack.append(quadCounter-1)
     quadList[quadElse].tResult = quadCounter
     quadMEM[quadElse].tResult = quadCounter
@@ -528,7 +528,7 @@ def whileCondition():
         memExpResult = getMemoryRef(expResult)
         quadCounter += 1
         quadList.append(Quadruple("GOTOF", expResult, None, None))
-        quadMEM.append(Quadruple("GOTOF", memExpResult, None, None))
+        quadMEM.append(Quadruple(direcOperators["GOTOF"], memExpResult, None, None))
         jumpsStack.append(quadCounter - 1)
 
 # Function that generates the while GOTO quad 
@@ -540,7 +540,7 @@ def endWhile():
     whileReturnQuad = jumpsStack.pop()
     quadCounter += 1
     quadList.append(Quadruple("GOTO", None, None, whileReturnQuad))
-    quadMEM.append(Quadruple("GOTO", None, None, whileReturnQuad))
+    quadMEM.append(Quadruple(direcOperators["GOTO"], None, None, whileReturnQuad))
     quadList[endWhile].tResult = quadCounter
     quadMEM[endWhile].tResult = quadCounter
 
@@ -567,7 +567,7 @@ def forCondition():
         memLeftOp = getMemoryRef(leftOp)
         quadCounter += 1
         quadList.append(Quadruple("GOTOF", leftOp, None, None))
-        quadMEM.append(Quadruple("GOTOF", memLeftOp, None, None))
+        quadMEM.append(Quadruple(direcOperators["GOTOF"], memLeftOp, None, None))
         jumpsStack.append(quadCounter-1)
 
 # Function that generates the for GOTO quad 
@@ -579,7 +579,7 @@ def endFor():
     quadEnd = jumpsStack.pop()
     returnFor = jumpsStack.pop()
     quadList.append(Quadruple("GOTO", None, None, returnFor))
-    quadMEM.append(Quadruple("GOTO", None, None, returnFor))
+    quadMEM.append(Quadruple(direcOperators["GOTO"], None, None, returnFor))
     quadList[quadEnd].tResult = quadCounter
     quadMEM[quadEnd].tResult = quadCounter
 
@@ -599,18 +599,25 @@ def startFunction():
 def returnFunction(variableToReturn):
     global quadCounter, quadList, quadMEM
 
+    functWhereVarExists = existsVar(variableToReturn)
+    
     cFunct = direcClasses[currentClass].c_funcs[currentFunct]
+    print("MESSI: ", cFunct.f_vars);
 
     # Validate that the function is not a void type
     if cFunct.f_type != "void":
         #Validates the type of the returnable variable is the same as the type of the function
-        if cFunct.f_vars[variableToReturn].v_type == cFunct.f_type:
+        if direcClasses[currentClass].c_funcs[functWhereVarExists].f_vars[variableToReturn].v_type == cFunct.f_type:
             quadCounter += 1
             memVarToReturn = getMemoryRef(variableToReturn)
-            quadList.append(Quadruple("RETURN", None, None, variableToReturn))
-            quadMEM.append(Quadruple("RETURN", None, None, memVarToReturn))
+
             # Because has a return, we add a variable to the global variables that will represent the returnable variable
-            direcClasses[currentClass].c_funcs["vG"].f_vars[currentFunct] = Vars(cFunct.f_type, -1, -1, mD.get_space_avail("local", cFunct.f_type, 1))
+            direcClasses[currentClass].c_funcs["vG"].f_vars[currentFunct] = Vars(cFunct.f_type, -1, -1, mD.get_space_avail("vG", cFunct.f_type, 1))
+            memVarToReturnCurrentFunct = getMemoryRef(currentFunct) # here we set the global var for the return function that will be updated with the return result
+
+            quadList.append(Quadruple("RETURN", currentFunct, None, variableToReturn))
+            quadMEM.append(Quadruple(direcOperators["RETURN"], memVarToReturnCurrentFunct, None, memVarToReturn))
+            
         else:
             raise Exception("Function is expecting " + cFunct.f_type + " an is given a " + cFunct.f_vars[variableToReturn].v_type)
     else:
@@ -626,7 +633,7 @@ def endFunction():
     else:
         quadCounter += 1
         quadList.append(Quadruple("END FUNCTION", None, None, None))
-        quadMEM.append(Quadruple("END FUNCTION", None, None, None))
+        quadMEM.append(Quadruple(direcOperators["END FUNCTION"], None, None, None))
         countOfTemps = 1
         numberOfVars = {"int": 0, "float": 0, "char": 0}
         numberOfTemps = {"int": 0, "float": 0, "char": 0, "bool": 0}
@@ -648,7 +655,7 @@ def eraSizeFunction():
 
     quadCounter += 1
     quadList.append(Quadruple("ERA", None, None, functionToCall))
-    quadMEM.append(Quadruple("ERA", None, None, functionToCall))
+    quadMEM.append(Quadruple(direcOperators["ERA"], None, None, functionToCall))
 
 # Function that recieves the argument that will be send to the parameter of the function
 def argFunction():
@@ -666,7 +673,7 @@ def argFunction():
         if direcClasses["main"].c_funcs[functionToCall].f_params_type[numberOfArgs-1] == argumentType:
             quadCounter += 1
             quadList.append(Quadruple("PARAM", argument, None, numberOfArgs-1))
-            quadMEM.append(Quadruple("PARAM", memArgument, None, numberOfArgs-1))
+            quadMEM.append(Quadruple(direcOperators["PARAM"], memArgument, None, numberOfArgs-1))
         else:
             raise Exception("Type mismatch")
     else:
@@ -687,18 +694,23 @@ def gosubFunction():
         functionStart = direcClasses["main"].c_funcs[functionToCall].f_start_quadruple
 
         quadList.append(Quadruple("GOSUB", None, None, functionStart))
-        quadMEM.append(Quadruple("GOSUB", None, None, functionStart))
+        quadMEM.append(Quadruple(direcOperators["GOSUB"], None, None, functionStart))
 
         if direcClasses["main"].c_funcs[functionToCall].f_type != "void":
 
             # Creates cuadruple to assign the returnable function to a temp
             quadCounter += 1
             result = "TEMP" + str(countOfTemps)
+            countOfTemps += 1;
             functType = direcClasses[currentClass].c_funcs["vG"].f_vars[functionToCall].v_type
             quadList.append(Quadruple("=", functionToCall, None, result))
             tempResult = mD.get_space_avail("temp", functType, 1)
             directTemp[result] = tempResult
-            quadMEM.append(Quadruple("=", functionToCall, None, tempResult))
+
+            ## global var that saves "value" of return function ##
+            memReturnResult = getMemoryRef(functionToCall);
+
+            quadMEM.append(Quadruple(direcOperators["="], memReturnResult, None, tempResult))
             operandsStack.append(result)
             typesStack.append(functType)
 
@@ -838,7 +850,7 @@ def checkInit():
     jumpsStack.append(quadCounter)
     quadCounter += 1
     quadList.append(Quadruple("GOTO", None, None, None))
-    quadMEM.append(Quadruple("GOTO", None, None, None))
+    quadMEM.append(Quadruple(direcOperators["GOTO"], None, None, None))
 
 # Function that saves where the code of the init function starts
 def startInit():
@@ -857,7 +869,7 @@ def endProgram():
     global quadList, quadMEM
 
     quadList.append(Quadruple("END PROGRAM", None, None, None))
-    quadMEM.append(Quadruple("END PROGRAM", None, None, None))
+    quadMEM.append(Quadruple(direcOperators["END PROGRAM"], None, None, None))
 
 #---------------------- MEMORY REFERENCES START ---------------------- #
 def getMemoryRef(op):
@@ -878,7 +890,7 @@ def getMemoryRef(op):
 
 #!!!! se borrara después  
 def printQuadruples():
-    global quadList, quadCounter
+    global quadList
     i = 0
     for quad in quadList:
         print("Quad ", i, " symbol: ", quad.operation, " left: ", quad.left_op, " right: ", quad.right_op, " temp: ", quad.tResult)
@@ -886,7 +898,7 @@ def printQuadruples():
 
 
 def printMemoryQuadruples():
-    global quadMEM, quadCounter
+    global quadMEM
     i = 0
     for quad in quadMEM:
         print("Quad ", i, " symbol: ", quad.operation, " left: ", quad.left_op, " right: ", quad.right_op, " temp: ", quad.tResult)

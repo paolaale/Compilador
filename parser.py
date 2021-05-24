@@ -2,11 +2,12 @@
 # Equipo 23, orientado a objetos
 # Paola Villarreal - A00821971
 # Alan Zavala - A01338448
-# Fecha: 14/05/2021
+# Fecha: 21/05/2021
 
 import ply.yacc as yacc
 from lexer import tokens # Get the token list from the lexer
 import semanticFunc as sF
+import VirtualMachine as vM
 import MemoryDispatcher as mD # solo para probar
 import Testing as test
 
@@ -512,14 +513,17 @@ if __name__ == '__main__':
         print("stack of types: ", sF.typesStack)
         print("stack of jumps: ", sF.jumpsStack)
         sF.printQuadruples()
-        print("-----------------------------------")
-        print("-----------------------------------")
+        print("------------------------------------")
         sF.printMemoryQuadruples()
+        print("------------------------------------")
+        #vM.execute(sF.quadMEM)
+        #print("direct al revés: ", vM.constDictionary)
 
         # Test memory assignation in declaration
+        # test.printMemoryInDeclaration()
+        # test.printVarsTable()
         """ test.printFunctsTable()
-        test.printVarsTable()
-        test.printMemoryInDeclaration() """
+        test.printVarsTable()"""
 
         if result != None:
             print("Program accepted")
