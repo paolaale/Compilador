@@ -1,0 +1,38 @@
+program vm7ANDOR :
+    main {
+
+        var int p, h, j, k, a;
+
+        funct void testANDOR() {
+            var int j;
+                float k;
+            
+            k = 12.9;
+            read(j);
+
+            if (j >= 0 or j < 10) then {
+                write("hola1");
+            }
+            elif (j >= 10 and j < 20) then {
+                write("hola2");
+            }
+            else {
+                write("hola3");
+            }
+            write(j * 10);
+        }
+        
+        init {
+            var int p, f, g, h, i, j, k;
+                float harry, potter;
+                
+            i = 1919;
+            
+
+            call testANDOR();
+
+            write(i);
+        
+        }
+    }
+end

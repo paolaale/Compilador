@@ -1,0 +1,42 @@
+program vm8PrintChar :
+    main {
+
+        var int p, h, j, k, a;
+
+        funct void printChar() {
+            var int j;
+                float k;
+                char z;
+            
+            k = 12.9;
+            read(j);
+
+            if (j >= 0 and j < 10) then {
+                z = 't';
+                write(z);
+            }
+            elif (j >= 10 and j < 20) then {
+                z = 'y';
+                write(z);
+            }
+            else {
+                z = 'u';
+                write(z);
+            }
+            write(j * 10);
+        }
+        
+        init {
+            var int p, f, g, h, i, j, k;
+                float harry, potter;
+                
+            i = 1919;
+            
+
+            call printChar();
+
+            write(i);
+        
+        }
+    }
+end

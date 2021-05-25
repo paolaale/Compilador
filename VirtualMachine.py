@@ -99,8 +99,16 @@ def execute(quadList):
             assignValue(quadList[i].left_op, quadList[i].tResult)
             print("ASSIGN")
         elif quadList[i].operation == 6:
+            if getValue(quadList[i].left_op) and getValue(quadList[i].right_op):
+                exeStack[-1].vars[quadList[i].tResult] = True
+            else:
+                exeStack[-1].vars[quadList[i].tResult] = False
             print("AND")
         elif quadList[i].operation == 7:
+            if getValue(quadList[i].left_op) or getValue(quadList[i].right_op):
+                exeStack[-1].vars[quadList[i].tResult] = True
+            else:
+                exeStack[-1].vars[quadList[i].tResult] = False
             print("OR")
         elif quadList[i].operation == 8:
             if getValue(quadList[i].left_op) > getValue(quadList[i].right_op):
