@@ -139,8 +139,12 @@ def p_var_aux(p):
     p[0] = 'program'
 
 def p_var_aux_2(p):
-    '''var_aux_2 : LBRACKET access_array exp verify_array_index RBRACKET end_array'''
-    """ |  LBRACKET exp RBRACKET LBRACKET exp RBRACKET """
+    '''var_aux_2 : LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3'''
+    p[0] = 'program'
+
+def p_var_aux_3(p):
+    '''var_aux_3 : LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix
+                | empty '''
     p[0] = 'program'
 
 def p_call(p):
@@ -432,21 +436,17 @@ def p_end_array(self):
     'end_array :'
     sF.endArray()
 
-""" def p_access_matrix(self):
+def p_access_matrix(self):
     'access_matrix :'
     sF.accessMatrix()
 
-def p_verify_matrix_index1(self):
-    'verify_matrix_index1 :'
-    sF.verifyMatrixIndex1()
-
-def p_verify_matrix_index2(self):
-    'verify_matrix_index2 :'
-    sF.verifyMatrixIndex2()
+def p_verify_matrix_index(self):
+    'verify_matrix_index :'
+    sF.verifyMatrixIndex()
 
 def p_end_matrix(self):
     'end_matrix :'
-    sF.endMatrix() """
+    sF.endMatrix()
 
 # FUNCTIONS FOR CLASSES
 
@@ -500,14 +500,8 @@ if __name__ == '__main__':
         print("------------------------------------")
         sF.printMemoryQuadruples()
         print("------------------------------------")
-        vM.execute(sF.quadMEM)
-        #print("direct al revés: ", vM.constDictionary)
-
-        # Test memory assignation in declaration
-        # test.printMemoryInDeclaration()
-        # test.printVarsTable()
-        """ test.printFunctsTable()
-        test.printVarsTable()"""
+        #vM.execute(sF.quadMEM)
+        #test.printMemoryInDeclaration()
 
         if result != None:
             print("Program accepted")

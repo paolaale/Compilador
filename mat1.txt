@@ -1,0 +1,15 @@
+program arr3 :
+
+    main {
+
+        init {
+           
+            var int i[5][3];
+            int b;
+            
+            b = 1;
+            i[b][b] = 3;
+
+        }
+    }
+end
