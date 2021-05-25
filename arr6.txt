@@ -1,0 +1,26 @@
+program ft1 :
+
+    main {
+
+        var int i, j, k;
+        float f[10];
+
+        funct void uno(int a, float g) {
+            
+            var int i;
+            i = a;
+
+            while (a > 0) do {
+                a = a - k * j;
+            }
+        }
+
+        init {
+           
+            i = 2;
+            k = i + 1;
+            
+            call uno(i + k, f[2]);
+        }
+    }
+end

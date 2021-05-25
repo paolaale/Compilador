@@ -4,11 +4,12 @@ program arr1 :
 
         init {
            
-            var float c[3];
+            var float c[3], d;
             int b;
 
             b = 1;
-            c[b] = 34.5; 
+            d = 34.5;
+            c[b] = d; 
 
             write(c[1]);
             

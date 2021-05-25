@@ -102,14 +102,8 @@ def p_functions_aux(p):
 
 def p_params(p):
     '''params : simple_type ID add_param
-            | simple_type ID add_param COMMA params
-            | simple_type ID params_aux
-            | simple_type ID params_aux COMMA params'''
+            | simple_type ID add_param COMMA params'''
     p[0] = 'program'
-
-def p_params_aux(p):
-    '''params_aux : LBRACKET RBRACKET add_array_var_params
-                | LBRACKET RBRACKET LBRACKET RBRACKET add_matrix_var_params'''
 
 def p_body(p):
     '''body : LBRACE start_function dec_vars statutes_aux RBRACE end_function
@@ -392,16 +386,6 @@ def p_add_param(p):
     'add_param :'
     sF.addParam(p[-1], p[-2], -1, -1)
 
-def p_add_array_var_params(p):
-    'add_array_var_params :'
-    sF.addParam(p[-3], p[-4], 0, 0)
-    p[0] = 'program'
-
-def p_add_matrix_var_params(p):
-    'add_matrix_var_params :'
-    sF.addParam(p[-5], p[-6], 0, 0)
-    p[0] = 'program'
-
 def p_insert_number_params(self):
     'insert_number_params :'
     sF.insertParams()
@@ -516,7 +500,7 @@ if __name__ == '__main__':
         print("------------------------------------")
         sF.printMemoryQuadruples()
         print("------------------------------------")
-        #vM.execute(sF.quadMEM)
+        vM.execute(sF.quadMEM)
         #print("direct al revés: ", vM.constDictionary)
 
         # Test memory assignation in declaration
