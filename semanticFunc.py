@@ -44,6 +44,9 @@ directConstants = {}
 jumpsStack = deque()
 gotoStack = deque()
 
+# Stacks of array access
+accesArrayStack = deque()
+
 # Helpers to fill quadruples
 stringToWrite = None
 quadCounter = 0
@@ -728,26 +731,33 @@ def insertParams():
 
 # Verify that the id is an array and creates a fake bottom
 def accessArray():
-    global operatorsStack, currentDataType, currentArraySize, currentDataLowerLimit, dimensionsStack, currentDataId
+    global operatorsStack, currentDataType, currentArraySize, currentDataLowerLimit, dimensionsStack, currentDataId, accesArrayStack
 
     currentDataId = operandsStack.pop()
+    accesArrayStack.append(currentDataId)
+    
+    #currentDataId = operandsStack[-1]
+    print(currentDataId);
     currentDataType = typesStack.pop()
     currentArraySize = int(direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].rows)
-    currentDataLowerLimit = direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].lowerMemRef
+    #currentDataLowerLimit = direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].lowerMemRef
 
     if currentArraySize > 0:
         operatorsStack.append("[")
-        dimensionsStack.append(currentArraySize)
+        #dimensionsStack.append(currentArraySize)
     else:
         raise Exception("Type mismatch")
 
 # Verify that the index of the array to access is an integer and 
 # creates quadruple to check that the position is accesible
 def verifyArrayIndex():
-    global quadCounter, quadList, operandsStack, currentArraySize, typesStack, quadMEM
+    global quadCounter, quadList, operandsStack, currentArraySize, typesStack, quadMEM, currentDataId, currentDataLowerLimit
 
     memTopOperand = getMemoryRef(operandsStack[-1])
-    currSize = dimensionsStack.pop()
+    currentDataId = accesArrayStack.pop()
+    
+    currSize = int(direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].rows)
+    currentDataLowerLimit = direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].lowerMemRef
 
     if typesStack[-1] == "int":
         quadCounter += 1
@@ -758,7 +768,7 @@ def verifyArrayIndex():
 
 # Sum the virtual address to acces the correct and wanted index
 def endArray():
-    global quadCounter, quadList, operandsStack, typesStack, operatorsStack, countOfTemps, quadMEM
+    global quadCounter, quadList, operandsStack, typesStack, operatorsStack, countOfTemps, quadMEM, currentDataLowerLimit
 
     leftOp = operandsStack.pop()
     leftOpType = typesStack.pop()
