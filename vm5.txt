@@ -65,7 +65,7 @@ program vm3 :
             var int j;
                 float k;
             
-            j = 10;
+            read(j);
 
             return j;
         }
@@ -78,6 +78,7 @@ program vm3 :
             write(a * 12);
 
             a = testReturn() + testReturn();
+            write(a);
         
         }
     }

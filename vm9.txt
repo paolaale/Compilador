@@ -1,0 +1,36 @@
+program vm9Recursion :
+    main {
+
+        var int p;
+        
+        funct int testReturn() {
+
+            var int a, g;
+
+            if (p >= 1) then {
+                g = p;
+                p = p - 1;
+                a = g * testReturn();
+                
+            }
+
+            else {
+                a = 1;
+            }
+
+            return a;
+        }
+        
+        init {
+            var int h, i, j, k;
+                float harry, potter;
+                
+            i = 1919;
+
+            p = 6;
+            
+            k = testReturn();
+            write(k);
+        }
+    }
+end

@@ -115,6 +115,10 @@ def addFunction(fName, fType):
     # Add to dictionary of classes, in the current class the function
     direcClasses[currentClass].c_funcs[fName] = Functions(fType, [], numberOfParams, None) 
 
+    if fType != "void":
+        # Because has a return, we add a variable to the global variables that will represent the returnable variable
+        direcClasses[currentClass].c_funcs["vG"].f_vars[currentFunct] = Vars(fType, -1, -1, mD.get_space_avail("vG", fType, 1))
+
 # Function that recieves the name and type of the variable
 # size 1 that represents number of rows (array)
 # size 2 that represents number of columns (matrix)
@@ -609,8 +613,7 @@ def returnFunction(variableToReturn):
             quadCounter += 1
             memVarToReturn = getMemoryRef(variableToReturn)
 
-            # Because has a return, we add a variable to the global variables that will represent the returnable variable
-            direcClasses[currentClass].c_funcs["vG"].f_vars[currentFunct] = Vars(cFunct.f_type, -1, -1, mD.get_space_avail("vG", cFunct.f_type, 1))
+            
             memVarToReturnCurrentFunct = getMemoryRef(currentFunct) # here we set the global var for the return function that will be updated with the return result
 
             quadList.append(Quadruple("RETURN", currentFunct, None, variableToReturn))
