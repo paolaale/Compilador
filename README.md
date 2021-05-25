@@ -23,26 +23,32 @@ Alan Zavala Lévaro A01338448
 * Cambios en la sintaxis del programa
 * Coreccción de todos los errores shift/reduce y reduce/reduce
 * Programación de stacks de operadores, operandos y tipos
-* Programación de los cuadruplos, validando que variable exista y el tipo sea coherente
+* Programación de los cuádruplos, validando que variable exista y el tipo sea coherente
 * Pruebas funcionales y aceptadas de todo tipo de expresiones
 * Falta hacer asignación de resultados
 
 ## Avance 4 (30 abril)
 * Cambios en la sintaxis de los if del programa
-* Se crean los cuadruplos de asignaciones, write y read
-* Se crean los cuadruplos de ifs y whiles
+* Se crean los cuádruplos de asignaciones, write y read
+* Se crean los cuádruplos de ifs y whiles
 * Pruebas funcionales
-* Falta verificar combinacion de estatus no lineas y cuadruplos de for
+* Falta verificar combinación de estatus no lineas y cuádruplos de for
 
 ## Avance 5 (07 mayo)
-* Se crean los cuadruplos de fors
+* Se crean los cuádruplos de fors
 * Pruebas funcionales para condicionales combinados
 * Se simplifico el código
 * Se comento el código
 * Se hizo la documentación de lo que se lleva actualmente
 
 ## Avance 6 (14 mayo)
-*  Estructuración de arrays y matrices (diseño y lógica en branch local)
-*  Programación de la generación de cuádruplos de las funciones void
-*  Programación de asignación de memoria a las variables del programa en compilación
-*  Diseño del manejo de memorias para temporales y de la memoria en ejecución en general.
+*  Se crean los cuádruplos de funciones de tipo void 
+*  Asignación de memoria a las variables del programa en compilación
+*  Diseño del manejo de memorias para temporales y de la memoria en ejecución en general
+
+## Avance 7 (21 mayo)
+* Se crean los cuádruplos de funciones con return
+* Se crean los cuádruplos de array
+* Se agregaron las variables de tipo char
+* Máquina virtual funcional con expresiones, estatutos lineales y no lineales, funciones void y return sin parametros
+* Pruebas funcionales
