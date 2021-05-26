@@ -52,3 +52,6 @@ Alan Zavala Lévaro A01338448
 * Se agregaron las variables de tipo char
 * Máquina virtual funcional con expresiones, estatutos lineales y no lineales, funciones void y return sin parametros
 * Pruebas funcionales
+
+## Avance 8 (28 mayo)
+* Se crean los cuadruplos de matrices
