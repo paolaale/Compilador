@@ -61,9 +61,9 @@ Rule 55    assignation -> ID push_var var_aux EQUAL push_op exp pop_op_assign
 Rule 56    var_aux -> POINT ID
 Rule 57    var_aux -> POINT ID var_aux_2
 Rule 58    var_aux -> var_aux_2
-Rule 59    var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3
+Rule 59    var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET var_aux_3
 Rule 60    var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix
-Rule 61    var_aux_3 -> empty
+Rule 61    var_aux_3 -> end_array
 Rule 62    call -> ID exist_function LPAREN era_function RPAREN gosub_function
 Rule 63    call -> ID POINT ID LPAREN RPAREN
 Rule 64    call -> ID exist_function LPAREN era_function call_aux RPAREN gosub_function
@@ -243,8 +243,8 @@ dec_vars_simple      : 10
 elif_condition       : 69
 elif_expression      : 69
 else_condition       : 71
-empty                : 3 6 8 61 70 72
-end_array            : 59
+empty                : 3 6 8 70 72
+end_array            : 61
 end_for              : 82
 end_function         : 41 42 43 44
 end_if               : 68
@@ -1602,7 +1602,7 @@ state 114
     (56) var_aux -> . POINT ID
     (57) var_aux -> . POINT ID var_aux_2
     (58) var_aux -> . var_aux_2
-    (59) var_aux_2 -> . LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3
+    (59) var_aux_2 -> . LBRACKET access_array exp verify_array_index RBRACKET var_aux_3
 
     EQUAL           shift and go to state 132
     POINT           shift and go to state 134
@@ -1907,7 +1907,7 @@ state 135
 
 state 136
 
-    (59) var_aux_2 -> LBRACKET . access_array exp verify_array_index RBRACKET end_array var_aux_3
+    (59) var_aux_2 -> LBRACKET . access_array exp verify_array_index RBRACKET var_aux_3
     (147) access_array -> .
 
     LPAREN          reduce using rule 147 (access_array -> .)
@@ -2457,7 +2457,7 @@ state 168
 
     (56) var_aux -> POINT ID .
     (57) var_aux -> POINT ID . var_aux_2
-    (59) var_aux_2 -> . LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3
+    (59) var_aux_2 -> . LBRACKET access_array exp verify_array_index RBRACKET var_aux_3
 
     EQUAL           reduce using rule 56 (var_aux -> POINT ID .)
     TIMES           reduce using rule 56 (var_aux -> POINT ID .)
@@ -2477,7 +2477,7 @@ state 168
 
 state 169
 
-    (59) var_aux_2 -> LBRACKET access_array . exp verify_array_index RBRACKET end_array var_aux_3
+    (59) var_aux_2 -> LBRACKET access_array . exp verify_array_index RBRACKET var_aux_3
     (83) exp -> . l_exp pop_op_lop
     (84) exp -> . l_exp pop_op_lop OR push_op exp
     (85) exp -> . l_exp pop_op_lop AND push_op exp
@@ -2745,7 +2745,7 @@ state 183
     (56) var_aux -> . POINT ID
     (57) var_aux -> . POINT ID var_aux_2
     (58) var_aux -> . var_aux_2
-    (59) var_aux_2 -> . LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3
+    (59) var_aux_2 -> . LBRACKET access_array exp verify_array_index RBRACKET var_aux_3
 
     TIMES           reduce using rule 100 (cte -> ID push_var .)
     DIVIDE          reduce using rule 100 (cte -> ID push_var .)
@@ -3110,7 +3110,7 @@ state 200
 
 state 201
 
-    (59) var_aux_2 -> LBRACKET access_array exp . verify_array_index RBRACKET end_array var_aux_3
+    (59) var_aux_2 -> LBRACKET access_array exp . verify_array_index RBRACKET var_aux_3
     (148) verify_array_index -> .
 
     RBRACKET        reduce using rule 148 (verify_array_index -> .)
@@ -3531,7 +3531,7 @@ state 230
 
 state 231
 
-    (59) var_aux_2 -> LBRACKET access_array exp verify_array_index . RBRACKET end_array var_aux_3
+    (59) var_aux_2 -> LBRACKET access_array exp verify_array_index . RBRACKET var_aux_3
 
     RBRACKET        shift and go to state 257
 
@@ -4044,10 +4044,12 @@ state 256
 
 state 257
 
-    (59) var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET . end_array var_aux_3
+    (59) var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET . var_aux_3
+    (60) var_aux_3 -> . LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix
+    (61) var_aux_3 -> . end_array
     (149) end_array -> .
 
-    LBRACKET        reduce using rule 149 (end_array -> .)
+    LBRACKET        shift and go to state 276
     EQUAL           reduce using rule 149 (end_array -> .)
     TIMES           reduce using rule 149 (end_array -> .)
     DIVIDE          reduce using rule 149 (end_array -> .)
@@ -4061,7 +4063,8 @@ state 257
     SEMICOLON       reduce using rule 149 (end_array -> .)
     RBRACKET        reduce using rule 149 (end_array -> .)
 
-    end_array                      shift and go to state 276
+    var_aux_3                      shift and go to state 277
+    end_array                      shift and go to state 278
 
 state 258
 
@@ -4210,7 +4213,7 @@ state 268
     WHILE           shift and go to state 97
     FROM            shift and go to state 98
 
-    statutes_aux                   shift and go to state 277
+    statutes_aux                   shift and go to state 279
     statutes                       shift and go to state 85
     assignation                    shift and go to state 86
     read                           shift and go to state 88
@@ -4223,7 +4226,7 @@ state 269
 
     (81) while -> WHILE while_jump LPAREN exp RPAREN while_condition DO . LBRACE statutes_aux RBRACE end_while
 
-    LBRACE          shift and go to state 278
+    LBRACE          shift and go to state 280
 
 
 state 270
@@ -4264,7 +4267,7 @@ state 270
     CTEF            shift and go to state 154
     CTECHAR         shift and go to state 155
 
-    exp                            shift and go to state 279
+    exp                            shift and go to state 281
     l_exp                          shift and go to state 143
     a_exp                          shift and go to state 144
     term                           shift and go to state 145
@@ -4289,13 +4292,13 @@ state 272
 
     SEMICOLON       reduce using rule 141 (return_function -> .)
 
-    return_function                shift and go to state 280
+    return_function                shift and go to state 282
 
 state 273
 
     (43) body -> LBRACE start_function statutes_aux RETURN ID return_function . SEMICOLON RBRACE end_function
 
-    SEMICOLON       shift and go to state 281
+    SEMICOLON       shift and go to state 283
 
 
 state 274
@@ -4356,7 +4359,7 @@ state 275
     CTECHAR         shift and go to state 155
 
     exp                            shift and go to state 226
-    call_aux                       shift and go to state 282
+    call_aux                       shift and go to state 284
     l_exp                          shift and go to state 143
     a_exp                          shift and go to state 144
     term                           shift and go to state 145
@@ -4367,36 +4370,63 @@ state 275
 
 state 276
 
-    (59) var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET end_array . var_aux_3
-    (60) var_aux_3 -> . LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix
-    (61) var_aux_3 -> . empty
-    (107) empty -> .
+    (60) var_aux_3 -> LBRACKET . access_matrix exp verify_matrix_index RBRACKET end_matrix
+    (150) access_matrix -> .
 
-    LBRACKET        shift and go to state 283
-    EQUAL           reduce using rule 107 (empty -> .)
-    TIMES           reduce using rule 107 (empty -> .)
-    DIVIDE          reduce using rule 107 (empty -> .)
-    PLUS            reduce using rule 107 (empty -> .)
-    MINUS           reduce using rule 107 (empty -> .)
-    RELOP           reduce using rule 107 (empty -> .)
-    OR              reduce using rule 107 (empty -> .)
-    AND             reduce using rule 107 (empty -> .)
-    COMMA           reduce using rule 107 (empty -> .)
-    RPAREN          reduce using rule 107 (empty -> .)
-    SEMICOLON       reduce using rule 107 (empty -> .)
-    RBRACKET        reduce using rule 107 (empty -> .)
+    LPAREN          reduce using rule 150 (access_matrix -> .)
+    ID              reduce using rule 150 (access_matrix -> .)
+    PLUS            reduce using rule 150 (access_matrix -> .)
+    MINUS           reduce using rule 150 (access_matrix -> .)
+    CTEI            reduce using rule 150 (access_matrix -> .)
+    CTEF            reduce using rule 150 (access_matrix -> .)
+    CTECHAR         reduce using rule 150 (access_matrix -> .)
 
-    var_aux_3                      shift and go to state 284
-    empty                          shift and go to state 285
+    access_matrix                  shift and go to state 285
 
 state 277
+
+    (59) var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET var_aux_3 .
+
+    EQUAL           reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET var_aux_3 .)
+    TIMES           reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET var_aux_3 .)
+    DIVIDE          reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET var_aux_3 .)
+    PLUS            reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET var_aux_3 .)
+    MINUS           reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET var_aux_3 .)
+    RELOP           reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET var_aux_3 .)
+    OR              reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET var_aux_3 .)
+    AND             reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET var_aux_3 .)
+    COMMA           reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET var_aux_3 .)
+    RPAREN          reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET var_aux_3 .)
+    SEMICOLON       reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET var_aux_3 .)
+    RBRACKET        reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET var_aux_3 .)
+
+
+state 278
+
+    (61) var_aux_3 -> end_array .
+
+    EQUAL           reduce using rule 61 (var_aux_3 -> end_array .)
+    TIMES           reduce using rule 61 (var_aux_3 -> end_array .)
+    DIVIDE          reduce using rule 61 (var_aux_3 -> end_array .)
+    PLUS            reduce using rule 61 (var_aux_3 -> end_array .)
+    MINUS           reduce using rule 61 (var_aux_3 -> end_array .)
+    RELOP           reduce using rule 61 (var_aux_3 -> end_array .)
+    OR              reduce using rule 61 (var_aux_3 -> end_array .)
+    AND             reduce using rule 61 (var_aux_3 -> end_array .)
+    COMMA           reduce using rule 61 (var_aux_3 -> end_array .)
+    RPAREN          reduce using rule 61 (var_aux_3 -> end_array .)
+    SEMICOLON       reduce using rule 61 (var_aux_3 -> end_array .)
+    RBRACKET        reduce using rule 61 (var_aux_3 -> end_array .)
+
+
+state 279
 
     (68) condition -> IF LPAREN exp RPAREN if_condition THEN LBRACE statutes_aux . RBRACE condition_aux_elif condition_aux_else end_if
 
     RBRACE          shift and go to state 286
 
 
-state 278
+state 280
 
     (81) while -> WHILE while_jump LPAREN exp RPAREN while_condition DO LBRACE . statutes_aux RBRACE end_while
     (52) statutes_aux -> . statutes
@@ -4433,84 +4463,80 @@ state 278
     while                          shift and go to state 91
     for                            shift and go to state 92
 
-state 279
+state 281
 
     (82) for -> FROM LPAREN assignation RPAREN UNTIL for_jump LPAREN exp . RPAREN for_condition DO LBRACE statutes_aux RBRACE end_for
 
     RPAREN          shift and go to state 288
 
 
-state 280
+state 282
 
     (44) body -> LBRACE start_function dec_vars statutes_aux RETURN ID return_function . SEMICOLON RBRACE end_function
 
     SEMICOLON       shift and go to state 289
 
 
-state 281
+state 283
 
     (43) body -> LBRACE start_function statutes_aux RETURN ID return_function SEMICOLON . RBRACE end_function
 
     RBRACE          shift and go to state 290
 
 
-state 282
+state 284
 
     (67) call_aux -> exp arg_function COMMA call_aux .
 
     RPAREN          reduce using rule 67 (call_aux -> exp arg_function COMMA call_aux .)
 
 
-state 283
-
-    (60) var_aux_3 -> LBRACKET . access_matrix exp verify_matrix_index RBRACKET end_matrix
-    (150) access_matrix -> .
-
-    LPAREN          reduce using rule 150 (access_matrix -> .)
-    ID              reduce using rule 150 (access_matrix -> .)
-    PLUS            reduce using rule 150 (access_matrix -> .)
-    MINUS           reduce using rule 150 (access_matrix -> .)
-    CTEI            reduce using rule 150 (access_matrix -> .)
-    CTEF            reduce using rule 150 (access_matrix -> .)
-    CTECHAR         reduce using rule 150 (access_matrix -> .)
-
-    access_matrix                  shift and go to state 291
-
-state 284
-
-    (59) var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3 .
-
-    EQUAL           reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3 .)
-    TIMES           reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3 .)
-    DIVIDE          reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3 .)
-    PLUS            reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3 .)
-    MINUS           reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3 .)
-    RELOP           reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3 .)
-    OR              reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3 .)
-    AND             reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3 .)
-    COMMA           reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3 .)
-    RPAREN          reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3 .)
-    SEMICOLON       reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3 .)
-    RBRACKET        reduce using rule 59 (var_aux_2 -> LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3 .)
-
-
 state 285
 
-    (61) var_aux_3 -> empty .
+    (60) var_aux_3 -> LBRACKET access_matrix . exp verify_matrix_index RBRACKET end_matrix
+    (83) exp -> . l_exp pop_op_lop
+    (84) exp -> . l_exp pop_op_lop OR push_op exp
+    (85) exp -> . l_exp pop_op_lop AND push_op exp
+    (86) l_exp -> . a_exp
+    (87) l_exp -> . a_exp RELOP push_op a_exp pop_op_relop
+    (88) a_exp -> . term pop_op_art_n2
+    (89) a_exp -> . term pop_op_art_n2 PLUS push_op a_exp
+    (90) a_exp -> . term pop_op_art_n2 MINUS push_op a_exp
+    (91) term -> . factor pop_op_art_n1
+    (92) term -> . factor pop_op_art_n1 TIMES push_op term
+    (93) term -> . factor pop_op_art_n1 DIVIDE push_op term
+    (94) factor -> . LPAREN push_paren exp RPAREN pop_paren
+    (95) factor -> . call
+    (96) factor -> . factor_aux
+    (62) call -> . ID exist_function LPAREN era_function RPAREN gosub_function
+    (63) call -> . ID POINT ID LPAREN RPAREN
+    (64) call -> . ID exist_function LPAREN era_function call_aux RPAREN gosub_function
+    (65) call -> . ID POINT ID LPAREN call_aux RPAREN
+    (97) factor_aux -> . cte
+    (98) factor_aux -> . PLUS cte
+    (99) factor_aux -> . MINUS cte
+    (100) cte -> . ID push_var
+    (101) cte -> . ID push_var var_aux
+    (102) cte -> . CTEI push_var
+    (103) cte -> . CTEF push_var
+    (104) cte -> . CTECHAR push_var
 
-    EQUAL           reduce using rule 61 (var_aux_3 -> empty .)
-    TIMES           reduce using rule 61 (var_aux_3 -> empty .)
-    DIVIDE          reduce using rule 61 (var_aux_3 -> empty .)
-    PLUS            reduce using rule 61 (var_aux_3 -> empty .)
-    MINUS           reduce using rule 61 (var_aux_3 -> empty .)
-    RELOP           reduce using rule 61 (var_aux_3 -> empty .)
-    OR              reduce using rule 61 (var_aux_3 -> empty .)
-    AND             reduce using rule 61 (var_aux_3 -> empty .)
-    COMMA           reduce using rule 61 (var_aux_3 -> empty .)
-    RPAREN          reduce using rule 61 (var_aux_3 -> empty .)
-    SEMICOLON       reduce using rule 61 (var_aux_3 -> empty .)
-    RBRACKET        reduce using rule 61 (var_aux_3 -> empty .)
+    LPAREN          shift and go to state 139
+    ID              shift and go to state 151
+    PLUS            shift and go to state 146
+    MINUS           shift and go to state 147
+    CTEI            shift and go to state 153
+    CTEF            shift and go to state 154
+    CTECHAR         shift and go to state 155
 
+    exp                            shift and go to state 291
+    l_exp                          shift and go to state 143
+    a_exp                          shift and go to state 144
+    term                           shift and go to state 145
+    factor                         shift and go to state 148
+    call                           shift and go to state 149
+    factor_aux                     shift and go to state 150
+    cte                            shift and go to state 152
 
 state 286
 
@@ -4570,50 +4596,12 @@ state 290
 
 state 291
 
-    (60) var_aux_3 -> LBRACKET access_matrix . exp verify_matrix_index RBRACKET end_matrix
-    (83) exp -> . l_exp pop_op_lop
-    (84) exp -> . l_exp pop_op_lop OR push_op exp
-    (85) exp -> . l_exp pop_op_lop AND push_op exp
-    (86) l_exp -> . a_exp
-    (87) l_exp -> . a_exp RELOP push_op a_exp pop_op_relop
-    (88) a_exp -> . term pop_op_art_n2
-    (89) a_exp -> . term pop_op_art_n2 PLUS push_op a_exp
-    (90) a_exp -> . term pop_op_art_n2 MINUS push_op a_exp
-    (91) term -> . factor pop_op_art_n1
-    (92) term -> . factor pop_op_art_n1 TIMES push_op term
-    (93) term -> . factor pop_op_art_n1 DIVIDE push_op term
-    (94) factor -> . LPAREN push_paren exp RPAREN pop_paren
-    (95) factor -> . call
-    (96) factor -> . factor_aux
-    (62) call -> . ID exist_function LPAREN era_function RPAREN gosub_function
-    (63) call -> . ID POINT ID LPAREN RPAREN
-    (64) call -> . ID exist_function LPAREN era_function call_aux RPAREN gosub_function
-    (65) call -> . ID POINT ID LPAREN call_aux RPAREN
-    (97) factor_aux -> . cte
-    (98) factor_aux -> . PLUS cte
-    (99) factor_aux -> . MINUS cte
-    (100) cte -> . ID push_var
-    (101) cte -> . ID push_var var_aux
-    (102) cte -> . CTEI push_var
-    (103) cte -> . CTEF push_var
-    (104) cte -> . CTECHAR push_var
+    (60) var_aux_3 -> LBRACKET access_matrix exp . verify_matrix_index RBRACKET end_matrix
+    (151) verify_matrix_index -> .
 
-    LPAREN          shift and go to state 139
-    ID              shift and go to state 151
-    PLUS            shift and go to state 146
-    MINUS           shift and go to state 147
-    CTEI            shift and go to state 153
-    CTEF            shift and go to state 154
-    CTECHAR         shift and go to state 155
+    RBRACKET        reduce using rule 151 (verify_matrix_index -> .)
 
-    exp                            shift and go to state 299
-    l_exp                          shift and go to state 143
-    a_exp                          shift and go to state 144
-    term                           shift and go to state 145
-    factor                         shift and go to state 148
-    call                           shift and go to state 149
-    factor_aux                     shift and go to state 150
-    cte                            shift and go to state 152
+    verify_matrix_index            shift and go to state 299
 
 state 292
 
@@ -4705,12 +4693,10 @@ state 298
 
 state 299
 
-    (60) var_aux_3 -> LBRACKET access_matrix exp . verify_matrix_index RBRACKET end_matrix
-    (151) verify_matrix_index -> .
+    (60) var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index . RBRACKET end_matrix
 
-    RBRACKET        reduce using rule 151 (verify_matrix_index -> .)
+    RBRACKET        shift and go to state 307
 
-    verify_matrix_index            shift and go to state 307
 
 state 300
 
@@ -4801,10 +4787,23 @@ state 306
 
 state 307
 
-    (60) var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index . RBRACKET end_matrix
+    (60) var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET . end_matrix
+    (152) end_matrix -> .
 
-    RBRACKET        shift and go to state 312
+    EQUAL           reduce using rule 152 (end_matrix -> .)
+    TIMES           reduce using rule 152 (end_matrix -> .)
+    DIVIDE          reduce using rule 152 (end_matrix -> .)
+    PLUS            reduce using rule 152 (end_matrix -> .)
+    MINUS           reduce using rule 152 (end_matrix -> .)
+    RELOP           reduce using rule 152 (end_matrix -> .)
+    OR              reduce using rule 152 (end_matrix -> .)
+    AND             reduce using rule 152 (end_matrix -> .)
+    COMMA           reduce using rule 152 (end_matrix -> .)
+    RPAREN          reduce using rule 152 (end_matrix -> .)
+    SEMICOLON       reduce using rule 152 (end_matrix -> .)
+    RBRACKET        reduce using rule 152 (end_matrix -> .)
 
+    end_matrix                     shift and go to state 312
 
 state 308
 
@@ -4914,23 +4913,21 @@ state 311
 
 state 312
 
-    (60) var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET . end_matrix
-    (152) end_matrix -> .
+    (60) var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .
 
-    EQUAL           reduce using rule 152 (end_matrix -> .)
-    TIMES           reduce using rule 152 (end_matrix -> .)
-    DIVIDE          reduce using rule 152 (end_matrix -> .)
-    PLUS            reduce using rule 152 (end_matrix -> .)
-    MINUS           reduce using rule 152 (end_matrix -> .)
-    RELOP           reduce using rule 152 (end_matrix -> .)
-    OR              reduce using rule 152 (end_matrix -> .)
-    AND             reduce using rule 152 (end_matrix -> .)
-    COMMA           reduce using rule 152 (end_matrix -> .)
-    RPAREN          reduce using rule 152 (end_matrix -> .)
-    SEMICOLON       reduce using rule 152 (end_matrix -> .)
-    RBRACKET        reduce using rule 152 (end_matrix -> .)
+    EQUAL           reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
+    TIMES           reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
+    DIVIDE          reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
+    PLUS            reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
+    MINUS           reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
+    RELOP           reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
+    OR              reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
+    AND             reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
+    COMMA           reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
+    RPAREN          reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
+    SEMICOLON       reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
+    RBRACKET        reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
 
-    end_matrix                     shift and go to state 316
 
 state 313
 
@@ -4960,7 +4957,7 @@ state 313
     WHILE           shift and go to state 97
     FROM            shift and go to state 98
 
-    statutes_aux                   shift and go to state 317
+    statutes_aux                   shift and go to state 316
     statutes                       shift and go to state 85
     assignation                    shift and go to state 86
     read                           shift and go to state 88
@@ -4973,51 +4970,33 @@ state 314
 
     (69) condition_aux_elif -> ELIF LPAREN elif_expression exp . RPAREN elif_condition THEN LBRACE statutes_aux RBRACE condition_aux_elif
 
-    RPAREN          shift and go to state 318
+    RPAREN          shift and go to state 317
 
 
 state 315
 
     (82) for -> FROM LPAREN assignation RPAREN UNTIL for_jump LPAREN exp RPAREN for_condition DO LBRACE statutes_aux . RBRACE end_for
 
-    RBRACE          shift and go to state 319
+    RBRACE          shift and go to state 318
 
 
 state 316
 
-    (60) var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .
+    (71) condition_aux_else -> ELSE else_condition LBRACE statutes_aux . RBRACE
 
-    EQUAL           reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
-    TIMES           reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
-    DIVIDE          reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
-    PLUS            reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
-    MINUS           reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
-    RELOP           reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
-    OR              reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
-    AND             reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
-    COMMA           reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
-    RPAREN          reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
-    SEMICOLON       reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
-    RBRACKET        reduce using rule 60 (var_aux_3 -> LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix .)
+    RBRACE          shift and go to state 319
 
 
 state 317
-
-    (71) condition_aux_else -> ELSE else_condition LBRACE statutes_aux . RBRACE
-
-    RBRACE          shift and go to state 320
-
-
-state 318
 
     (69) condition_aux_elif -> ELIF LPAREN elif_expression exp RPAREN . elif_condition THEN LBRACE statutes_aux RBRACE condition_aux_elif
     (128) elif_condition -> .
 
     THEN            reduce using rule 128 (elif_condition -> .)
 
-    elif_condition                 shift and go to state 321
+    elif_condition                 shift and go to state 320
 
-state 319
+state 318
 
     (82) for -> FROM LPAREN assignation RPAREN UNTIL for_jump LPAREN exp RPAREN for_condition DO LBRACE statutes_aux RBRACE . end_for
     (137) end_for -> .
@@ -5032,9 +5011,9 @@ state 319
     RBRACE          reduce using rule 137 (end_for -> .)
     RETURN          reduce using rule 137 (end_for -> .)
 
-    end_for                        shift and go to state 322
+    end_for                        shift and go to state 321
 
-state 320
+state 319
 
     (71) condition_aux_else -> ELSE else_condition LBRACE statutes_aux RBRACE .
 
@@ -5049,14 +5028,14 @@ state 320
     RETURN          reduce using rule 71 (condition_aux_else -> ELSE else_condition LBRACE statutes_aux RBRACE .)
 
 
-state 321
+state 320
 
     (69) condition_aux_elif -> ELIF LPAREN elif_expression exp RPAREN elif_condition . THEN LBRACE statutes_aux RBRACE condition_aux_elif
 
-    THEN            shift and go to state 323
+    THEN            shift and go to state 322
 
 
-state 322
+state 321
 
     (82) for -> FROM LPAREN assignation RPAREN UNTIL for_jump LPAREN exp RPAREN for_condition DO LBRACE statutes_aux RBRACE end_for .
 
@@ -5071,14 +5050,14 @@ state 322
     RETURN          reduce using rule 82 (for -> FROM LPAREN assignation RPAREN UNTIL for_jump LPAREN exp RPAREN for_condition DO LBRACE statutes_aux RBRACE end_for .)
 
 
-state 323
+state 322
 
     (69) condition_aux_elif -> ELIF LPAREN elif_expression exp RPAREN elif_condition THEN . LBRACE statutes_aux RBRACE condition_aux_elif
 
-    LBRACE          shift and go to state 324
+    LBRACE          shift and go to state 323
 
 
-state 324
+state 323
 
     (69) condition_aux_elif -> ELIF LPAREN elif_expression exp RPAREN elif_condition THEN LBRACE . statutes_aux RBRACE condition_aux_elif
     (52) statutes_aux -> . statutes
@@ -5106,7 +5085,7 @@ state 324
     WHILE           shift and go to state 97
     FROM            shift and go to state 98
 
-    statutes_aux                   shift and go to state 325
+    statutes_aux                   shift and go to state 324
     statutes                       shift and go to state 85
     assignation                    shift and go to state 86
     read                           shift and go to state 88
@@ -5115,14 +5094,14 @@ state 324
     while                          shift and go to state 91
     for                            shift and go to state 92
 
-state 325
+state 324
 
     (69) condition_aux_elif -> ELIF LPAREN elif_expression exp RPAREN elif_condition THEN LBRACE statutes_aux . RBRACE condition_aux_elif
 
-    RBRACE          shift and go to state 326
+    RBRACE          shift and go to state 325
 
 
-state 326
+state 325
 
     (69) condition_aux_elif -> ELIF LPAREN elif_expression exp RPAREN elif_condition THEN LBRACE statutes_aux RBRACE . condition_aux_elif
     (69) condition_aux_elif -> . ELIF LPAREN elif_expression exp RPAREN elif_condition THEN LBRACE statutes_aux RBRACE condition_aux_elif
@@ -5141,10 +5120,10 @@ state 326
     RBRACE          reduce using rule 107 (empty -> .)
     RETURN          reduce using rule 107 (empty -> .)
 
-    condition_aux_elif             shift and go to state 327
+    condition_aux_elif             shift and go to state 326
     empty                          shift and go to state 294
 
-state 327
+state 326
 
     (69) condition_aux_elif -> ELIF LPAREN elif_expression exp RPAREN elif_condition THEN LBRACE statutes_aux RBRACE condition_aux_elif .
 

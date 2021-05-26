@@ -139,12 +139,12 @@ def p_var_aux(p):
     p[0] = 'program'
 
 def p_var_aux_2(p):
-    '''var_aux_2 : LBRACKET access_array exp verify_array_index RBRACKET end_array var_aux_3'''
+    '''var_aux_2 : LBRACKET access_array exp verify_array_index RBRACKET var_aux_3'''
     p[0] = 'program'
 
 def p_var_aux_3(p):
     '''var_aux_3 : LBRACKET access_matrix exp verify_matrix_index RBRACKET end_matrix
-                | empty '''
+                | end_array'''
     p[0] = 'program'
 
 def p_call(p):
