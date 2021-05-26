@@ -1,0 +1,15 @@
+program mat3 :
+
+    main {
+
+        init {
+           
+            var float i[5][3];
+            int a[8], b, c, d[2][2];
+            
+            b = 1;
+            i[a[b + c]][d[3][8]] = 3.6;
+
+        }
+    }
+end

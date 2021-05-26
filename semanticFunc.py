@@ -44,6 +44,9 @@ directConstants = {}
 jumpsStack = deque()
 gotoStack = deque()
 
+# Stacks of array access
+accesArrayStack = deque()
+
 # Helpers to fill quadruples
 stringToWrite = None
 quadCounter = 0
@@ -64,13 +67,9 @@ numberOfVars = {"int": 0, "float": 0, "char": 0}
 numberOfTemps = {"int": 0, "float": 0, "char": 0, "bool": 0}
 
 # Helpers for data structures
-dimensionsStack = deque()
-currentArraySize = 0
-currentArrayType = 0
-currentArrayLowerLimit = 0
-#--
-currentMatrixSize1 = 0
-currentMatrixSize2 = 0
+currentDataType = 0
+currentDataLowerLimit = 0
+currentMatrixSize = 0
 
 #!!!! variable de prueba que se borrará después
 countOfTemps = 1
@@ -167,9 +166,6 @@ def addParam(pName, pType, pSize1, pSize2):
     direcClasses[currentClass].c_funcs[currentFunct].f_params_type.append(pType)
     # Count the number of parameters in current function for later use
     numberOfParams += 1 
-
-def convertMatrixToColumn(): #!!!! recibe los tamaños
-    print("hola")
 
 # ---------------------- END ADDING ELEMENTS (FUNCT, CLASSES, VARS) ---------------------- #
     
@@ -735,39 +731,42 @@ def insertParams():
 
 # Verify that the id is an array and creates a fake bottom
 def accessArray():
-    global operatorsStack, currentArrayType, currentArraySize, currentArrayLowerLimit, dimensionsStack
+    global operatorsStack, currentDataLowerLimit, accesArrayStack
 
-    currentArrayID = operandsStack.pop()
-    currentArrayType = typesStack.pop()
-    currentArraySize = int(direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentArrayID].rows)
-    currentArrayLowerLimit = direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentArrayID].lowerMemRef
+    currentDataId = operandsStack.pop()
+    accesArrayStack.append(currentDataId)
+    typesStack.pop()
+    currentArraySize = int(direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].rows)
 
     if currentArraySize > 0:
         operatorsStack.append("[")
-        dimensionsStack.append(currentArraySize)
     else:
         raise Exception("Type mismatch")
 
 # Verify that the index of the array to access is an integer and 
 # creates quadruple to check that the position is accesible
 def verifyArrayIndex():
-    global quadCounter, quadList, operandsStack, currentArraySize, typesStack, quadMEM
+    global quadCounter, quadList, operandsStack, typesStack, quadMEM, currentDataLowerLimit, currentDataType
 
     memTopOperand = getMemoryRef(operandsStack[-1])
-    currSize = dimensionsStack.pop()
+    currentDataId = accesArrayStack[-1]
+    
+    currSize = int(direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].rows)
+    currentDataLowerLimit = direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].lowerMemRef
+    currentDataType = direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].v_type
 
     if typesStack[-1] == "int":
         quadCounter += 1
         quadList.append(Quadruple("VERIFY", operandsStack[-1], 0, currSize))
         quadMEM.append(Quadruple(direcOperators["VERIFY"], memTopOperand, 0, currSize))
-        currentArraySize = 0
     else:
-        raise Exception("Array subscript is not an integer")
+        raise Exception(currentDataId + " subscript is not an integer")
 
 # Sum the virtual address to acces the correct and wanted index
 def endArray():
-    global quadCounter, quadList, operandsStack, typesStack, operatorsStack, countOfTemps, quadMEM
+    global quadCounter, quadList, operandsStack, typesStack, operatorsStack, countOfTemps, quadMEM, currentDataLowerLimit, currentDataType
 
+    accesArrayStack.pop() # Pop the current array, since we are done with it
     leftOp = operandsStack.pop()
     leftOpType = typesStack.pop()
     operandsMatch = isAMatch(leftOpType, "+", "int")
@@ -777,21 +776,21 @@ def endArray():
     if operandsMatch != "error":
         # Get the direction memory of the variables
         memLeftOp = getMemoryRef(leftOp)
-        memResult = mD.get_space_avail("temp", currentArrayType, 1)
+        memResult = mD.get_space_avail("temp", currentDataType, 1)
         directTemp[result] = memResult
 
         # Add to the dictionary of constants the lower direction memory that represents the index of array
-        if currentArrayLowerLimit not in directConstants:
-                directConstants[currentArrayLowerLimit] = mD.get_space_avail("const", "int", 1)
+        if currentDataLowerLimit not in directConstants:
+                directConstants[currentDataLowerLimit] = mD.get_space_avail("const", "int", 1)
 
-        memCurrArrLowLim = getMemoryRef(currentArrayLowerLimit)
+        memCurrArrLowLim = getMemoryRef(currentDataLowerLimit)
 
         quadCounter += 1
-        quadList.append(Quadruple("+", leftOp, currentArrayLowerLimit, result))
+        quadList.append(Quadruple("+", leftOp, currentDataLowerLimit, result))
         quadMEM.append(Quadruple(direcOperators["+"], memLeftOp, memCurrArrLowLim, memResult))
         
         operandsStack.append(result)
-        typesStack.append(currentArrayType)
+        typesStack.append(currentDataType)
         operatorsStack.pop()
     else:
         raise Exception("Type mismatch")
@@ -802,46 +801,111 @@ def endArray():
 
 # Verify that the id is an array and creates a fake bottom
 def accessMatrix():
-    global operandsStack, typesStack, operatorsStack, currentMatrixSize1, currentMatrixSize2
+    global operandsStack, typesStack, operatorsStack, currentDataType, quadCounter, quadList, countOfTemps, quadMEM, directTemp
 
-    currentID = operandsStack.pop()
-    typesStack.pop()
-    currentMatrixSize1 = int(direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentID].rows)
-    currentMatrixSize2 = int(direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentID].cols)
+    operatorsStack.pop() # delete fake bottom of first dimension of matrix
+    leftOp = operandsStack.pop()
+    memLeftOperand = getMemoryRef(leftOp)
+    leftOpType = typesStack.pop()
+    operandsMatch = isAMatch(leftOpType, "*", "int")
 
-    if currentMatrixSize1 > 0 & currentMatrixSize2 > 0:
-        operatorsStack.append("[")
+    if operandsMatch != "error":
+
+        matrixId = accesArrayStack[-1]
+        currentMatrixSize = direcClasses[currentClass].c_funcs[currentFunct].f_vars[matrixId].cols
+        memMatrixSize = getMemoryRef(currentMatrixSize)
+        result = "TEMP" + str(countOfTemps)
+        countOfTemps += 1
+        memResult =  mD.get_space_avail("temp", operandsMatch, 1)
+        directTemp[result] = memResult
+
+        if int(currentMatrixSize) > 0:
+            operatorsStack.append("[")
+            quadCounter += 1
+            quadList.append(Quadruple("*", leftOp, currentMatrixSize, result))
+            quadMEM.append(Quadruple(direcOperators["*"], memLeftOperand, memMatrixSize, memResult))
+            operandsStack.append(result)
+            typesStack.append(operandsMatch)
+        else:
+            raise Exception("Type mismatch") 
     else:
-        raise Exception("Type missmatch")
+            raise Exception("Type mismatch")
 
 # Verify that the index of the array to access is an integer and 
 # creates quadruple to check that the position is accesible
-def verifyMatrixIndex1():
-    global quadCounter, quadList, operandsStack, currentMatrixSize1, typesStack
+def verifyMatrixIndex():
+    global quadCounter, quadList, operandsStack, typesStack, accesArrayStack, currentDataLowerLimit, countOfTemps, directTemp, currentDataType
 
-    if typesStack[-1] == "int":
+    leftOp = operandsStack.pop()
+    leftOpType = typesStack.pop()
+    rightOp = operandsStack.pop()
+    rightOpType = typesStack.pop()
+    operandsMatch = isAMatch(leftOpType, "+", rightOpType)
+    memLeftOperand = getMemoryRef(leftOp)
+    memRightOperand = getMemoryRef(rightOp)
+    currentDataId = accesArrayStack[-1]
+
+    currSize = int(direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].cols)
+    currentDataLowerLimit = direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].lowerMemRef
+    currentDataType = direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].v_type
+
+    if leftOpType == "int":
         quadCounter += 1
-        quadList.append(Quadruple("VERIFY", operandsStack[-1], 0, currentMatrixSize1))
-        currentMatrixSize1 = 0
-    else:
-        raise Exception("Matrix subscript is not an integer")
+        quadList.append(Quadruple("VERIFY", leftOp, 0, currSize))
+        quadMEM.append(Quadruple(direcOperators["VERIFY"], memLeftOperand, 0, currSize))
 
-# Verify that the index of the array to access is an integer and 
-# creates quadruple to check that the position is accesible
-def verifyMatrixIndex2():
-    global quadCounter, quadList, operandsStack, currentMatrixSize2, typesStack
+        if operandsMatch != "error":
 
-    if typesStack[-1] == "int":
-        quadCounter += 1
-        quadList.append(Quadruple("VERIFY", operandsStack[-1], 0, currentMatrixSize2))
-        currentMatrixSize2 = 0
+            result = "TEMP" + str(countOfTemps)
+            countOfTemps += 1
+            memResult =  mD.get_space_avail("temp", operandsMatch, 1)
+            directTemp[result] = memResult
+
+            quadCounter += 1
+            quadList.append(Quadruple("+", leftOp, rightOp, result))
+            quadMEM.append(Quadruple(direcOperators["+"], memLeftOperand, memRightOperand, memResult))
+            operandsStack.append(result)
+            typesStack.append(operandsMatch)
+
+        else:
+            raise Exception("Type mismatch")  
     else:
-        raise Exception("Matrix subscript is not an integer")
+        raise Exception(currentDataId + " subscript is not an integer")
+
 
 # Sum the virtual address to acces the correct and wanted index
 def endMatrix():
-    #!!!! sumar los ultimos dos temp + la virtual address (de acuerdo al aplastamiento)
-    print("HOLA")
+    global quadCounter, quadList, operandsStack, typesStack, operatorsStack, countOfTemps, quadMEM
+
+    accesArrayStack.pop()
+    leftOp = operandsStack.pop()
+    leftOpType = typesStack.pop()
+    operandsMatch = isAMatch(leftOpType, "+", "int")
+    result = "TEMP" + str(countOfTemps)
+    countOfTemps += 1
+
+    if operandsMatch != "error":
+
+        # Get the direction memory of the variables
+        memLeftOp = getMemoryRef(leftOp)
+        memResult = mD.get_space_avail("temp", currentDataType, 1)
+        directTemp[result] = memResult
+
+        # Add to the dictionary of constants the lower direction memory that represents the index of array
+        if currentDataLowerLimit not in directConstants:
+            directConstants[currentDataLowerLimit] = mD.get_space_avail("const", "int", 1)
+
+        memCurrArrLowLim = getMemoryRef(currentDataLowerLimit)
+
+        quadCounter += 1
+        quadList.append(Quadruple("+", leftOp, currentDataLowerLimit, result))
+        quadMEM.append(Quadruple(direcOperators["+"], memLeftOp, memCurrArrLowLim, memResult))
+        
+        operandsStack.append(result)
+        typesStack.append(currentDataType)
+        operatorsStack.pop()
+    else:
+        raise Exception("Type mismatch")
 
 # --- END MATRIX --- #
 
@@ -877,6 +941,7 @@ def endProgram():
     quadMEM.append(Quadruple(direcOperators["END PROGRAM"], None, None, None))
 
 #---------------------- MEMORY REFERENCES START ---------------------- #
+
 def getMemoryRef(op):
     global direcClasses, directConstants, directTemp, currentClass
 

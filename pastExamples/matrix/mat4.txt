@@ -1,0 +1,15 @@
+program mat4 :
+
+    main {
+
+        init {
+           
+            var float i[5][3], a[4];
+            int b, c[2][2];
+            
+            b = 1;
+            i[6][3] = a[c[6][b*2]];
+
+        }
+    }
+end
