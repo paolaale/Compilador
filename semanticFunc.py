@@ -831,7 +831,7 @@ def accessMatrix():
 # Verify that the index of the array to access is an integer and 
 # creates quadruple to check that the position is accesible
 def verifyMatrixIndex():
-    global quadCounter, quadList, operandsStack, typesStack, accesArrayStack, currentDataLowerLimit, countOfTemps, directTemp
+    global quadCounter, quadList, operandsStack, typesStack, accesArrayStack, currentDataLowerLimit, countOfTemps, directTemp, currentDataType
 
     leftOp = operandsStack.pop()
     leftOpType = typesStack.pop()
@@ -844,6 +844,7 @@ def verifyMatrixIndex():
 
     currSize = int(direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].cols)
     currentDataLowerLimit = direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].lowerMemRef
+    currentDataType = direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].v_type
 
     if leftOpType == "int":
         quadCounter += 1

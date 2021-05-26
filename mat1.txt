@@ -1,4 +1,4 @@
-program arr3 :
+program mat1 :
 
     main {
 
