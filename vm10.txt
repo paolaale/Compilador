@@ -1,0 +1,27 @@
+program vm9Recursion :
+    main {
+
+        var int p;
+        float x;
+        
+        funct int testReturn(int val1, float k) {
+
+            var int a, g;
+                
+            a = val1 * 17;
+        
+            return a;
+        }
+        
+        init {
+            var int h, i, j, k;
+                float harry, potter;
+                
+            i = 1919;
+            x = 12.12;
+            k = testReturn(i, x);
+
+            write(testReturn(i, x));
+        }
+    }
+end

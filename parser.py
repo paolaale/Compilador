@@ -148,15 +148,16 @@ def p_var_aux_3(p):
     p[0] = 'program'
 
 def p_call(p):
-    '''call : ID exist_function LPAREN era_function RPAREN gosub_function
+    '''call : ID exist_function LPAREN push_paren era_function RPAREN pop_paren gosub_function
             | ID POINT ID LPAREN RPAREN
-            | ID exist_function LPAREN era_function call_aux RPAREN gosub_function
+            | ID exist_function LPAREN push_paren era_function call_aux RPAREN pop_paren gosub_function
             | ID POINT ID LPAREN call_aux RPAREN'''
     p[0] = 'program'
 
 def p_call_aux(p):
     '''call_aux : exp arg_function
                 | exp arg_function COMMA call_aux'''
+
     p[0] = 'program'
 
 def p_condition(p):
@@ -226,8 +227,8 @@ def p_term(p):
 
 def p_factor(p):
     '''factor : LPAREN push_paren exp RPAREN pop_paren
-            | call
-            | factor_aux'''
+            | factor_aux
+            | call'''
     p[0] = 'program'
 
 def p_factor_aux(p):
@@ -500,8 +501,8 @@ if __name__ == '__main__':
         print("------------------------------------")
         sF.printMemoryQuadruples()
         print("------------------------------------")
-        #vM.execute(sF.quadMEM)
-        #test.printMemoryInDeclaration()
+        vM.execute(sF.quadMEM)
+        test.printMemoryInDeclaration()
 
         if result != None:
             print("Program accepted")

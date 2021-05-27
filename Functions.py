@@ -6,5 +6,6 @@ class Functions: #key = name of the var, value = instance of Vars class
         self.f_number_params = f_number_params
         self.f_start_quadruple = f_start_quadruple
         self.f_vars = {}
+        self.f_params_memRefs = []
         #!!!! probablemente agregar aquí la memoria que esta clase necesitará cada funcióon, incluyendo
         #!!!! la memoria necesaria para las variables globales.

@@ -34,6 +34,9 @@ quadList = []
 # List of quadruples MEMORY
 quadMEM = []
 
+# List of Params per function
+functParams = [];
+
 # Temps Memory directions Dictionary
 directTemp = {}
 
@@ -158,12 +161,16 @@ def addParam(pName, pType, pSize1, pSize2):
     # To know how many spaces it will take on the memory
     memorySize = abs(int(pSize1) * int(pSize2))
 
+    #Crate the memory reference (Memref) for the parameter
+    paramMemRef = mD.get_space_avail("local", pType, memorySize)
     # Add to dictionary of classes, in the current class and current function the parameters
-    direcClasses[currentClass].c_funcs[currentFunct].f_vars[pName] = Vars(pType, pSize1, pSize2, mD.get_space_avail("local", pType, memorySize))
+    direcClasses[currentClass].c_funcs[currentFunct].f_vars[pName] = Vars(pType, pSize1, pSize2, paramMemRef)
     # Count the number of a type variable in current function for later use
     numberOfVars[pType] += 1
     # Add to dictionary of classes, in the current class and current function the parameter type in an array
     direcClasses[currentClass].c_funcs[currentFunct].f_params_type.append(pType)
+    # Add the memory referece of the Param to the list of MemRefs of params of the function
+    direcClasses[currentClass].c_funcs[currentFunct].f_params_memRefs.append(paramMemRef)
     # Count the number of parameters in current function for later use
     numberOfParams += 1 
 
@@ -323,7 +330,7 @@ def pop_op_art_n1():
 # Function to generate th corresponding quadruple of an expression
 def generateExpQuad():
     global operatorsStack, operandsStack, quadList, quadMEM, countOfTemps, quadCounter, typesStack, numberOfTemps, directConstants
-
+    print("PORFAA: ", operandsStack)
     rightOp = operandsStack.pop()
     rightOpType = typesStack.pop()
     leftOp = operandsStack.pop()
@@ -640,7 +647,7 @@ def endFunction():
 # if not, an exception is shown
 def existFunction(functionCall):
     global direcClasses, functionToCall
-
+    print("ALAAAAANANNN")
     if functionCall not in direcClasses["main"].c_funcs:
         raise Exception("Function not found")
     else:
@@ -670,7 +677,7 @@ def argFunction():
         if direcClasses["main"].c_funcs[functionToCall].f_params_type[numberOfArgs-1] == argumentType:
             quadCounter += 1
             quadList.append(Quadruple("PARAM", argument, None, numberOfArgs-1))
-            quadMEM.append(Quadruple(direcOperators["PARAM"], memArgument, None, numberOfArgs-1))
+            quadMEM.append(Quadruple(direcOperators["PARAM"], memArgument, None, direcClasses["main"].c_funcs[functionToCall].f_params_memRefs[numberOfArgs-1]))
         else:
             raise Exception("Type mismatch")
     else:
@@ -680,9 +687,9 @@ def argFunction():
 # Function that indicates where the code of the function called starts
 def gosubFunction():
     global quadCounter, quadList, functionToCall, numberOfArgs, quadMEM, countOfTemps, operandsStack
-
+    print("AHHHHHHH :(: ", operandsStack)
     nP = direcClasses["main"].c_funcs[functionToCall].f_number_params
-
+    #operandsStack.pop(); este es intento para que jale el error de parametros
     # Check the number of parameters and arguments match
     if numberOfArgs == nP:
 
@@ -716,12 +723,18 @@ def gosubFunction():
     else:
         raise Exception("Number of arguments mismatch")
 
+
 # Function that saves how many parameters the function has
 def insertParams():
     global numberOfParams, currentClass, currentFunct, direcClasses
 
     direcClasses[currentClass].c_funcs[currentFunct].f_number_params = numberOfParams
     numberOfParams = 0
+
+def insertParamFlag():
+    global operandsStack
+    operandsStack.append("{")
+    print("EEEHHHHHHH :(: ", operandsStack)
 
 #---------------------- END FUNCTIONS ---------------------- #
 

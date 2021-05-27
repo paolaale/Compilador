@@ -7,6 +7,7 @@
 import semanticFunc as sF
 from collections import deque
 from MemoryAllocator import MemoryAllocator
+from copy import copy
 
 exeStack = deque()
 executionStack = dict()
@@ -22,8 +23,11 @@ constDictionary = dict()
 
 exeStack.append(initMemory)
 exeGoSubStack = deque()
-#print("CONST DICT: ", constDictionary)
 
+paramExpression = False
+
+# We save here the previous memory when passing args to a function
+previousMemory = MemoryAllocator();
 ### Functions for quadruples ###
 def dataInit():
     global constDictionary
@@ -45,7 +49,7 @@ def getValue(memRef):
         return globalMemories[currentGlobalMemory].vars[memRef]
 
 def assignValue(val1, container):
-    
+    global exeStack, globalMemories
     valToAsign = getValue(val1)
      
     if (container >= 0 and container < 4000) or (container >= 5000 and container < 8999):   
@@ -74,9 +78,33 @@ def readValue(container):
 
     assignReadValue(container, newValue)
 
+def getParamValue(memRef):
+    global constDictionary, previousMemory, globalMemories
+    
+    if memRef in constDictionary:
+        if memRef < 36000:
+            return int(constDictionary[memRef])
+        elif memRef < 37000:
+            return float(constDictionary[memRef])
+        else:
+            return constDictionary[memRef] #falta lógica de chars aquí
+    elif memRef in previousMemory.vars:
+        return previousMemory.vars[memRef]
+    else:
+        return globalMemories[currentGlobalMemory].vars[memRef]
+
+# assign argument of a function call to the parameter
+def assignParameter(val1, container):
+    print("ASSIGNPARAMETER val1", val1);
+    print("ASSIGNPARAMETER container", container);
+    valToAsign = getParamValue(val1)
+    exeStack[-1].vars[container] = valToAsign
+
+
+
 ### Read and execute quadruples
 def execute(quadList):
-    global exeStack, globalMemories, exeGoSubStack
+    global exeStack, globalMemories, exeGoSubStack, previousMemory, paramExpression
     dataInit()
 
     i = 0
@@ -84,16 +112,30 @@ def execute(quadList):
     while quadList[i].operation != 24:
 
         if quadList[i].operation == 1:
-            exeStack[-1].vars[quadList[i].tResult] = getValue(quadList[i].left_op) + getValue(quadList[i].right_op)
+            if paramExpression:
+                previousMemory.vars[quadList[i].tResult] = getParamValue(quadList[i].left_op) + getParamValue(quadList[i].right_op)
+            else:
+                exeStack[-1].vars[quadList[i].tResult] = getValue(quadList[i].left_op) + getValue(quadList[i].right_op)
             print("SUMA")
         elif quadList[i].operation == 2:
-            exeStack[-1].vars[quadList[i].tResult] = getValue(quadList[i].left_op) - getValue(quadList[i].right_op)
+            if paramExpression:
+                previousMemory.vars[quadList[i].tResult] = getParamValue(quadList[i].left_op) - getParamValue(quadList[i].right_op)
+            else:
+                exeStack[-1].vars[quadList[i].tResult] = getValue(quadList[i].left_op) - getValue(quadList[i].right_op)
             print("RESTA")
         elif quadList[i].operation == 3:
-            exeStack[-1].vars[quadList[i].tResult] = getValue(quadList[i].left_op) * getValue(quadList[i].right_op)
+            print("START OF MULTIPLICATION", quadList[i].left_op);
+
+            if paramExpression:
+                previousMemory.vars[quadList[i].tResult] = getParamValue(quadList[i].left_op) * getParamValue(quadList[i].right_op)
+            else:
+                exeStack[-1].vars[quadList[i].tResult] = getValue(quadList[i].left_op) * getValue(quadList[i].right_op)
             print("MULTIPLICACIÓN")
         elif quadList[i].operation == 4:
-            exeStack[-1].vars[quadList[i].tResult] = getValue(quadList[i].left_op) / getValue(quadList[i].right_op)
+            if paramExpression:
+                previousMemory.vars[quadList[i].tResult] = getParamValue(quadList[i].left_op) / getParamValue(quadList[i].right_op)
+            else:
+                exeStack[-1].vars[quadList[i].tResult] = getValue(quadList[i].left_op) / getValue(quadList[i].right_op)
             print("DIVISION")
         elif quadList[i].operation == 5:
             assignValue(quadList[i].left_op, quadList[i].tResult)
@@ -123,8 +165,7 @@ def execute(quadList):
                 exeStack[-1].vars[quadList[i].tResult] = False
             print("MENOR QUE")
         elif quadList[i].operation == 9:
-            print("left: ", getValue(quadList[i].left_op));
-            print("right: ", getValue(quadList[i].right_op));
+            
             if getValue(quadList[i].left_op) >= getValue(quadList[i].right_op):
                 exeStack[-1].vars[quadList[i].tResult] = True
             else:
@@ -162,13 +203,16 @@ def execute(quadList):
                 i = quadList[i].tResult - 1
             print("GOTOF")
         elif quadList[i].operation == 19:
-            
+            previousMemory = copy(exeStack[-1])
+            paramExpression = True
+            print("VENGAAAAA", previousMemory)
             exeStack.append(MemoryAllocator())
             print("ERA")
         elif quadList[i].operation == 20:
+            assignParameter(quadList[i].left_op, quadList[i].tResult)
             print("PARAM")
         elif quadList[i].operation == 21:
-            
+            paramExpression = False
             exeGoSubStack.append(i) # we save where to jump back
             i = quadList[i].tResult - 1
             
@@ -180,12 +224,10 @@ def execute(quadList):
             
             print("RETURN")
         elif quadList[i].operation == 23:
-            print("YAAAAAAAA: ", exeStack[-1].vars);
-            print("VENGAAAAA: ", globalMemories["main"].vars);
+            
             exeStack.pop()
             i = exeGoSubStack.pop()
-            print("SALTOO: ", i);
-            #print("quadToGoAfter: ", sF.direcClasses[currentGlobalMemory].c_funcs["getTotal"])
+    
             print("END FUNCTION")
         elif quadList[i].operation == 24:
             print("END PROGRAM")
