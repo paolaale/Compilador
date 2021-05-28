@@ -1,0 +1,31 @@
+program arrayMatrixParam :
+
+    main {
+
+        funct float getTotal(float j, int k) {
+            var float a;
+                a = j * k;
+            return a;
+        }
+
+        init {
+           
+            var int i[5], a[3], v[12][18]; 
+                float d[7];
+
+            int b, c, f;
+            v[5][7] = 9999;
+            read(d[3]);
+
+
+
+            d[5] = 34.5;
+            i[3] = 12;
+
+            write("first");
+            write(getTotal(d[3], v[5][7] + 8));
+            write("second");
+            write(getTotal(d[5], v[5][7] + 10));
+        }
+    }
+end

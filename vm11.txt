@@ -23,7 +23,7 @@ program factorialRecursivo :
             var int h, i, j, k;
                 float harry, potter;
 
-            p = 6;
+            p = 7;
             i = 5;
             k = i * testReturn(p);
             write(k);

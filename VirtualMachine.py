@@ -34,6 +34,7 @@ def dataInit():
     constDictionary = dict((value, key) for key, value in sF.directConstants.items()) 
 
 def getCorrectMemRef(memRef, stackToCheck):
+    
     if memRef >= 0:
         return memRef
 
@@ -239,7 +240,12 @@ def execute(quadList):
             
             #print("GOSUB")
         elif quadList[i].operation == 14:
-            index = getValue(quadList[i].left_op)
+            #print("verify memref: ", quadList[i].left_op);
+            if paramExpression:
+                index = getValue(getCorrectMemRef(quadList[i].left_op, "previous"))
+            else:
+                index = getValue(getCorrectMemRef(quadList[i].left_op, "current"))
+        
             if not(index >= 0 and index < quadList[i].tResult):
                 raise Exception("Array index out of bounds exception", index)
             print("VERIFY")
@@ -255,14 +261,15 @@ def execute(quadList):
             #print("END FUNCTION")
         elif quadList[i].operation == 24:
             if paramExpression:
-                previousMemory.vars[quadList[i].tResult] = getParamValue(quadList[i].left_op) + getParamValue(quadList[i].right_op)
+                previousMemory.vars[quadList[i].tResult] = getParamValue(getCorrectMemRef(quadList[i].left_op, "previous")) + getParamValue(quadList[i].right_op)
+                #previousMemory.vars[previousMemory.vars[quadList[i].tResult]] = -1;
             else:
-                exeStack[-1].vars[quadList[i].tResult] = getValue(quadList[i].left_op) + getValue(quadList[i].right_op)
-
+                exeStack[-1].vars[quadList[i].tResult] = getValue(getCorrectMemRef(quadList[i].left_op, "current")) + getValue(quadList[i].right_op)
+                #exeStack[-1].vars[exeStack[-1].vars[quadList[i].tResult]] = -1;
             print("BASEADDRESS")
         elif quadList[i].operation == 25:
             print("Direct Local: ", exeStack[-1].vars);
-            print("Direct glocal: ", globalMemories[currentGlobalMemory].vars);
+            print("Direct global: ", globalMemories[currentGlobalMemory].vars);
             print("END PROGRAM")
             break;
         else:

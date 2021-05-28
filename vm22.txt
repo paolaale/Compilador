@@ -1,15 +1,15 @@
-program vm23 :
+program vm22 :
 
     main {
 
-        var int a[3][3], b[3][3], c[3][3];
+        var int a[2][2], b[2][2], c[2][2];
 
         funct void fillMatrix() {
             var int i, j;
 
-            from (i = 0) until (i < 3) do {
+            from (i = 0) until (i < 2) do {
 
-                from (j = 0) until (j < 3) do {
+                from (j = 0) until (j < 2) do {
 
                     read(a[i][j]);
 
@@ -23,9 +23,9 @@ program vm23 :
         funct void fillMatrix2() {
             var int i, j;
 
-            from (i = 0) until (i < 3) do {
+            from (i = 0) until (i < 2) do {
 
-                from (j = 0) until (j < 3) do {
+                from (j = 0) until (j < 2) do {
 
                     read(b[i][j]);
 
@@ -45,7 +45,7 @@ program vm23 :
                 from (i = 0) until (i < filA) do {
 
                     from (j = 0) until (j < colB) do {
-
+                        c[i][j] = 0;
                         from (k = 0) until (k < colA) do {
 
                             c[i][j] = c[i][j] + a[i][k] * b[k][j];
@@ -64,9 +64,9 @@ program vm23 :
 
             var int i, j;
 
-            from (i = 0) until (i < 3) do {
+            from (i = 0) until (i < 2) do {
 
-                from (j = 0) until (j < 3) do {
+                from (j = 0) until (j < 2) do {
 
                     write(c[i][j]);
 
@@ -80,7 +80,9 @@ program vm23 :
         init {
             call fillMatrix();
             call fillMatrix2();
-            call multiplyMatrix(3, 3, 3, 3);
+            call multiplyMatrix(2, 2, 2, 2);
+            write("Resultados de la matriz");
+            call printMatrix();
             
         }
     }
