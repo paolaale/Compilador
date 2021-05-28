@@ -1,0 +1,33 @@
+program arrayParam :
+
+    main {
+
+        var int array[5];
+
+        funct void fillArray() {
+            var int i;
+            i = 0;
+            while (i < 5) do {
+                read(array[i]);
+                i = i + 1;
+            }
+            
+        }
+
+        funct void printArray() {
+            var int i;
+            i = 0;
+
+            while (i < 5) do {
+                write(array[i]);
+                i = i + 1;
+            }
+        }
+
+        init {
+            call fillArray();
+            call printArray();
+
+        }
+    }
+end

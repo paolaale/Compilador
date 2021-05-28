@@ -1,0 +1,19 @@
+program arrayParam :
+
+    main {
+
+        init {
+           
+            var int i, array[3];
+                
+            read(array[0]);
+            write(array[0]);
+            read(array[1]);
+            write(array[1]);
+            read(array[2]);
+            write(array[2]);
+            
+
+        }
+    }
+end

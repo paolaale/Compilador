@@ -1,0 +1,25 @@
+program vm12 :
+
+    main {
+
+        init {
+           
+            var int i[5], a[3];    
+            int b, c;
+         
+            b = 1; 
+            read(c);
+            write(c);
+            i[b] = 4; 
+            c = i[b] + 15;
+            write(c);
+            write(i[b] * c);
+
+            read(i[b]);
+
+            write("pepe");
+            write(i[b] * 10);
+
+        }
+    }
+end

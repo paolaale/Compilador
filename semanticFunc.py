@@ -59,7 +59,8 @@ direcOperators = {
                     "and": 6, "or": 7, ">": 8, ">=": 9, "<": 10, 
                     "<=": 11, "==": 12, "!=": 13, "VERIFY": 14, "WRITE": 15, 
                     "READ": 16, "GOTO": 17, "GOTOF": 18, "ERA": 19, "PARAM": 20, 
-                    "GOSUB": 21, "RETURN": 22, "END FUNCTION": 23, "END PROGRAM": 24
+                    "GOSUB": 21, "RETURN": 22, "END FUNCTION": 23, "BASEADDRESS": 24, 
+                    "END PROGRAM": 25
                 }
 
 # Helpers to fill functions
@@ -749,7 +750,10 @@ def accessArray():
     currentDataId = operandsStack.pop()
     accesArrayStack.append(currentDataId)
     typesStack.pop()
-    currentArraySize = int(direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].rows)
+
+    scopeOfArray = existsVar(currentDataId) # we check that the array exists and its scope
+
+    currentArraySize = int(direcClasses[currentClass].c_funcs[scopeOfArray].f_vars[currentDataId].rows)
 
     if currentArraySize > 0:
         operatorsStack.append("[")
@@ -763,10 +767,11 @@ def verifyArrayIndex():
 
     memTopOperand = getMemoryRef(operandsStack[-1])
     currentDataId = accesArrayStack[-1]
-    
-    currSize = int(direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].rows)
-    currentDataLowerLimit = direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].lowerMemRef
-    currentDataType = direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].v_type
+    scopeOfArray = existsVar(currentDataId)
+
+    currSize = int(direcClasses[currentClass].c_funcs[scopeOfArray].f_vars[currentDataId].rows)
+    currentDataLowerLimit = direcClasses[currentClass].c_funcs[scopeOfArray].f_vars[currentDataId].lowerMemRef
+    currentDataType = direcClasses[currentClass].c_funcs[scopeOfArray].f_vars[currentDataId].v_type
 
     if typesStack[-1] == "int":
         quadCounter += 1
@@ -790,7 +795,7 @@ def endArray():
         # Get the direction memory of the variables
         memLeftOp = getMemoryRef(leftOp)
         memResult = mD.get_space_avail("temp", currentDataType, 1)
-        directTemp[result] = memResult
+        directTemp[result] = -1 * memResult
 
         # Add to the dictionary of constants the lower direction memory that represents the index of array
         if currentDataLowerLimit not in directConstants:
@@ -799,8 +804,8 @@ def endArray():
         memCurrArrLowLim = getMemoryRef(currentDataLowerLimit)
 
         quadCounter += 1
-        quadList.append(Quadruple("+", leftOp, currentDataLowerLimit, result))
-        quadMEM.append(Quadruple(direcOperators["+"], memLeftOp, memCurrArrLowLim, memResult))
+        quadList.append(Quadruple("BASEADDRESS", leftOp, currentDataLowerLimit, result))
+        quadMEM.append(Quadruple(direcOperators["BASEADDRESS"], memLeftOp, memCurrArrLowLim,-1 * memResult))
         
         operandsStack.append(result)
         typesStack.append(currentDataType)
@@ -821,11 +826,15 @@ def accessMatrix():
     memLeftOperand = getMemoryRef(leftOp)
     leftOpType = typesStack.pop()
     operandsMatch = isAMatch(leftOpType, "*", "int")
+    
+    
 
     if operandsMatch != "error":
 
         matrixId = accesArrayStack[-1]
-        currentMatrixSize = direcClasses[currentClass].c_funcs[currentFunct].f_vars[matrixId].cols
+        scopeOfMatrix = existsVar(matrixId)
+
+        currentMatrixSize = direcClasses[currentClass].c_funcs[scopeOfMatrix].f_vars[matrixId].cols
         memMatrixSize = getMemoryRef(currentMatrixSize)
         result = "TEMP" + str(countOfTemps)
         countOfTemps += 1
@@ -857,10 +866,11 @@ def verifyMatrixIndex():
     memLeftOperand = getMemoryRef(leftOp)
     memRightOperand = getMemoryRef(rightOp)
     currentDataId = accesArrayStack[-1]
+    scopeOfMatrix = existsVar(currentDataId)
 
-    currSize = int(direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].cols)
-    currentDataLowerLimit = direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].lowerMemRef
-    currentDataType = direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentDataId].v_type
+    currSize = int(direcClasses[currentClass].c_funcs[scopeOfMatrix].f_vars[currentDataId].cols)
+    currentDataLowerLimit = direcClasses[currentClass].c_funcs[scopeOfMatrix].f_vars[currentDataId].lowerMemRef
+    currentDataType = direcClasses[currentClass].c_funcs[scopeOfMatrix].f_vars[currentDataId].v_type
 
     if leftOpType == "int":
         quadCounter += 1
@@ -902,7 +912,7 @@ def endMatrix():
         # Get the direction memory of the variables
         memLeftOp = getMemoryRef(leftOp)
         memResult = mD.get_space_avail("temp", currentDataType, 1)
-        directTemp[result] = memResult
+        directTemp[result] = -1 * memResult
 
         # Add to the dictionary of constants the lower direction memory that represents the index of array
         if currentDataLowerLimit not in directConstants:
@@ -911,8 +921,8 @@ def endMatrix():
         memCurrArrLowLim = getMemoryRef(currentDataLowerLimit)
 
         quadCounter += 1
-        quadList.append(Quadruple("+", leftOp, currentDataLowerLimit, result))
-        quadMEM.append(Quadruple(direcOperators["+"], memLeftOp, memCurrArrLowLim, memResult))
+        quadList.append(Quadruple("BASEADDRESS", leftOp, currentDataLowerLimit, result))
+        quadMEM.append(Quadruple(direcOperators["BASEADDRESS"], memLeftOp, memCurrArrLowLim, -1 * memResult))
         
         operandsStack.append(result)
         typesStack.append(currentDataType)

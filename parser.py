@@ -179,7 +179,9 @@ def p_read(p):
     p[0] = 'program'
 
 def p_read_aux(p):
-    '''read_aux : ID push_var
+    '''read_aux : ID push_var var_aux_2
+            | ID push_var var_aux_2 COMMA generate_read read_aux
+            | ID push_var 
             | ID push_var COMMA generate_read read_aux'''
     p[0] = 'program'
 
@@ -502,7 +504,7 @@ if __name__ == '__main__':
         sF.printMemoryQuadruples()
         print("------------------------------------")
         vM.execute(sF.quadMEM)
-        test.printMemoryInDeclaration()
+        #test.printMemoryInDeclaration()
 
         if result != None:
             print("Program accepted")

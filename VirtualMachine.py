@@ -33,9 +33,25 @@ def dataInit():
     global constDictionary
     constDictionary = dict((value, key) for key, value in sF.directConstants.items()) 
 
+def getCorrectMemRef(memRef, stackToCheck):
+    if memRef >= 0:
+        return memRef
+
+    if stackToCheck == "previous":
+        if memRef not in previousMemory.vars:
+            return memRef
+        else:
+            return previousMemory.vars[memRef]
+    elif stackToCheck == "current":
+        if memRef not in exeStack[-1].vars:
+            return memRef
+        else:
+            return exeStack[-1].vars[memRef]
+
+
 def getValue(memRef):
     global constDictionary
-    
+
     if memRef in constDictionary:
         if memRef < 36000:
             return int(constDictionary[memRef])
@@ -95,8 +111,6 @@ def getParamValue(memRef):
 
 # assign argument of a function call to the parameter
 def assignParameter(val1, container):
-    print("ASSIGNPARAMETER val1", val1);
-    print("ASSIGNPARAMETER container", container);
     valToAsign = getParamValue(val1)
     exeStack[-1].vars[container] = valToAsign
 
@@ -106,131 +120,151 @@ def assignParameter(val1, container):
 def execute(quadList):
     global exeStack, globalMemories, exeGoSubStack, previousMemory, paramExpression
     dataInit()
-
+    print(constDictionary);
     i = 0
 
-    while quadList[i].operation != 24:
+    while True:
 
         if quadList[i].operation == 1:
             if paramExpression:
-                previousMemory.vars[quadList[i].tResult] = getParamValue(quadList[i].left_op) + getParamValue(quadList[i].right_op)
+                previousMemory.vars[getCorrectMemRef(quadList[i].tResult, "previous")] = getParamValue(getCorrectMemRef(quadList[i].left_op, "previous")) + getParamValue(getCorrectMemRef(quadList[i].right_op, "previous"))
             else:
-                exeStack[-1].vars[quadList[i].tResult] = getValue(quadList[i].left_op) + getValue(quadList[i].right_op)
-            print("SUMA")
+                exeStack[-1].vars[getCorrectMemRef(quadList[i].tResult, "current")] = getValue(getCorrectMemRef(quadList[i].left_op, "current")) + getValue(getCorrectMemRef(quadList[i].right_op, "current"))
+            #print("SUMA")
         elif quadList[i].operation == 2:
             if paramExpression:
-                previousMemory.vars[quadList[i].tResult] = getParamValue(quadList[i].left_op) - getParamValue(quadList[i].right_op)
+                previousMemory.vars[getCorrectMemRef(quadList[i].tResult, "previous")] = getParamValue(getCorrectMemRef(quadList[i].left_op, "previous")) - getParamValue(getCorrectMemRef(quadList[i].right_op, "previous"))
             else:
-                exeStack[-1].vars[quadList[i].tResult] = getValue(quadList[i].left_op) - getValue(quadList[i].right_op)
-            print("RESTA")
+                exeStack[-1].vars[getCorrectMemRef(quadList[i].tResult, "current")] = getValue(getCorrectMemRef(quadList[i].left_op, "current")) - getValue(getCorrectMemRef(quadList[i].right_op, "current"))
+            #print("RESTA")
         elif quadList[i].operation == 3:
-            print("START OF MULTIPLICATION", quadList[i].left_op);
+            #print("START OF MULTIPLICATION", quadList[i].left_op);
 
             if paramExpression:
-                previousMemory.vars[quadList[i].tResult] = getParamValue(quadList[i].left_op) * getParamValue(quadList[i].right_op)
+                previousMemory.vars[getCorrectMemRef(quadList[i].tResult, "previous")] = getParamValue(getCorrectMemRef(quadList[i].left_op, "previous")) * getParamValue(getCorrectMemRef(quadList[i].right_op, "previous"))
             else:
-                exeStack[-1].vars[quadList[i].tResult] = getValue(quadList[i].left_op) * getValue(quadList[i].right_op)
-            print("MULTIPLICACIÓN")
+                exeStack[-1].vars[getCorrectMemRef(quadList[i].tResult, "current")] = getValue(getCorrectMemRef(quadList[i].left_op, "current")) * getValue(getCorrectMemRef(quadList[i].right_op, "current"))
+            #print("MULTIPLICACIÓN")
         elif quadList[i].operation == 4:
             if paramExpression:
-                previousMemory.vars[quadList[i].tResult] = getParamValue(quadList[i].left_op) / getParamValue(quadList[i].right_op)
+                previousMemory.vars[getCorrectMemRef(quadList[i].tResult, "previous")] = getParamValue(getCorrectMemRef(quadList[i].left_op, "previous")) / getParamValue(getCorrectMemRef(quadList[i].right_op, "previous"))
             else:
-                exeStack[-1].vars[quadList[i].tResult] = getValue(quadList[i].left_op) / getValue(quadList[i].right_op)
-            print("DIVISION")
+                exeStack[-1].vars[getCorrectMemRef(quadList[i].tResult, "current")] = getValue(getCorrectMemRef(quadList[i].left_op, "current")) / getValue(getCorrectMemRef(quadList[i].right_op, "current"))
+            #print("DIVISION")
         elif quadList[i].operation == 5:
-            assignValue(quadList[i].left_op, quadList[i].tResult)
-            print("ASSIGN")
+            # aquí falta incluir cuando es en la previousStack porque es param de una función
+            if paramExpression:
+                left_op = getCorrectMemRef(quadList[i].left_op, "previous")
+                tResult = getCorrectMemRef(quadList[i].tResult, "previous")
+            else:
+                left_op = getCorrectMemRef(quadList[i].left_op, "current")
+                tResult = getCorrectMemRef(quadList[i].tResult, "current")
+            
+            assignValue(left_op, tResult)
+            #print("ASSIGN")
         elif quadList[i].operation == 6:
             if getValue(quadList[i].left_op) and getValue(quadList[i].right_op):
                 exeStack[-1].vars[quadList[i].tResult] = True
             else:
                 exeStack[-1].vars[quadList[i].tResult] = False
-            print("AND")
+            #print("AND")
         elif quadList[i].operation == 7:
             if getValue(quadList[i].left_op) or getValue(quadList[i].right_op):
                 exeStack[-1].vars[quadList[i].tResult] = True
             else:
                 exeStack[-1].vars[quadList[i].tResult] = False
-            print("OR")
+            #print("OR")
         elif quadList[i].operation == 8:
-            if getValue(quadList[i].left_op) > getValue(quadList[i].right_op):
+            if getValue(getCorrectMemRef(quadList[i].left_op, "current")) > getValue(getCorrectMemRef(quadList[i].right_op, "current")):
                 exeStack[-1].vars[quadList[i].tResult] = True
             else:
                 exeStack[-1].vars[quadList[i].tResult] = False
-            print("MAYOR QUE")
+            #print("MAYOR QUE")
         elif quadList[i].operation == 10:
-            if getValue(quadList[i].left_op) < getValue(quadList[i].right_op):
+            if getValue(getCorrectMemRef(quadList[i].left_op, "current")) < getValue(getCorrectMemRef(quadList[i].right_op, "current")):
                 exeStack[-1].vars[quadList[i].tResult] = True
             else:
                 exeStack[-1].vars[quadList[i].tResult] = False
-            print("MENOR QUE")
+            #print("MENOR QUE")
         elif quadList[i].operation == 9:
             
-            if getValue(quadList[i].left_op) >= getValue(quadList[i].right_op):
+            if getValue(getCorrectMemRef(quadList[i].left_op, "current")) >= getValue(getCorrectMemRef(quadList[i].right_op, "current")):
                 exeStack[-1].vars[quadList[i].tResult] = True
             else:
                 exeStack[-1].vars[quadList[i].tResult] = False
-            print("MAYOR O IGUAL QUE")
+            #print("MAYOR O IGUAL QUE")
         elif quadList[i].operation == 11:
-            if getValue(quadList[i].left_op) <= getValue(quadList[i].right_op):
+            if getValue(getCorrectMemRef(quadList[i].left_op, "current")) <= getValue(getCorrectMemRef(quadList[i].right_op, "current")):
                 exeStack[-1].vars[quadList[i].tResult] = True
             else:
                 exeStack[-1].vars[quadList[i].tResult] = False
-            print("MENOR O IGUAL QUE")
+            #print("MENOR O IGUAL QUE")
         elif quadList[i].operation == 12:
-            if getValue(quadList[i].left_op) == getValue(quadList[i].right_op):
+            if getValue(getCorrectMemRef(quadList[i].left_op, "current")) == getValue(getCorrectMemRef(quadList[i].right_op, "current")):
                 exeStack[-1].vars[quadList[i].tResult] = True
             else:
                 exeStack[-1].vars[quadList[i].tResult] = False
-            print("IGUAL QUE")
+            #print("IGUAL QUE")
         elif quadList[i].operation == 13:
-            if getValue(quadList[i].left_op) != getValue(quadList[i].right_op):
+            if getValue(getCorrectMemRef(quadList[i].left_op, "current")) != getValue(getCorrectMemRef(quadList[i].right_op, "current")):
                 exeStack[-1].vars[quadList[i].tResult] = True
             else:
                 exeStack[-1].vars[quadList[i].tResult] = False
-            print("DIFERENTE QUE")
+            #print("DIFERENTE QUE")
         elif quadList[i].operation == 15:
-            print("WRITE: ", getValue(quadList[i].tResult))
+            print("WRITE: ", getValue(getCorrectMemRef(quadList[i].tResult, "current")))
         elif quadList[i].operation == 16:
             print("insert value: ")
-            readValue(quadList[i].tResult)
+            readValue(getCorrectMemRef(quadList[i].tResult, "current"))
             print("READ")
         elif quadList[i].operation == 17:
             i = quadList[i].tResult - 1
-            print("GOTO")
+            #print("GOTO")
         elif quadList[i].operation == 18:
             if getValue(quadList[i].left_op) == False:
                 i = quadList[i].tResult - 1
-            print("GOTOF")
+            #print("GOTOF")
         elif quadList[i].operation == 19:
             previousMemory = copy(exeStack[-1])
             paramExpression = True
-            print("VENGAAAAA", previousMemory)
             exeStack.append(MemoryAllocator())
-            print("ERA")
+            #print("ERA")
         elif quadList[i].operation == 20:
-            assignParameter(quadList[i].left_op, quadList[i].tResult)
-            print("PARAM")
+            assignParameter(getCorrectMemRef(quadList[i].left_op, "previous"), quadList[i].tResult)
+            #print("PARAM")
         elif quadList[i].operation == 21:
             paramExpression = False
             exeGoSubStack.append(i) # we save where to jump back
             i = quadList[i].tResult - 1
             
-            print("GOSUB")
+            #print("GOSUB")
         elif quadList[i].operation == 14:
+            index = getValue(quadList[i].left_op)
+            if not(index >= 0 and index < quadList[i].tResult):
+                raise Exception("Array index out of bounds exception", index)
             print("VERIFY")
         elif quadList[i].operation == 22:
             globalMemories[currentGlobalMemory].vars[quadList[i].left_op] =  getValue(quadList[i].tResult)
             
-            print("RETURN")
+            #print("RETURN")
         elif quadList[i].operation == 23:
             
             exeStack.pop()
             i = exeGoSubStack.pop()
     
-            print("END FUNCTION")
+            #print("END FUNCTION")
         elif quadList[i].operation == 24:
+            if paramExpression:
+                previousMemory.vars[quadList[i].tResult] = getParamValue(quadList[i].left_op) + getParamValue(quadList[i].right_op)
+            else:
+                exeStack[-1].vars[quadList[i].tResult] = getValue(quadList[i].left_op) + getValue(quadList[i].right_op)
+
+            print("BASEADDRESS")
+        elif quadList[i].operation == 25:
+            print("Direct Local: ", exeStack[-1].vars);
+            print("Direct glocal: ", globalMemories[currentGlobalMemory].vars);
             print("END PROGRAM")
+            break;
         else:
             print("ERROR")
 

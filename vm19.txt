@@ -1,8 +1,16 @@
-program factorialRecursivo :
+program recursionEnParametro :
     main {
 
         var int p;
         
+        funct int doubleNum(int num) {
+            var int f;
+            f = 2 * num;
+
+            return f;
+
+        }
+
         funct int testReturn(int val1) {
             var int a, g;
 
@@ -25,7 +33,8 @@ program factorialRecursivo :
 
             p = 6;
             i = 5;
-            k = i * testReturn(p);
+            h = testReturn(p);
+            k = doubleNum(h);
             write(k);
         }
     }

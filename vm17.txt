@@ -1,0 +1,24 @@
+program arrayParam :
+
+    main {
+
+        funct float getTotal(float j, int k) {
+            var float a;
+                a = j * k;
+            return a;
+        }
+
+        init {
+           
+            var int i[5], a[3]; 
+                float d[5], y;
+
+            int b, c, f;
+            f = 3;
+        
+            read(d[f + 1]);
+            write(d[f + 1]);
+
+        }
+    }
+end
