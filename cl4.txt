@@ -1,4 +1,4 @@
-program cl2 :
+program cl4 :
 
     class Dog {
         var int edad;
@@ -14,8 +14,9 @@ program cl2 :
             var int h, i, j, k;
                 Dog dog1;
             
-            i = 8;
-            h = dog1.edad * i;
+            read(dog1.edad);
+
+            write(dog1.edad + 6 * i);
             
         }
     }

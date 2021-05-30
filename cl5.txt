@@ -1,0 +1,30 @@
+program cl5 :
+
+    class Dog {
+        var int edad;
+
+        funct void printDogName() {
+            write("joe");
+        }
+    }
+
+    main {
+        
+        init {
+            var int h, i, j, k;
+                Dog dog1, dog2;
+            
+            read(dog1.edad);
+
+            if (dog1.edad > 9) then {
+                write(dog1.edad + 6 * i);
+            }
+
+            while (i*k < dog1.edad) do {
+                dog1.edad = dog2.edad + 7;
+            }
+            
+        }
+    }
+    
+end

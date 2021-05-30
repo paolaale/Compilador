@@ -179,10 +179,12 @@ def p_read(p):
     p[0] = 'program'
 
 def p_read_aux(p):
-    '''read_aux : ID push_var var_aux_2
-            | ID push_var var_aux_2 COMMA generate_read read_aux
-            | ID push_var 
-            | ID push_var COMMA generate_read read_aux'''
+    '''read_aux : ID push_var
+            | ID push_var COMMA generate_read read_aux 
+            | ID var_aux
+            | ID var_aux COMMA generate_read read_aux
+            | ID push_var var_aux_2
+            | ID push_var var_aux_2 COMMA generate_read read_aux'''
     p[0] = 'program'
 
 def p_write(p):

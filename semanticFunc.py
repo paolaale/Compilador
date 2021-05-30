@@ -420,7 +420,6 @@ def pop_op_assign():
     memRefLeftOp = getVarMemRef(leftOp)
     memVarToAsign = getVarMemRef(varToAssign)
     
-
     # Validate that the type of the exp result is the same of the variable to assign
     if assignationType == leftOpType:
 
@@ -454,7 +453,7 @@ def generateWrite():
     else:
         varToWrite = operandsStack.pop()
         typesStack.pop()
-        memVarToWrite = getMemoryRef(varToWrite)
+        memVarToWrite = getVarMemRef(varToWrite)
 
     quadCounter += 1
     quadList.append(Quadruple("WRITE", None, None, varToWrite))
@@ -465,7 +464,7 @@ def generateRead():
     global operandsStack, quadList, quadCounter, typesStack, quadMEM
 
     varToRead = operandsStack.pop()
-    memVarToRead = getMemoryRef(varToRead)
+    memVarToRead = getVarMemRef(varToRead)
     typesStack.pop()
     
     quadCounter += 1
@@ -633,7 +632,7 @@ def endFor():
 
 # ---------------------- END NON-LINEAR STATEMENTS (IF, WHILE, FOR) ---------------------- #
 
-# ---------------------- FUNCTIONS ---------------------- #
+# ---------------------- START FUNCTIONS ---------------------- #
 
 # Function that saves the quadruple where the code of the function starts
 def startFunction():
@@ -776,7 +775,7 @@ def insertParamFlag():
 
 #---------------------- END FUNCTIONS ---------------------- #
 
-#---------------------- DATA STRUCTURES ---------------------- #
+#---------------------- START DATA STRUCTURES ---------------------- #
 
 # --- ARRAYS --- #
 
@@ -864,8 +863,6 @@ def accessMatrix():
     leftOpType = typesStack.pop()
     operandsMatch = isAMatch(leftOpType, "*", "int")
     
-    
-
     if operandsMatch != "error":
 
         matrixId = accesArrayStack[-1]
@@ -971,7 +968,7 @@ def endMatrix():
 
 # ---------------------- END DATA STRUCTURES ---------------------- #
 
-# ---------------------- CLASSES ---------------------- #
+# ---------------------- START CLASSES ---------------------- #
 
 def getVarMemRef(op):
     global objVarsMemRef
@@ -983,7 +980,7 @@ def getVarMemRef(op):
 
 # ---------------------- END CLASSES ---------------------- #
 
-# ---------------------- MAIN ---------------------- #
+# ---------------------- START MAIN ---------------------- #
 
 # Function that generates the quadruple at the start of the program to go to the init function
 def checkInit():
