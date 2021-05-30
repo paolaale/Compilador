@@ -37,7 +37,11 @@ def dataInit():
     constDictionary = dict((value, key) for key, value in sF.directConstants.items()) 
 
 def getCorrectMemRef(memRef, stackToCheck):
-    
+    memRefString = str(memRef)
+
+    if "-" in memRefString and memRefString[0] != "-":
+        return memRef
+
     if memRef >= 0:
         return memRef
 
@@ -55,6 +59,10 @@ def getCorrectMemRef(memRef, stackToCheck):
 
 def getValue(memRef):
     global constDictionary
+    memRefString = str(memRef)
+
+    if "-" in memRefString and memRefString[0] != "-":
+        mem_addresses = memRefString.split("-")
 
     if memRef in constDictionary:
         if memRef < 36000:

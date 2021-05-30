@@ -12,8 +12,6 @@ program vm9Recursion :
             var int h, i, j, k;
                 Dog dog1;
             
-            h = dog1.edad;
-            write("HOLA");
             dog1.edad = h;
         }
     }
