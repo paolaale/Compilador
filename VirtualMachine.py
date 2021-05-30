@@ -332,7 +332,7 @@ def execute(quadList):
             print("Direct global: ", globalMemories[currentGlobalMemory].vars)
             print("GlobalMemories: ", globalMemories)
             print("FINALCURGLMEMORY", currentGlobalMemory)
-            print("INSTANCEDOG1", globalMemories[1].vars)
+
             print("END PROGRAM")
             break
 

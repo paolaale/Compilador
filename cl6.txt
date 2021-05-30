@@ -1,0 +1,27 @@
+program cl6 :
+
+    class Dog {
+        var int edad;
+
+        funct void printDogName() {
+            write("joe");
+        }
+    }
+
+    main {
+        
+        funct void pruebaParams(int d1, int d2) {
+            write(d1);
+            write(d2);
+        }
+
+        init {
+
+            var Dog dog1, dog2;
+            
+            call pruebaParams(dog1.edad, dog2.edad);
+            
+        }
+    }
+    
+end
