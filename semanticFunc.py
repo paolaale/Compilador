@@ -445,9 +445,12 @@ def generateWrite():
         varToWrite = stringToWrite
         varToWrite = varToWrite.replace('"', '')
         # Added to the dictionary of constants
-        if stringToWrite not in directConstants:
+        if varToWrite not in directConstants:
+            
             directConstants[varToWrite] = mD.get_space_avail("const", "string", 1)
-            memVarToWrite = getMemoryRef(varToWrite)
+            
+        memVarToWrite = getMemoryRef(varToWrite)
+        
         stringToWrite = None
     # Or if it is an expression gets it from the operands stack
     else:

@@ -511,7 +511,7 @@ if __name__ == '__main__':
         sF.printMemoryQuadruples()
         print("------------------------------------")
         vM.execute(sF.quadMEM)
-        test.printMemoryInDeclaration()
+        #test.printMemoryInDeclaration()
         
         if result != None:
             print("Program accepted")

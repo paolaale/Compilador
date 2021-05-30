@@ -18,6 +18,15 @@ program cl1 :
 
             j = dog1.edad + dog1.edad;
 
+            write("J: ", j);
+
+            if (5 == 5) then {
+                write("entré al if");
+            }
+
+            write("entré al if", j);
+            write("entré al if", j);
+
         }
     }
     

@@ -38,8 +38,9 @@ def dataInit():
 
 def getCorrectMemRef(memRef, stackToCheck):
     memRefString = str(memRef)
-
+  
     if "-" in memRefString and memRefString[0] != "-":
+        
         return memRef
 
     if memRef >= 0:
@@ -58,11 +59,21 @@ def getCorrectMemRef(memRef, stackToCheck):
 
 
 def getValue(memRef):
-    global constDictionary
-    memRefString = str(memRef)
-
+    global constDictionary, currentGlobalMemory
+  
+    auxCurrentGlobalMemory = currentGlobalMemory # to preserve the currGlobalMem if we need to access the memory of an obj
+    memRefString = str(memRef) # We convert to string the Memref
+   
+    # We check if the memRef belongs to an instance of an object and then access to its value
     if "-" in memRefString and memRefString[0] != "-":
-        mem_addresses = memRefString.split("-")
+       
+        objMemoryInfo = memRefString.split("-")
+        objInstanceMemory = objMemoryInfo[0]
+        objAttrMemory = objMemoryInfo[1]
+        
+        currentGlobalMemory = int(objInstanceMemory);
+        memRef = int(objAttrMemory)
+
 
     if memRef in constDictionary:
         if memRef < 36000:
@@ -71,21 +82,38 @@ def getValue(memRef):
             return float(constDictionary[memRef])
         else:
             return constDictionary[memRef] #!!!! falta lógica de chars aquí
+        
     elif memRef in exeStack[-1].vars:
         return exeStack[-1].vars[memRef]
     else:
-        return globalMemories[currentGlobalMemory].vars[memRef]
+        memRefToReturn = globalMemories[currentGlobalMemory].vars[memRef]
+        currentGlobalMemory = auxCurrentGlobalMemory
+
+        return memRefToReturn
 
 def assignValue(val1, container):
-    global exeStack, globalMemories
+    global exeStack, globalMemories, currentGlobalMemory
 
+    auxCurrentGlobalMemory = currentGlobalMemory
+    memRefString = str(container)
+
+    if "-" in memRefString and memRefString[0] != "-":
+        objMemoryInfo = memRefString.split("-")
+        objInstanceMemory = objMemoryInfo[0]
+        objAttrMemory = objMemoryInfo[1]
+
+        currentGlobalMemory = int(objInstanceMemory);
+        container = int(objAttrMemory)
+    
     valToAsign = getValue(val1)
      
+    
     if (container >= 0 and container < 4000) or (container >= 5000 and container < 8999):   
         globalMemories[currentGlobalMemory].vars[container] = valToAsign
     else:
         exeStack[-1].vars[container] = valToAsign
 
+    currentGlobalMemory = auxCurrentGlobalMemory
 
 def assignReadValue(container, newValue):
 
@@ -168,7 +196,6 @@ def execute(quadList):
             #print("DIVISION")
 
         elif quadList[i].operation == 5:
-            # aquí falta incluir cuando es en la previousStack porque es param de una función
             if paramExpression:
                 left_op = getCorrectMemRef(quadList[i].left_op, "previous")
                 tResult = getCorrectMemRef(quadList[i].tResult, "previous")
@@ -304,6 +331,8 @@ def execute(quadList):
             print("Direct Local: ", exeStack[-1].vars)
             print("Direct global: ", globalMemories[currentGlobalMemory].vars)
             print("GlobalMemories: ", globalMemories)
+            print("FINALCURGLMEMORY", currentGlobalMemory)
+            print("INSTANCEDOG1", globalMemories[1].vars)
             print("END PROGRAM")
             break
 
