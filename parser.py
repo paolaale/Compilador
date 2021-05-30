@@ -129,13 +129,13 @@ def p_statutes_aux(p):
 
 def p_assignation(p):
     '''assignation : ID push_var EQUAL push_op exp pop_op_assign
-                    | ID push_var var_aux EQUAL push_op exp pop_op_assign'''
+                    | ID var_aux EQUAL push_op exp pop_op_assign
+                    | ID push_var var_aux_2 EQUAL push_op exp pop_op_assign'''
     p[0] = 'program'
 
 def p_var_aux(p):
-    '''var_aux : POINT ID 
-            |  POINT ID var_aux_2
-            |  var_aux_2 '''
+    '''var_aux : POINT ID push_obj_var
+            |  POINT ID var_aux_2'''
     p[0] = 'program'
 
 def p_var_aux_2(p):
@@ -241,7 +241,8 @@ def p_factor_aux(p):
 
 def p_cte(p):
     '''cte : ID push_var 
-        | ID push_var var_aux
+        | ID var_aux
+        | ID push_var var_aux_2
         | CTEI push_var
         | CTEF push_var
         | CTECHAR push_var'''
@@ -298,6 +299,10 @@ def p_push_var(p):
 def p_push_op(p):
     'push_op :'
     sF.pushOperator(p[-1])
+
+def p_push_obj_var(p):
+    'push_obj_var :'
+    sF.pushObjVar(p[-3], p[-1])
 
 def p_pop_op_art_n1(self):
     'pop_op_art_n1 :'
@@ -503,9 +508,9 @@ if __name__ == '__main__':
         print("------------------------------------")
         sF.printMemoryQuadruples()
         print("------------------------------------")
-        vM.execute(sF.quadMEM)
-        #test.printMemoryInDeclaration()
-
+        #vM.execute(sF.quadMEM)
+        test.printMemoryInDeclaration()
+        
         if result != None:
             print("Program accepted")
         else:

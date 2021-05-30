@@ -12,11 +12,11 @@ from copy import copy
 exeStack = deque()
 executionStack = dict()
 
-currentGlobalMemory = "main"
+currentGlobalMemory = 0
 currentLocalMemory = ""
 
 globalMemories = dict()
-globalMemories["main"] = MemoryAllocator()
+globalMemories[0] = MemoryAllocator()
 
 initMemory = MemoryAllocator()
 constDictionary = dict()
@@ -290,8 +290,12 @@ def execute(quadList):
             print("BASEADDRESS")
 
         elif quadList[i].operation == 25:
+            globalMemories[quadList[i].tResult] = MemoryAllocator()
+
+        elif quadList[i].operation == 26:
             print("Direct Local: ", exeStack[-1].vars)
             print("Direct global: ", globalMemories[currentGlobalMemory].vars)
+            print("GlobalMemories: ", globalMemories)
             print("END PROGRAM")
             break
 

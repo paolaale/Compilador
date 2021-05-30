@@ -1,10 +1,19 @@
 program factorialRecursivo :
+    class Dog {
+        var int edad;
+
+        funct int getEdad() {
+            edad = 10;
+            return edad;
+        }
+    }
     main {
 
         var int p;
         
         funct int testReturn(int val1) {
             var int a, g;
+                Dog dog1;
 
 
             if (val1 >= 1) then {

@@ -1,0 +1,20 @@
+program vm9Recursion :
+    class Dog {
+        var int edad;
+
+        funct void printDogName() {
+            write("joe");
+        }
+    }
+    main {
+        
+        init {
+            var int h, i, j, k;
+                Dog dog1;
+            
+            i = 8;
+            h = dog1.edad * i;
+            
+        }
+    }
+end

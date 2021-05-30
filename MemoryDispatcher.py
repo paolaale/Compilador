@@ -26,8 +26,11 @@ memoryDispatcher = {
     "const_string": MemoryRange(38000, 38999)
 }
 
+# Counter of classes instances
+countOfInstances = 0;
+
 def get_space_avail(scope, varType, spaceNeed):
-    global memoryDispatcher
+    global memoryDispatcher, countOfInstances
 
     if scope == "temp":
         memoryRange = getMemoryTemp(varType)
@@ -36,14 +39,19 @@ def get_space_avail(scope, varType, spaceNeed):
     else:
         memoryRange = getMemoryInDeclaration(scope, varType)
 
-    currentSpaceVal = memoryDispatcher[memoryRange].currentVal
-    directToReturn = currentSpaceVal + spaceNeed - 1
+    if memoryRange == "obj_instance":
+        countOfInstances += 1
+        return countOfInstances;
 
-    if directToReturn <= memoryDispatcher[memoryRange].upperLimit:
-        memoryDispatcher[memoryRange].currentVal = currentSpaceVal + spaceNeed
-        return directToReturn
-    else:
-        raise Exception("Too many variables")
+    else: 
+        currentSpaceVal = memoryDispatcher[memoryRange].currentVal
+        directToReturn = currentSpaceVal + spaceNeed - 1
+
+        if directToReturn <= memoryDispatcher[memoryRange].upperLimit:
+            memoryDispatcher[memoryRange].currentVal = currentSpaceVal + spaceNeed
+            return directToReturn
+        else:
+            raise Exception("Too many variables")
 
 
 # Obtenemos el rango al que pertecene la memoria de variables en declaración
@@ -61,8 +69,10 @@ def getMemoryInDeclaration(scope, varType):
             return "local_int"
         elif varType == "float":
             return "local_float"
-        else:
+        elif varType == "char":
             return "local_char"
+        else:
+            return "obj_instance"
 
 def getMemoryTemp(varType):
     if varType == "int":

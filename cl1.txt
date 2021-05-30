@@ -1,0 +1,22 @@
+program vm9Recursion :
+    class Dog {
+        var int edad;
+
+        funct void printDogName() {
+            write("chaparro");
+        }
+    }
+    main {
+        
+        init {
+            var int h, i, j, k;
+                Dog dog1;
+            
+            h = dog1.edad;
+            write("HOLA");
+            dog1.edad = h;
+        }
+    }
+end
+
+
