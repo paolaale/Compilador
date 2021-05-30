@@ -148,16 +148,21 @@ def p_var_aux_3(p):
     p[0] = 'program'
 
 def p_call(p):
-    '''call : ID exist_function LPAREN push_paren era_function RPAREN pop_paren gosub_function
-            | ID POINT ID LPAREN RPAREN
+    '''call : ID exist_function LPAREN era_function RPAREN gosub_function
+            | ID POINT ID exist_method LPAREN era_method RPAREN gosub_method
             | ID exist_function LPAREN push_paren era_function call_aux RPAREN pop_paren gosub_function
-            | ID POINT ID LPAREN call_aux RPAREN'''
+            | ID POINT ID exist_method LPAREN push_paren era_method call_aux_2 RPAREN pop_paren gosub_method'''
     p[0] = 'program'
 
 def p_call_aux(p):
     '''call_aux : exp arg_function
                 | exp arg_function COMMA call_aux'''
 
+    p[0] = 'program'
+
+def p_call_aux_2(p):
+    '''call_aux_2 : exp arg_method
+                | exp arg_method COMMA call_aux_2'''
     p[0] = 'program'
 
 def p_condition(p):
@@ -460,11 +465,21 @@ def p_end_matrix(self):
 
 # FUNCTIONS FOR CLASSES
 
-""" def p_exist_object(p):
-    'exist_object :'
-
 def p_exist_method(p):
-    'exist_method :' """
+    'exist_method :'
+    sF.existMethod(p[-3], p[-1])
+
+def p_era_method(self):
+    'era_method :'
+    sF.eraSizeMethod()
+
+def p_arg_method(self):
+    'arg_method :'
+    sF.argMethod()
+
+def p_gosub_method(self):
+    'gosub_method :'
+    sF.gosubMethod()
 
 # FUNCTIONS FOR MAIN
 

@@ -1,0 +1,26 @@
+program cl11 :
+
+    class Dog {
+        var int edad;
+
+        funct void printDogAge(int e) {
+            edad = e;
+            write(edad);
+        }
+    }
+
+    main {
+
+        var Dog dog1, dog2;
+
+        init {
+
+            var int b;
+            
+            b = 2;
+            call dog1.printDogAge(b);
+
+        }
+    }
+    
+end

@@ -39,7 +39,7 @@ def dataInit():
 def getCorrectMemRef(memRef, stackToCheck):
     memRefString = str(memRef)
   
-    if "-" in memRefString and memRefString[0] != "-":
+    if "/" in memRefString:
         
         return memRef
 
@@ -61,19 +61,18 @@ def getCorrectMemRef(memRef, stackToCheck):
 def getValue(memRef):
     global constDictionary, currentGlobalMemory
   
-    auxCurrentGlobalMemory = currentGlobalMemory # to preserve the currGlobalMem if we need to access the memory of an obj
+    auxCurrentGlobalMemory = currentGlobalMemory # To preserve the currGlobalMem if we need to access the memory of an obj
     memRefString = str(memRef) # We convert to string the Memref
    
     # We check if the memRef belongs to an instance of an object and then access to its value
-    if "-" in memRefString and memRefString[0] != "-":
+    if "/" in memRefString:
        
-        objMemoryInfo = memRefString.split("-")
+        objMemoryInfo = memRefString.split("/")
         objInstanceMemory = objMemoryInfo[0]
         objAttrMemory = objMemoryInfo[1]
         
-        currentGlobalMemory = int(objInstanceMemory);
+        currentGlobalMemory = int(objInstanceMemory)
         memRef = int(objAttrMemory)
-
 
     if memRef in constDictionary:
         if memRef < 36000:
@@ -97,18 +96,19 @@ def assignValue(val1, container):
     auxCurrentGlobalMemory = currentGlobalMemory
     memRefString = str(container)
 
-    if "-" in memRefString and memRefString[0] != "-":
-        objMemoryInfo = memRefString.split("-")
+    if "/" in memRefString:
+        objMemoryInfo = memRefString.split("/")
         objInstanceMemory = objMemoryInfo[0]
         objAttrMemory = objMemoryInfo[1]
 
-        currentGlobalMemory = int(objInstanceMemory);
+        currentGlobalMemory = int(objInstanceMemory)
         container = int(objAttrMemory)
     
     valToAsign = getValue(val1)
      
-    
-    if (container >= 0 and container < 4000) or (container >= 5000 and container < 8999):   
+    if (container >= 0 and container < 4000) or (container >= 5000 and container < 8999):
+        print("GLOBAL MEM ", currentGlobalMemory)   
+        print("CONTAINER ", container)   
         globalMemories[currentGlobalMemory].vars[container] = valToAsign
     else:
         exeStack[-1].vars[container] = valToAsign
@@ -327,7 +327,7 @@ def execute(quadList):
         elif quadList[i].operation == 25:
             globalMemories[quadList[i].tResult] = MemoryAllocator()
 
-        elif quadList[i].operation == 26:
+        elif quadList[i].operation == 28:
             print("Direct Local: ", exeStack[-1].vars)
             print("Direct global: ", globalMemories[currentGlobalMemory].vars)
             print("GlobalMemories: ", globalMemories)

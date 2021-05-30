@@ -27,7 +27,7 @@ memoryDispatcher = {
 }
 
 # Counter of classes instances
-countOfInstances = 0;
+countOfInstances = 0
 
 def get_space_avail(scope, varType, spaceNeed):
     global memoryDispatcher, countOfInstances
@@ -41,7 +41,7 @@ def get_space_avail(scope, varType, spaceNeed):
 
     if memoryRange == "obj_instance":
         countOfInstances += 1
-        return countOfInstances;
+        return countOfInstances
 
     else: 
         currentSpaceVal = memoryDispatcher[memoryRange].currentVal
@@ -62,8 +62,10 @@ def getMemoryInDeclaration(scope, varType):
             return "global_int"
         elif varType == "float":
             return "global_float"
-        else:
+        elif varType == "char":
             return "global_char"
+        else:
+            return "obj_instance"
     else:
         if varType == "int":
             return "local_int"

@@ -1,0 +1,26 @@
+program cl12 :
+
+    class Dog {
+        var int edad;
+
+        funct int printDogAge(int e) {
+            edad = e * 5;
+
+            return edad;
+        }
+    }
+
+    main {
+
+        var Dog dog1, dog2;
+
+        init {
+
+            var int b;
+            
+            b = dog1.printDogAge(2);
+
+        }
+    }
+    
+end

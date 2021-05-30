@@ -1,0 +1,27 @@
+program cl10 :
+
+    class Dog {
+        var int edad, peso, estatura, patas;
+
+        funct int printDogName() {
+
+            write("joe");
+            edad = 15;
+
+            return edad;
+        }
+    }
+
+    main {
+
+        var Dog dog1, dog2;
+
+        init {
+
+            var int b;
+            
+            b = dog1.printDogName();
+        }
+    }
+    
+end

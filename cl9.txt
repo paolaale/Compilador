@@ -1,0 +1,23 @@
+program cl9 :
+
+    class Dog {
+        var int edad;
+
+        funct void printDogName() {
+            write("joe");
+        }
+    }
+
+    main {
+
+        var Dog dog1, dog2;
+
+        init {
+
+            var int a[3][5], b;
+            
+            call dog1.printDogName();
+        }
+    }
+    
+end

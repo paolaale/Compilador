@@ -15,6 +15,7 @@ program cl2 :
                 Dog dog1;
             
             i = 5;
+            dog1.edad = 6;
             write(dog1.edad);
             write(dog1.edad + 6 * i);
             

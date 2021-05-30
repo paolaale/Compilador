@@ -1,0 +1,25 @@
+program vm26 :
+
+    class Dog {
+        var int edad;
+
+        funct  void printDogAge(int e) {
+            edad = e;
+        }
+    }
+
+    main {
+
+        init {
+
+            var Dog dog1, dog2;
+            
+            dog1.edad = 7;
+            dog2.edad = 6;
+
+            write(dog1.edad + dog2.edad);
+
+        }
+    }
+    
+end
