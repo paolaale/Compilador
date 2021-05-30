@@ -1,0 +1,24 @@
+program cl8 :
+
+    class Dog {
+        var int edad;
+
+        funct void printDogName() {
+            write("joe");
+        }
+    }
+
+    main {
+
+        init {
+
+            var Dog dog1, dog2;
+                int a[3][5], b;
+            
+            b = dog1.edad + a[2][2];
+            
+            write(a[dog2.edad][dog1.edad]);
+        }
+    }
+    
+end

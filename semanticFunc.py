@@ -645,24 +645,24 @@ def returnFunction(variableToReturn):
     global quadCounter, quadList, quadMEM
 
     functWhereVarExists = existsVar(variableToReturn)
-    
     cFunct = direcClasses[currentClass].c_funcs[currentFunct]
 
     # Validate that the function is not a void type
     if cFunct.f_type != "void":
+
         #Validates the type of the returnable variable is the same as the type of the function
         if direcClasses[currentClass].c_funcs[functWhereVarExists].f_vars[variableToReturn].v_type == cFunct.f_type:
-            quadCounter += 1
-            memVarToReturn = getMemoryRef(variableToReturn)
-
             
+            quadCounter += 1
+
+            memVarToReturn = getMemoryRef(variableToReturn)
             memVarToReturnCurrentFunct = getMemoryRef(currentFunct) # here we set the global var for the return function that will be updated with the return result
 
             quadList.append(Quadruple("RETURN", currentFunct, None, variableToReturn))
             quadMEM.append(Quadruple(direcOperators["RETURN"], memVarToReturnCurrentFunct, None, memVarToReturn))
             
         else:
-            raise Exception("Function is expecting " + cFunct.f_type + " an is given a " + cFunct.f_vars[variableToReturn].v_type)
+            raise Exception("Function is expecting " + cFunct.f_type + " and is given a " + cFunct.f_vars[variableToReturn].v_type)
     else:
         raise Exception("Function of type void can't have return")
 
@@ -706,7 +706,7 @@ def argFunction():
     argument = operandsStack.pop()
     argumentType = typesStack.pop()
     
-    memArgument = getMemoryRef(argument)
+    memArgument = getVarMemRef(argument)
 
     # Checks that the function to be called has parameters
     if len(direcClasses["main"].c_funcs[functionToCall].f_params_type) >= numberOfArgs:
@@ -724,7 +724,7 @@ def argFunction():
 # Function that indicates where the code of the function called starts
 def gosubFunction():
     global quadCounter, quadList, functionToCall, numberOfArgs, quadMEM, countOfTemps, operandsStack
-    print("AHHHHHHH :(: ", operandsStack)
+
     nP = direcClasses["main"].c_funcs[functionToCall].f_number_params
     #operandsStack.pop(); este es intento para que jale el error de parametros
     # Check the number of parameters and arguments match
@@ -801,7 +801,11 @@ def accessArray():
 def verifyArrayIndex():
     global quadCounter, quadList, operandsStack, typesStack, quadMEM, currentDataLowerLimit, currentDataType
 
-    memTopOperand = getMemoryRef(operandsStack[-1])
+    if operandsStack[-1] == "OBJVAR":
+        memTopOperand = objVarsMemRef[-1]
+    else:
+        memTopOperand = getMemoryRef(operandsStack[-1])
+
     currentDataId = accesArrayStack[-1]
     scopeOfArray = existsVar(currentDataId)
 
@@ -829,7 +833,7 @@ def endArray():
 
     if operandsMatch != "error":
         # Get the direction memory of the variables
-        memLeftOp = getMemoryRef(leftOp)
+        memLeftOp = getVarMemRef(leftOp)
         memResult = mD.get_space_avail("temp", currentDataType, 1)
         directTemp[result] = -1 * memResult
 
@@ -841,7 +845,7 @@ def endArray():
 
         quadCounter += 1
         quadList.append(Quadruple("BASEADDRESS", leftOp, currentDataLowerLimit, result))
-        quadMEM.append(Quadruple(direcOperators["BASEADDRESS"], memLeftOp, memCurrArrLowLim,-1 * memResult))
+        quadMEM.append(Quadruple(direcOperators["BASEADDRESS"], memLeftOp, memCurrArrLowLim, -1 * memResult))
         
         operandsStack.append(result)
         typesStack.append(currentDataType)
@@ -859,7 +863,7 @@ def accessMatrix():
 
     operatorsStack.pop() # delete fake bottom of first dimension of matrix
     leftOp = operandsStack.pop()
-    memLeftOperand = getMemoryRef(leftOp)
+    memLeftOperand = getVarMemRef(leftOp)
     leftOpType = typesStack.pop()
     operandsMatch = isAMatch(leftOpType, "*", "int")
     
@@ -897,8 +901,8 @@ def verifyMatrixIndex():
     rightOp = operandsStack.pop()
     rightOpType = typesStack.pop()
     operandsMatch = isAMatch(leftOpType, "+", rightOpType)
-    memLeftOperand = getMemoryRef(leftOp)
-    memRightOperand = getMemoryRef(rightOp)
+    memLeftOperand = getVarMemRef(leftOp)
+    memRightOperand = getVarMemRef(rightOp)
     currentDataId = accesArrayStack[-1]
     scopeOfMatrix = existsVar(currentDataId)
 
@@ -944,7 +948,7 @@ def endMatrix():
     if operandsMatch != "error":
 
         # Get the direction memory of the variables
-        memLeftOp = getMemoryRef(leftOp)
+        memLeftOp = getVarMemRef(leftOp)
         memResult = mD.get_space_avail("temp", currentDataType, 1)
         directTemp[result] = -1 * memResult
 
