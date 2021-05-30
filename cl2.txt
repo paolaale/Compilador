@@ -15,7 +15,7 @@ program cl2 :
                 Dog dog1;
             
             i = 8;
-            h = dog1.edad * i;
+            
             
         }
     }

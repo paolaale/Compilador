@@ -1009,7 +1009,7 @@ def startInit():
 # Function that generates the END of the program quad
 def endProgram():
     global quadList, quadMEM
-
+    
     quadList.append(Quadruple("END PROGRAM", None, None, None))
     quadMEM.append(Quadruple(direcOperators["END PROGRAM"], None, None, None))
 

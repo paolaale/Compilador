@@ -510,7 +510,7 @@ if __name__ == '__main__':
         print("------------------------------------")
         sF.printMemoryQuadruples()
         print("------------------------------------")
-        #vM.execute(sF.quadMEM)
+        vM.execute(sF.quadMEM)
         test.printMemoryInDeclaration()
         
         if result != None:
