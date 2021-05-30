@@ -2,6 +2,7 @@ program cl1 :
 
     class Dog {
         var int edad;
+            float peso;
 
         funct void printDogName() {
             write("chaparro");
@@ -11,21 +12,37 @@ program cl1 :
     main {
         
         init {
-            var int h, i, j, k;
-                Dog dog1;
+            var int h, i, j, k, array[8], matrix[3][3];
+                Dog dog1, dog2;
             
-            dog1.edad = 5;
+            array[3] = 100;
+            
+            dog1.edad = 3;
 
-            j = dog1.edad + dog1.edad;
+            j = dog1.edad + array[3];
 
             write("J: ", j);
 
-            if (5 == 5) then {
+            if (dog1.edad == 5) then {
                 write("entré al if");
             }
 
-            write("entré al if", j);
-            write("entré al if", j);
+            write("edad del perro", dog1.edad);
+            
+            dog2.edad = array[3];
+
+            write("doggo2: ", dog2.edad);
+            array[2] = 5000;
+
+            k = array[dog1.edad - 1];
+
+            write("k: ", k);
+            
+            matrix[2][1] = 7;
+            k = matrix[dog1.edad - 1][dog2.edad - 99];
+
+            write("k: ", k);
+            
 
         }
     }
