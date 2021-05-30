@@ -1,4 +1,5 @@
-program vm9Recursion :
+program cl2 :
+
     class Dog {
         var int edad;
 
@@ -6,6 +7,7 @@ program vm9Recursion :
             write("joe");
         }
     }
+
     main {
         
         init {
@@ -17,4 +19,5 @@ program vm9Recursion :
             
         }
     }
+    
 end

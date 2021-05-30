@@ -1,10 +1,10 @@
-program cl1 :
+program cl2 :
 
     class Dog {
         var int edad;
 
         funct void printDogName() {
-            write("chaparro");
+            write("joe");
         }
     }
 
@@ -14,10 +14,11 @@ program cl1 :
             var int h, i, j, k;
                 Dog dog1;
             
-            dog1.edad = h;
+            i = 5;
+            write(dog1.edad);
+            write(dog1.edad + 6 * i);
+            
         }
     }
     
 end
-
-
