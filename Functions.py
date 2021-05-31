@@ -1,4 +1,6 @@
-class Functions: #key = name of the var, value = instance of Vars class
+#key = name of the function, 
+# value = type of function, numer of parameters and instance of Vars class
+class Functions:
     
     def __init__(self, f_type, f_params_type, f_number_params, f_start_quadruple):
         self.f_type = f_type
@@ -7,5 +9,3 @@ class Functions: #key = name of the var, value = instance of Vars class
         self.f_start_quadruple = f_start_quadruple
         self.f_vars = {}
         self.f_params_memRefs = []
-        #!!!! probablemente agregar aquí la memoria que esta clase necesitará cada funcióon, incluyendo
-        #!!!! la memoria necesaria para las variables globales.

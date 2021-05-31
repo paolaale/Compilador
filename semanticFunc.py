@@ -867,6 +867,7 @@ def accessArray():
 def verifyArrayIndex():
     global quadCounter, quadList, operandsStack, typesStack, quadMEM, currentDataLowerLimit, currentDataType
 
+    # If the operans is an object then get the address from different stack
     if operandsStack[-1] == "OBJVAR":
         memTopOperand = objVarsMemRef[-1]
     else:
@@ -880,6 +881,7 @@ def verifyArrayIndex():
     currentDataLowerLimit = direcClasses[currentClass].c_funcs[scopeOfArray].f_vars[currentDataId].lowerMemRef
     currentDataType = direcClasses[currentClass].c_funcs[scopeOfArray].f_vars[currentDataId].v_type
 
+    # Check the index of the array is an integer
     if typesStack[-1] == "int":
         quadCounter += 1
         quadList.append(Quadruple("VERIFY", operandsStack[-1], 0, currSize))
@@ -899,12 +901,12 @@ def endArray():
     countOfTemps += 1
 
     if operandsMatch != "error":
-        # Get the direction memory of the variables
+        # Get the memory address of the variables
         memLeftOp = getVarMemRef(leftOp)
         memResult = mD.get_space_avail("temp", currentDataType, 1)
         directTemp[result] = -1 * memResult
 
-        # Add to the dictionary of constants the lower direction memory that represents the index of array
+        # Add to the dictionary of constants the memory address that represents the index of array
         if currentDataLowerLimit not in directConstants:
                 directConstants[currentDataLowerLimit] = mD.get_space_avail("const", "int", 1)
 
@@ -916,7 +918,7 @@ def endArray():
         
         operandsStack.append(result)
         typesStack.append(currentDataType)
-        operatorsStack.pop()
+        operatorsStack.pop() # Delete the fake bottom "["
     else:
         raise Exception("Type mismatch")
 
@@ -928,29 +930,35 @@ def endArray():
 def accessMatrix():
     global operandsStack, typesStack, operatorsStack, currentDataType, quadCounter, quadList, countOfTemps, quadMEM, directTemp
 
-    operatorsStack.pop() # delete fake bottom of first dimension of matrix
+    operatorsStack.pop() # Delete fake bottom of first dimension of matrix
     leftOp = operandsStack.pop()
-    memLeftOperand = getVarMemRef(leftOp)
+    memLeftOperand = getVarMemRef(leftOp) # Get the memory ref of the operand
     leftOpType = typesStack.pop()
     operandsMatch = isAMatch(leftOpType, "*", "int")
     
     if operandsMatch != "error":
 
+        # Get the variable wanted to access
         matrixId = accesArrayStack[-1]
         scopeOfMatrix = existsVar(matrixId, currentClass, currentFunct)
-
+        # Get the size of cols of the matrix
         currentMatrixSize = direcClasses[currentClass].c_funcs[scopeOfMatrix].f_vars[matrixId].cols
         memMatrixSize = getMemoryRef(currentMatrixSize, currentClass, currentFunct)
+
         result = "TEMP" + str(countOfTemps)
         countOfTemps += 1
         memResult =  mD.get_space_avail("temp", operandsMatch, 1)
         directTemp[result] = memResult
 
+        # Check the variable is a matrix
         if int(currentMatrixSize) > 0:
-            operatorsStack.append("[")
+            
+            operatorsStack.append("[") # Creates fake bottom
+
             quadCounter += 1
             quadList.append(Quadruple("*", leftOp, currentMatrixSize, result))
             quadMEM.append(Quadruple(direcOperators["*"], memLeftOperand, memMatrixSize, memResult))
+
             operandsStack.append(result)
             typesStack.append(operandsMatch)
         else:
@@ -973,10 +981,12 @@ def verifyMatrixIndex():
     currentDataId = accesArrayStack[-1]
     scopeOfMatrix = existsVar(currentDataId, currentClass, currentFunct)
 
+    # Saves the size, the memory ref where the matrix starts and the type of array
     currSize = int(direcClasses[currentClass].c_funcs[scopeOfMatrix].f_vars[currentDataId].cols)
     currentDataLowerLimit = direcClasses[currentClass].c_funcs[scopeOfMatrix].f_vars[currentDataId].lowerMemRef
     currentDataType = direcClasses[currentClass].c_funcs[scopeOfMatrix].f_vars[currentDataId].v_type
 
+    # Check the index of the matrix is an integer
     if leftOpType == "int":
         quadCounter += 1
         quadList.append(Quadruple("VERIFY", leftOp, 0, currSize))
@@ -989,6 +999,7 @@ def verifyMatrixIndex():
             memResult =  mD.get_space_avail("temp", operandsMatch, 1)
             directTemp[result] = memResult
 
+            # Sum both indexes of matrix
             quadCounter += 1
             quadList.append(Quadruple("+", leftOp, rightOp, result))
             quadMEM.append(Quadruple(direcOperators["+"], memLeftOperand, memRightOperand, memResult))
@@ -1001,7 +1012,7 @@ def verifyMatrixIndex():
         raise Exception(currentDataId + " subscript is not an integer")
 
 
-# Sum the virtual address to acces the correct and wanted index
+# Sum the virtual address to access the correct and wanted index
 def endMatrix():
     global quadCounter, quadList, operandsStack, typesStack, operatorsStack, countOfTemps, quadMEM
 
@@ -1031,7 +1042,7 @@ def endMatrix():
         
         operandsStack.append(result)
         typesStack.append(currentDataType)
-        operatorsStack.pop()
+        operatorsStack.pop() # Delete the fake bottom "["
     else:
         raise Exception("Type mismatch")
 
@@ -1049,6 +1060,8 @@ def getVarMemRef(op):
     else:
         return getMemoryRef(op, currentClass, currentFunct)
 
+# Function that recieves the name of the object and the name of the method 
+# and check that both exists
 def existMethod(objName, methodName):
     global currentObject, methodToCall, classToAccess
 
@@ -1056,16 +1069,19 @@ def existMethod(objName, methodName):
 
     if scopeVar != None:
         classVar = direcClasses[currentClass].c_funcs[scopeVar].f_vars[objName].v_type
-
+        
+        # Check the method exist in the class of the object
         if methodName not in direcClasses[classVar].c_funcs:
             raise Exception("Function not found")
         else:
+            # Save the data in globals variables
             currentObject = objName
             methodToCall = methodName
             classToAccess = classVar
     else:
         raise Exception("Variable '" + objName + "' was not declare.")
 
+# Function that generates the Activation Record expansion new size for the method to be called
 def eraSizeMethod():
     global quadCounter, quadList, quadMEM
 
@@ -1076,6 +1092,7 @@ def eraSizeMethod():
     quadList.append(Quadruple("ERACM", None, currentObject, methodToCall))
     quadMEM.append(Quadruple(direcOperators["ERACM"], None, memRefObj, methodToCall))
 
+# Function that recieves the arguments that will be send to the parameters of the method
 def argMethod():
     global quadCounter, quadList, operandsStack, typesStack, numberOfArgs, quadMEM
 
@@ -1083,13 +1100,14 @@ def argMethod():
     argument = operandsStack.pop()
     argumentType = typesStack.pop()
     
-    memArgument = getVarMemRef(argument)
+    memArgument = getVarMemRef(argument) # Get the memory reference of the argument
 
     # Checks that the function to be called has parameters
     if len(direcClasses[classToAccess].c_funcs[methodToCall].f_params_type) >= numberOfArgs:
         # Check the parameter type is equal to the argument type 
         if direcClasses[classToAccess].c_funcs[methodToCall].f_params_type[numberOfArgs-1] == argumentType:
 
+            # Concatenates the object and param memory
             memObj = getMemoryRef(currentObject, currentClass, currentFunct)
             memParam = direcClasses[classToAccess].c_funcs[methodToCall].f_params_memRefs[numberOfArgs-1]
             memRefParam = str(memObj) + "/" + str(memParam)
@@ -1104,11 +1122,12 @@ def argMethod():
         # If there are more arguments sent than parameters recieving in the function generate exception
         raise Exception("Number of arguments mismatch") 
 
+# Function that indicates where the code of the method called starts
 def gosubMethod():
     global quadCounter, quadList, classToAccess, methodToCall, numberOfArgs, quadMEM, countOfTemps, operandsStack, currentObject
 
+    # Get the number of parameters the method has
     nP = direcClasses[classToAccess].c_funcs[methodToCall].f_number_params
-    #operandsStack.pop(); este es intento para que jale el error de parametros
     
     # Check the number of parameters and arguments match
     if numberOfArgs == nP:
@@ -1121,6 +1140,7 @@ def gosubMethod():
         quadList.append(Quadruple("GOSUBCM", None, None, methodStart))
         quadMEM.append(Quadruple(direcOperators["GOSUBCM"], None, None, methodStart))
 
+         # If the method isn't a type void then we need to assign the returnable variable
         if direcClasses[classToAccess].c_funcs[methodToCall].f_type != "void":
 
             # Creates cuadruple to assign the returnable function to a temp
@@ -1129,6 +1149,8 @@ def gosubMethod():
             countOfTemps += 1
             methodType = direcClasses[classToAccess].c_funcs["vG"].f_vars[methodToCall].v_type
             quadList.append(Quadruple("=", methodToCall, None, result))
+            
+            # Get the space of the temporal
             tempResult = mD.get_space_avail("temp", methodType, 1)
             directTemp[result] = tempResult
 
@@ -1178,13 +1200,16 @@ def endProgram():
 
 #---------------------- MEMORY REFERENCES START ---------------------- #
 
+# Function that returns rhe memory ref of the operand
 def getMemoryRef(op, classToCheck, funcToCheck):
     global direcClasses, directConstants, directTemp
 
     scopeOfOp = ""
 
+    # First check if is a constant
     if op in directConstants:
         return directConstants[op]
+    # Or if is a temp
     elif op in directTemp:
         return directTemp[op]
     else:
