@@ -13,10 +13,14 @@ from collections import deque
 
 import MemoryDispatcher as mD
 
-#test = MemoryDispatcher()
-
-# Dictionaries of classes 
+# Dictionary of classes 
 direcClasses = {} 
+# Dictionary of memory addresses of temps 
+directTemp = {}
+# Dictionary of memory addresses of constants temps 
+directConstants = {}
+# Dictionary of memory addresses of objects instances 
+directInstances = {}
 
 # Helpers to save classes, functions and vars names
 currentClass = ""
@@ -29,30 +33,19 @@ operandsStack = deque()
 typesStack = deque()
 objVarsMemRef = deque()
 
-# List of quadruples
-quadList = []
-
-# List of quadruples MEMORY
-quadMEM = []
-
-# List of Params per function
-functParams = []
-
-# Temps Memory directions Dictionary
-directTemp = {}
-
-# Temps Memory Constants
-directConstants = {}
-
-# Dictionary of objects instances memories
-directInstances = {}
-
 # Stacks for jumps in the quadruples
 jumpsStack = deque()
 gotoStack = deque()
 
-# Stacks of array access
+# Stack of array access
 accesArrayStack = deque()
+
+# List of quadruples
+quadList = []
+# List of quadruples with memory addresses
+quadMEM = []
+# List of params per function
+functParams = []
 
 # Helpers to fill quadruples
 stringToWrite = None
@@ -77,7 +70,7 @@ currentDataType = 0
 currentDataLowerLimit = 0
 currentMatrixSize = 0
 
-#Helpers for classes
+# Helpers for classes
 currentObject = ""
 methodToCall = ""
 classToAccess = ""
@@ -109,25 +102,38 @@ oL = {"and", "or"}
 # and the name of the parent if is inherit, otherwise recieve None
 def addClass(cName, cInherits, cParentName):
     global direcClasses, currentClass, currentFunct
+    
+    # Before another class comes, reset the memory addresses
     mD.reset_global_space()
+
     currentClass = cName 
     currentFunct = "vG"
-    # Add to the dictionary of classes the class
-    direcClasses[cName] = Classes(cInherits, cParentName) 
+
+    # Check class wasn't already declare
+    if cName not in direcClasses:
+        # Add to the dictionary of classes the class
+        direcClasses[cName] = Classes(cInherits, cParentName) 
+    else:
+         raise Exception("Class '" + cName + "' already exist")
 
 # Function that recieves the name of the function 
-# and the type of return
+# and the type of function 
 def addFunction(fName, fType):
     global currentClass, currentFunct, numberOfParams
     
     currentFunct = fName
-    directTemp = {}
-    # Add to dictionary of classes, in the current class the function
-    direcClasses[currentClass].c_funcs[fName] = Functions(fType, [], numberOfParams, None) 
+    directTemp = {} #!!!! ?? que hace
 
-    if fType != "void":
-        # Because has a return, we add a variable to the global variables that will represent the returnable variable
-        direcClasses[currentClass].c_funcs["vG"].f_vars[currentFunct] = Vars(fType, -1, -1, mD.get_space_avail("vG", fType, 1))
+    # Check function wasn't already declare in the class
+    if fName not in direcClasses[currentClass].c_funcs:
+        # Add to dictionary of classes, in the current class the function
+        direcClasses[currentClass].c_funcs[fName] = Functions(fType, [], numberOfParams, None) 
+
+        if fType != "void":
+            # Because has a return, we add a variable to the global variables that will represent the returnable variable
+            direcClasses[currentClass].c_funcs["vG"].f_vars[currentFunct] = Vars(fType, -1, -1, mD.get_space_avail("vG", fType, 1))
+    else:
+         raise Exception("Function '" + fName + "' already exist")
 
 # Function that recieves the name and type of the variable
 # size 1 that represents number of rows (array)
@@ -135,6 +141,7 @@ def addFunction(fName, fType):
 def addVars(vName, vType, vSize1, vSize2):
     global lastVarType, currentFunct, currentClass, quadCounter
 
+    # It means in the declaration there are vars of the same type, so we get the lastVarType
     if (vType == ','):
         vType = lastVarType
     else:
@@ -156,13 +163,17 @@ def addVars(vName, vType, vSize1, vSize2):
 
         # Memory reference of variable
         memRef = mD.get_space_avail(currentFunct, vType, memorySize)
+
         # Add to dictionary of classes, in the current class and current function the variables
         direcClasses[currentClass].c_funcs[currentFunct].f_vars[vName] = Vars(vType, vSize1, vSize2, memRef)
 
     else:
         raise Exception("Variable '" + vName + "' already exist")
     
+    # If variables is an object creates the quadruple for the class activation memory record
     if vType != "int" and vType != "float" and vType != "char":
+        
+        # Check the class of the object exist
         if vType in direcClasses:
             quadCounter += 1
             quadList.append(Quadruple("ERAC", None, None, vType))
@@ -180,14 +191,18 @@ def addParam(pName, pType, pSize1, pSize2):
     # To know how many spaces it will take on the memory
     memorySize = abs(int(pSize1) * int(pSize2))
 
-    #Crate the memory reference (Memref) for the parameter
+    # Create the memory reference (Memref) for the parameter
     paramMemRef = mD.get_space_avail("local", pType, memorySize)
+
     # Add to dictionary of classes, in the current class and current function the parameters
     direcClasses[currentClass].c_funcs[currentFunct].f_vars[pName] = Vars(pType, pSize1, pSize2, paramMemRef)
+
     # Add to dictionary of classes, in the current class and current function the parameter type in an array
     direcClasses[currentClass].c_funcs[currentFunct].f_params_type.append(pType)
+
     # Add the memory referece of the Param to the list of MemRefs of params of the function
     direcClasses[currentClass].c_funcs[currentFunct].f_params_memRefs.append(paramMemRef)
+
     # Count the number of parameters in current function for later use
     numberOfParams += 1 
 
@@ -255,8 +270,8 @@ def isChar(value):
         return False
 
 # Function that recieves an id and looks for them 
-# in the currents function or in the globals
-# returns the function where is found or None
+# in the function to check or in the globals of the class to check
+# and returns the function where is found or None
 def existsVar(id, classToCheck, funcToCheck):
 
     funcs = direcClasses[classToCheck].c_funcs
@@ -268,20 +283,24 @@ def existsVar(id, classToCheck, funcToCheck):
     else:
         return None
 
-# Function that recieves an id and verify that the variable exists 
-# if found returns the variable type, if not returns an exception
+# Function that recieves an id and checks if is a constant or 
+# if is a variable then check if exist 
+# if found returns the type, if not returns an exception
 def getVarType(id):
     global currentFunct, currentClass, directConstants
    
     if isInt(id):
+        # Added it to the constants if is not already in it
         if id not in directConstants:
             directConstants[id] = mD.get_space_avail("const", "int", 1)
         return "int"
     elif isFloat(id):
+        # Added it to the constants if is not already in it
         if id not in directConstants:
             directConstants[id] = mD.get_space_avail("const", "float", 1)
         return "float"
     elif isChar(id):
+        # Added it to the constants if is not already in it
         if id not in directConstants:
             id = id.replace("'", '')
             directConstants[id] = mD.get_space_avail("const", "char", 1)
@@ -299,21 +318,23 @@ def getVarType(id):
 
 # ---------------------- START EXPRESSION SOLVING ---------------------- #
 
-# Function to push the operand and its type in their corresponding stacks
+# Function that recieves the operand and adds it and his type in their corresponding stacks
 def pushOperand(op):
     global operandsStack
     operandsStack.append(op)
     typesStack.append(getVarType(op))
 
-# Function to push an attribute of an object as an operand
+# Function that recieves a name of an object and the object attribute
+# to add it as an operand
 def pushObjVar(objName, objAttr):
     global operandsStack, objVarsMemRef, typesStack
 
-    operandsStack.append("OBJVAR")
-
     scopeVar = existsVar(objName, currentClass, currentFunct)
 
+    # If object exist then gets the memory of the variable and the class
     if scopeVar != None:
+        operandsStack.append("OBJVAR")
+        
         classVar = direcClasses[currentClass].c_funcs[scopeVar].f_vars[objName]
         classType = classVar.v_type
         memRefClassType = classVar.memRef
@@ -323,17 +344,21 @@ def pushObjVar(objName, objAttr):
         memRefOfVar = varType.memRef
         
         typesStack.append(typeOfVar)
+
+        # Concatenate both addresses with a /
         memRefObjVar = str(memRefClassType) + "/" + str(memRefOfVar)
+        # Added it to the stack of objects
         objVarsMemRef.append(memRefObjVar)
+
     else:
         raise Exception("Variable '" + objName + "' was not declare.")
 
-# Function to push the operator to the operatorsStack
+# Function that receives the operator and add it to the operatorsStack
 def pushOperator(op):
     global operatorsStack, typesStack, quadList
     operatorsStack.append(op)
 
-# function to validate and create a quadruaple of logical operators
+# Function to validate and create a quadruaple of logical operators
 def pop_op_lop():
     global operatorsStack
 
@@ -341,11 +366,11 @@ def pop_op_lop():
     if operatorsStack and (operatorsStack[-1] == "or" or operatorsStack[-1] == "and"):
         generateExpQuad()
 
-# function to validate and create a quadruaple of relational operators
+# Function to validate and create a quadruaple of relational operators
 def pop_op_relop():
     generateExpQuad()
 
-# function to pop from our OperatorsStack our fake background when found "("
+# Function to pop from our OperatorsStack our fake background when found "("
 def pop_paren():
     global operatorsStack
     operatorsStack.pop()
@@ -376,16 +401,18 @@ def generateExpQuad():
     leftOpType = typesStack.pop()
     operator = operatorsStack.pop()
 
-    # get the matching compatibility of both operands types
+    # Get the matching compatibility of both operands types
     operandsMatch = isAMatch(leftOpType, operator, rightOpType) 
     
     # If operands types are compatible, generate quadruple and update quadcounter, else, throw exception
     if operandsMatch != "error":
 
         result = "TEMP" + str(countOfTemps)
+        # Create the memory reference (Memref) for the temp
         tempResult = mD.get_space_avail("temp", operandsMatch, 1)
         directTemp[result] = tempResult
 
+        # Get the memory reference of the operands
         memRefLeftOp = getVarMemRef(leftOp)
         memRefRightOp = getVarMemRef(rightOp)
 
@@ -395,6 +422,7 @@ def generateExpQuad():
         quadList.append(Quadruple(operator, leftOp, rightOp, result))
         quadMEM.append(Quadruple(direcOperators[operator], memRefLeftOp, memRefRightOp, tempResult))
 
+        # Add to the stack the result of the expression
         operandsStack.append(result)
         typesStack.append(operandsMatch)
     
@@ -405,7 +433,7 @@ def generateExpQuad():
 
 # ---------------------- START LINEAR STATEMENTS (ASSIGN, WRITE, READ) ---------------------- #
 
-# function to generate que assignation and add it to out quadList
+# Function to generate que assignation and add it to the quadList
 def pop_op_assign():
     global operatorsStack, operandsStack, quadList, quadCounter, quadMEM
     
@@ -415,21 +443,25 @@ def pop_op_assign():
     assignationType = typesStack.pop()
     operator = operatorsStack.pop()   
 
+    # Get the memory reference of the operands
     memRefLeftOp = getVarMemRef(leftOp)
     memVarToAsign = getVarMemRef(varToAssign)
     
     # Validate that the type of the exp result is the same of the variable to assign
     if assignationType == leftOpType:
 
+        # Eliminate the single quotes of the char
         if leftOpType == "char":
-            leftOp = leftOp.replace("'", '') #!!!! creo que se puede quitar cuando solo quede lo de memoria
+            leftOp = leftOp.replace("'", '')
+
         quadCounter += 1
         quadList.append(Quadruple(operator, leftOp, None, varToAssign))
         quadMEM.append(Quadruple(direcOperators[operator], memRefLeftOp, None, memVarToAsign))
+
     else:
         raise Exception("Cannot assign variable of type %s with %s" % (assignationType, leftOpType))
 
-# Function that saves the string to write
+# Function that recieves the string to write and saves it
 def saveString(s):
     global stringToWrite
     stringToWrite = s
@@ -440,21 +472,26 @@ def generateWrite():
 
     # If there is a string to write gets it from helper 
     if (stringToWrite != None):
+
         varToWrite = stringToWrite
+        # Eliminate the double quote of the string
         varToWrite = varToWrite.replace('"', '')
+
         # Added to the dictionary of constants
         if varToWrite not in directConstants:
-            
             directConstants[varToWrite] = mD.get_space_avail("const", "string", 1)
-            
+
+        # Get the memory reference of the variable
         memVarToWrite = getVarMemRef(varToWrite)
         
-        stringToWrite = None
+        stringToWrite = None # Return the global helper to none
+
     # Or if it is an expression gets it from the operands stack
     else:
         varToWrite = operandsStack.pop()
+        memVarToWrite = getVarMemRef(varToWrite) # Get the memory reference of the variable
+
         typesStack.pop()
-        memVarToWrite = getVarMemRef(varToWrite)
 
     quadCounter += 1
     quadList.append(Quadruple("WRITE", None, None, varToWrite))
@@ -465,7 +502,8 @@ def generateRead():
     global operandsStack, quadList, quadCounter, typesStack, quadMEM
 
     varToRead = operandsStack.pop()
-    memVarToRead = getVarMemRef(varToRead)
+    memVarToRead = getVarMemRef(varToRead) # Get the memory reference of the variable
+
     typesStack.pop()
     
     quadCounter += 1
@@ -489,10 +527,13 @@ def ifCondition():
         raise Exception("Type mismatch")
     else:
         leftOp = operandsStack.pop()
-        memLeftOp = getMemoryRef(leftOp, currentClass, currentFunct)
+        memLeftOp = getMemoryRef(leftOp, currentClass, currentFunct) # Get the memory reference of the variable
+
         quadCounter += 1
         quadList.append(Quadruple("GOTOF", leftOp, None, None))
         quadMEM.append(Quadruple(direcOperators["GOTOF"], memLeftOp, None, None))
+
+        # Add the quadCounter to jump stack to fill later
         jumpsStack.append(quadCounter-1)
 
 # Function that generates the if GOTO quad 
@@ -504,6 +545,8 @@ def elifExpression():
     quadList.append(Quadruple("GOTO", None, None, None))
     quadMEM.append(Quadruple(direcOperators["GOTO"], None, None, None))
     quadElifExpression = quadCounter
+
+    # Add the quadCounter to goto stack to fill later
     gotoStack.append(quadCounter-1)
 
 # Function that generates the elif GOTOF quad 
@@ -517,26 +560,35 @@ def elifCondition():
         raise Exception("Type mismatch")
     else:
         leftOp = operandsStack.pop()
-        memLeftOp = getMemoryRef(leftOp, currentClass, currentFunct)
+        memLeftOp = getMemoryRef(leftOp, currentClass, currentFunct) # Get the memory reference of the variable
+
         quadCounter += 1 
         quadList.append(Quadruple("GOTOF", leftOp, None, None))
         quadMEM.append(Quadruple(direcOperators["GOTOF"], memLeftOp, None, None))
+        
+        # Fill the GOTOF that were before
         quadElif = jumpsStack.pop()
-        jumpsStack.append(quadCounter-1)
         quadList[quadElif].tResult = quadElifExpression
         quadMEM[quadElif].tResult = quadElifExpression
+
+        # Add the quadCounter to jump stack to fill later
+        jumpsStack.append(quadCounter-1)
 
 # Function that generates the else GOTO quad 
 def elseCondition():
     global quadCounter, jumpsStack, quadList, quadMEM
 
-    quadElse = jumpsStack.pop()
     quadCounter += 1
     quadList.append(Quadruple("GOTO", None, None, None))
     quadMEM.append(Quadruple(direcOperators["GOTO"], None, None, None))
-    jumpsStack.append(quadCounter-1)
+    
+    # Fill the GOTOF that were before
+    quadElse = jumpsStack.pop()
     quadList[quadElse].tResult = quadCounter
     quadMEM[quadElse].tResult = quadCounter
+
+    # Add the quadCounter to jump stack to fill later
+    jumpsStack.append(quadCounter-1)
 
 # Function that fills the empty GOTO quads left on the if statement 
 def endIF():
@@ -571,10 +623,13 @@ def whileCondition():
         raise Exception("Type mismatch. Expecting bool")
     else:
         expResult = operandsStack.pop()
-        memExpResult = getMemoryRef(expResult, currentClass, currentFunct)
+        memExpResult = getMemoryRef(expResult, currentClass, currentFunct) # Get the memory reference of the variable
+
         quadCounter += 1
         quadList.append(Quadruple("GOTOF", expResult, None, None))
         quadMEM.append(Quadruple(direcOperators["GOTOF"], memExpResult, None, None))
+
+        # Add the quadCounter to jump stack to fill later
         jumpsStack.append(quadCounter - 1)
 
 # Function that generates the while GOTO quad 
@@ -584,9 +639,12 @@ def endWhile():
 
     endWhile = jumpsStack.pop()
     whileReturnQuad = jumpsStack.pop()
+
     quadCounter += 1
     quadList.append(Quadruple("GOTO", None, None, whileReturnQuad))
     quadMEM.append(Quadruple(direcOperators["GOTO"], None, None, whileReturnQuad))
+    
+    # Fill the GOTOF that were before
     quadList[endWhile].tResult = quadCounter
     quadMEM[endWhile].tResult = quadCounter
 
@@ -610,10 +668,13 @@ def forCondition():
         raise Exception("Type mismatch")
     else:
         leftOp = operandsStack.pop()
-        memLeftOp = getMemoryRef(leftOp, currentClass, currentFunct)
+        memLeftOp = getMemoryRef(leftOp, currentClass, currentFunct) # Get the memory reference of the variable
+
         quadCounter += 1
         quadList.append(Quadruple("GOTOF", leftOp, None, None))
         quadMEM.append(Quadruple(direcOperators["GOTOF"], memLeftOp, None, None))
+
+        # Add the quadCounter to jump stack to fill later
         jumpsStack.append(quadCounter-1)
 
 # Function that generates the for GOTO quad 
@@ -621,11 +682,14 @@ def forCondition():
 def endFor():
     global quadCounter, jumpsStack, quadList, gotoStack, quadMEM
     
-    quadCounter += 1
     quadEnd = jumpsStack.pop()
     returnFor = jumpsStack.pop()
+
+    quadCounter += 1
     quadList.append(Quadruple("GOTO", None, None, returnFor))
     quadMEM.append(Quadruple(direcOperators["GOTO"], None, None, returnFor))
+
+    # Fill the GOTOF that were before
     quadList[quadEnd].tResult = quadCounter
     quadMEM[quadEnd].tResult = quadCounter
 
@@ -641,6 +705,13 @@ def startFunction():
 
     direcClasses[currentClass].c_funcs[currentFunct].f_start_quadruple = quadCounter
 
+# Function that saves how many parameters the function has
+def insertParams():
+    global numberOfParams, currentClass, currentFunct, direcClasses
+
+    direcClasses[currentClass].c_funcs[currentFunct].f_number_params = numberOfParams
+    numberOfParams = 0
+
 # Function that creates the quadruple for the return
 def returnFunction(variableToReturn):
     global quadCounter, quadList, quadMEM
@@ -648,16 +719,17 @@ def returnFunction(variableToReturn):
     functWhereVarExists = existsVar(variableToReturn, currentClass, currentFunct)
     cFunct = direcClasses[currentClass].c_funcs[currentFunct]
 
-    # Validate that the function is not a void type
+    # Validates that the function is not a void type
     if cFunct.f_type != "void":
 
-        #Validates the type of the returnable variable is the same as the type of the function
+        # Validates the type of the returnable variable is the same as the type of the function
         if direcClasses[currentClass].c_funcs[functWhereVarExists].f_vars[variableToReturn].v_type == cFunct.f_type:
             
             quadCounter += 1
 
             memVarToReturn = getMemoryRef(variableToReturn, currentClass, currentFunct)
-            memVarToReturnCurrentFunct = getMemoryRef(currentFunct, currentClass, currentFunct) # here we set the global var for the return function that will be updated with the return result
+            # Set the global var for the return function that will be updated with the return result
+            memVarToReturnCurrentFunct = getMemoryRef(currentFunct, currentClass, currentFunct) 
 
             quadList.append(Quadruple("RETURN", currentFunct, None, variableToReturn))
             quadMEM.append(Quadruple(direcOperators["RETURN"], memVarToReturnCurrentFunct, None, memVarToReturn))
@@ -667,11 +739,11 @@ def returnFunction(variableToReturn):
     else:
         raise Exception("Function of type void can't have return")
 
-# Function that indicates where the function end and release the cuurent var table
+# Function that indicates where the function end and release the current var table
 def endFunction():
     global quadCounter, quadList, countOfTemps, quadMEM
 
-    # Validates that the function if is a type different that void had a return
+    # Validates that the function if is a type different than void then has a return
     if direcClasses[currentClass].c_funcs[currentFunct].f_type != "void" and currentFunct not in direcClasses[currentClass].c_funcs["vG"].f_vars:
         raise Exception("Expected return")
     else:
@@ -691,7 +763,7 @@ def existFunction(functionCall):
     else:
         functionToCall = functionCall
 
-# Function that generates the Activation Record expansion new size
+# Function that generates the Activation Record expansion new size for the function to be called
 def eraSizeFunction():
     global quadCounter, quadList, functionToCall, quadMEM
 
@@ -699,7 +771,7 @@ def eraSizeFunction():
     quadList.append(Quadruple("ERA", None, None, functionToCall))
     quadMEM.append(Quadruple(direcOperators["ERA"], None, None, functionToCall))
 
-# Function that recieves the argument that will be send to the parameter of the function
+# Function that recieves the arguments that will be send to the parameters of the function
 def argFunction():
     global quadCounter, quadList, operandsStack, typesStack, functionToCall, numberOfArgs, quadMEM
 
@@ -707,7 +779,7 @@ def argFunction():
     argument = operandsStack.pop()
     argumentType = typesStack.pop()
     
-    memArgument = getVarMemRef(argument)
+    memArgument = getVarMemRef(argument) # Get the memory reference of the argument
 
     # Checks that the function to be called has parameters
     if len(direcClasses["main"].c_funcs[functionToCall].f_params_type) >= numberOfArgs:
@@ -719,15 +791,15 @@ def argFunction():
         else:
             raise Exception("Type mismatch")
     else:
-        # If there are more arguments sent than parameters recieving in the function generate exception
+        # If there are more or less arguments sent than parameters recieving in the function generate exception
         raise Exception("Number of arguments mismatch")
 
 # Function that indicates where the code of the function called starts
 def gosubFunction():
     global quadCounter, quadList, functionToCall, numberOfArgs, quadMEM, countOfTemps, operandsStack
 
+    # Get the number of paramets of the function to call
     nP = direcClasses["main"].c_funcs[functionToCall].f_number_params
-    #operandsStack.pop(); este es intento para que jale el error de parametros
     
     # Check the number of parameters and arguments match
     if numberOfArgs == nP:
@@ -739,14 +811,16 @@ def gosubFunction():
         quadList.append(Quadruple("GOSUB", None, None, functionStart))
         quadMEM.append(Quadruple(direcOperators["GOSUB"], None, None, functionStart))
 
+        # If the function isn't a type void then we need to assign the returnable variable
         if direcClasses["main"].c_funcs[functionToCall].f_type != "void":
 
-            # Creates cuadruple to assign the returnable function to a temp
             quadCounter += 1
             result = "TEMP" + str(countOfTemps)
             countOfTemps += 1
             functType = direcClasses[currentClass].c_funcs["vG"].f_vars[functionToCall].v_type
             quadList.append(Quadruple("=", functionToCall, None, result))
+
+            # Get the space of the temporal
             tempResult = mD.get_space_avail("temp", functType, 1)
             directTemp[result] = tempResult
 
@@ -754,6 +828,7 @@ def gosubFunction():
             memReturnResult = getMemoryRef(functionToCall, currentClass, currentFunct)
 
             quadMEM.append(Quadruple(direcOperators["="], memReturnResult, None, tempResult))
+
             operandsStack.append(result)
             typesStack.append(functType)
 
@@ -761,13 +836,6 @@ def gosubFunction():
         numberOfArgs = 0
     else:
         raise Exception("Number of arguments mismatch")
-
-# Function that saves how many parameters the function has
-def insertParams():
-    global numberOfParams, currentClass, currentFunct, direcClasses
-
-    direcClasses[currentClass].c_funcs[currentFunct].f_number_params = numberOfParams
-    numberOfParams = 0
 
 #---------------------- END FUNCTIONS ---------------------- #
 
@@ -783,10 +851,12 @@ def accessArray():
     accesArrayStack.append(currentDataId)
     typesStack.pop()
 
-    scopeOfArray = existsVar(currentDataId, currentClass, currentFunct) # we check that the array exists and its scope
-
+    # Check that the variable exists
+    scopeOfArray = existsVar(currentDataId, currentClass, currentFunct) 
+    # Save in global variable the size of the array
     currentArraySize = int(direcClasses[currentClass].c_funcs[scopeOfArray].f_vars[currentDataId].rows)
 
+    # Check that the variable is an array
     if currentArraySize > 0:
         operatorsStack.append("[")
     else:
@@ -805,6 +875,7 @@ def verifyArrayIndex():
     currentDataId = accesArrayStack[-1]
     scopeOfArray = existsVar(currentDataId, currentClass, currentFunct)
 
+    # Saves the size, the memory ref where the array starts and the type of array
     currSize = int(direcClasses[currentClass].c_funcs[scopeOfArray].f_vars[currentDataId].rows)
     currentDataLowerLimit = direcClasses[currentClass].c_funcs[scopeOfArray].f_vars[currentDataId].lowerMemRef
     currentDataType = direcClasses[currentClass].c_funcs[scopeOfArray].f_vars[currentDataId].v_type
@@ -816,7 +887,7 @@ def verifyArrayIndex():
     else:
         raise Exception(currentDataId + " subscript is not an integer")
 
-# Sum the virtual address to acces the correct and wanted index
+# Sum the virtual address to access the correct and wanted index
 def endArray():
     global quadCounter, quadList, operandsStack, typesStack, operatorsStack, countOfTemps, quadMEM, currentDataLowerLimit, currentDataType
 
