@@ -12,6 +12,8 @@ from Quadruple import Quadruple
 from collections import deque
 
 import MemoryDispatcher as mD
+import sys
+sys.tracebacklimit = 0
 
 # Dictionary of classes 
 direcClasses = {} 
@@ -179,7 +181,7 @@ def addVars(vName, vType, vSize1, vSize2):
             quadList.append(Quadruple("ERAC", None, None, vType))
             quadMEM.append(Quadruple(direcOperators["ERAC"], None, None, memRef))
         else:
-            raise Exception("Class '" + vType + "' doest not exist")
+            raise Exception("Class '" + vType + "' does not exist")
         
 
 # Function that recieves the name and type of the parameter of the function
@@ -524,7 +526,7 @@ def ifCondition():
     expType = typesStack.pop()
 
     if (expType != "bool"):
-        raise Exception("Type mismatch")
+        raise Exception("Type mismatch in if condition")
     else:
         leftOp = operandsStack.pop()
         memLeftOp = getMemoryRef(leftOp, currentClass, currentFunct) # Get the memory reference of the variable
@@ -557,7 +559,7 @@ def elifCondition():
     expType = typesStack.pop()
 
     if (expType != "bool"):
-        raise Exception("Type mismatch")
+        raise Exception("Type mismatch in elif condition")
     else:
         leftOp = operandsStack.pop()
         memLeftOp = getMemoryRef(leftOp, currentClass, currentFunct) # Get the memory reference of the variable
@@ -620,7 +622,7 @@ def whileCondition():
     resultType = typesStack.pop()
 
     if resultType != "bool":
-        raise Exception("Type mismatch. Expecting bool")
+        raise Exception("Type mismatch in while condition")
     else:
         expResult = operandsStack.pop()
         memExpResult = getMemoryRef(expResult, currentClass, currentFunct) # Get the memory reference of the variable
@@ -665,7 +667,7 @@ def forCondition():
     expType = typesStack.pop()
 
     if (expType != "bool"):
-        raise Exception("Type mismatch")
+        raise Exception("Type mismatch in for condition")
     else:
         leftOp = operandsStack.pop()
         memLeftOp = getMemoryRef(leftOp, currentClass, currentFunct) # Get the memory reference of the variable
@@ -789,7 +791,7 @@ def argFunction():
             quadList.append(Quadruple("PARAM", argument, None, numberOfArgs-1))
             quadMEM.append(Quadruple(direcOperators["PARAM"], memArgument, None, direcClasses["main"].c_funcs[functionToCall].f_params_memRefs[numberOfArgs-1]))
         else:
-            raise Exception("Type mismatch")
+            raise Exception("Type mismatch between argument and parameter of function")
     else:
         # If there are more or less arguments sent than parameters recieving in the function generate exception
         raise Exception("Number of arguments mismatch")
@@ -860,7 +862,7 @@ def accessArray():
     if currentArraySize > 0:
         operatorsStack.append("[")
     else:
-        raise Exception("Type mismatch")
+        raise Exception("Variable is not an array")
 
 # Verify that the index of the array to access is an integer and 
 # creates quadruple to check that the position is accesible
@@ -962,7 +964,7 @@ def accessMatrix():
             operandsStack.append(result)
             typesStack.append(operandsMatch)
         else:
-            raise Exception("Type mismatch") 
+            raise Exception("Variable is not a matrix") 
     else:
             raise Exception("Type mismatch")
 
@@ -1117,7 +1119,7 @@ def argMethod():
             quadMEM.append(Quadruple(direcOperators["PARAM"], memArgument, None, memRefParam))
 
         else:
-            raise Exception("Type mismatch")
+            raise Exception("Type mismatch between argument and parameter of the function")
     else:
         # If there are more arguments sent than parameters recieving in the function generate exception
         raise Exception("Number of arguments mismatch") 
