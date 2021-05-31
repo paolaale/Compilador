@@ -108,7 +108,7 @@ def assignValue(val1, container):
      
     if (container >= 0 and container < 4000) or (container >= 5000 and container < 8999):
         print("GLOBAL MEM ", currentGlobalMemory)   
-        print("CONTAINER ", container)   
+        print("CONTAINER IN ASSIGNVALUE ", container)   
         globalMemories[currentGlobalMemory].vars[container] = valToAsign
     else:
         exeStack[-1].vars[container] = valToAsign
@@ -134,7 +134,20 @@ def readValue(container):
     assignReadValue(container, newValue)
 
 def getParamValue(memRef):
-    global constDictionary, previousMemory, globalMemories
+    global constDictionary, previousMemory, globalMemories, currentGlobalMemory
+
+    auxCurrentGlobalMemory = currentGlobalMemory # To preserve the currGlobalMem if we need to access the memory of an obj
+    memRefString = str(memRef) # We convert to string the Memref
+   
+    # We check if the memRef belongs to an instance of an object and then access to its value
+    if "/" in memRefString:
+       
+        objMemoryInfo = memRefString.split("/")
+        objInstanceMemory = objMemoryInfo[0]
+        objAttrMemory = objMemoryInfo[1]
+        
+        currentGlobalMemory = int(objInstanceMemory)
+        memRef = int(objAttrMemory)
     
     if memRef in constDictionary:
         if memRef < 36000:
@@ -146,10 +159,15 @@ def getParamValue(memRef):
     elif memRef in previousMemory.vars:
         return previousMemory.vars[memRef]
     else:
-        return globalMemories[currentGlobalMemory].vars[memRef]
+        memRefToReturn = globalMemories[currentGlobalMemory].vars[memRef]
+        currentGlobalMemory = auxCurrentGlobalMemory
+
+        return memRefToReturn
 
 # Assign argument of a function call to the parameter
 def assignParameter(val1, container):
+    print("ASSIGNPARAMETER val1: ", val1);
+    print("ASSIGNPARAMETER val1: ", container);
     valToAsign = getParamValue(val1)
     exeStack[-1].vars[container] = valToAsign
 
@@ -286,6 +304,8 @@ def execute(quadList):
             #print("ERA")
 
         elif quadList[i].operation == 20:
+            print("PARAM Left: ", quadList[i].left_op);
+            print("PARAM tResult: ", quadList[i].tResult);
             assignParameter(getCorrectMemRef(quadList[i].left_op, "previous"), quadList[i].tResult)
             #print("PARAM")
 

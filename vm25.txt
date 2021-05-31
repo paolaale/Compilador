@@ -35,9 +35,8 @@ program factorialRecursivo :
 
             dog1.edad = 7;
         
-            i = 5;
 
-            k = i * testReturn(dog1.edad);
+            k = testReturn(dog1.edad);
             write(k);
         }
     }
