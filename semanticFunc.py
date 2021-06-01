@@ -12,6 +12,8 @@ from Quadruple import Quadruple
 from collections import deque
 
 import MemoryDispatcher as mD
+import sys
+#sys.tracebacklimit = 0
 
 # Dictionary of classes 
 direcClasses = {} 
@@ -86,7 +88,7 @@ typeMatching = {
     'achinrt': ["error", "error", "error"],
     'aafflloott': ["float", "bool", "error"],
     'aacfhlort': ["error", "error", "error"],
-    'aacchhrr': ["error", "error", "error"], #!!!! probablemente consideremos relop bool
+    'aacchhrr': ["error", "bool", "error"], 
     'bblloooo': ["error", "error", "bool"]
 }
 
@@ -122,7 +124,7 @@ def addFunction(fName, fType):
     global currentClass, currentFunct, numberOfParams
     
     currentFunct = fName
-    directTemp = {} #!!!! ?? que hace
+    directTemp = {} # Reset the dictionary
 
     # Check function wasn't already declare in the class
     if fName not in direcClasses[currentClass].c_funcs:
@@ -131,7 +133,9 @@ def addFunction(fName, fType):
 
         if fType != "void":
             # Because has a return, we add a variable to the global variables that will represent the returnable variable
-            direcClasses[currentClass].c_funcs["vG"].f_vars[currentFunct] = Vars(fType, -1, -1, mD.get_space_avail("vG", fType, 1))
+            globalCurrentFunct = "F" + currentFunct
+            #print("GLOBAL", globalCurrentFunct)
+            direcClasses[currentClass].c_funcs["vG"].f_vars[globalCurrentFunct] = Vars(fType, -1, -1, mD.get_space_avail("vG", fType, 1))
     else:
          raise Exception("Function '" + fName + "' already exist")
 
@@ -180,9 +184,9 @@ def addVars(vName, vType, vSize1, vSize2):
                 quadList.append(Quadruple("ERAC", None, None, vType))
                 quadMEM.append(Quadruple(direcOperators["ERAC"], None, None, memRef))
             else:
-                directObjInstances.append(memRef);
+                directObjInstances.append(memRef)
         else:
-            raise Exception("Class '" + vType + "' doest not exist")
+            raise Exception("Class '" + vType + "' does not exist")
         
 
 # Function that recieves the name and type of the parameter of the function
@@ -303,20 +307,17 @@ def getVarType(id):
             directConstants[id] = mD.get_space_avail("const", "float", 1)
         return "float"
     elif isChar(id):
-        
         # Added it to the constants if is not already in it
+        id = id.replace("'", '') # Eliminate the simple quotes
         if id not in directConstants:
-           
-            id = id.replace("'", '')
             directConstants[id] = mD.get_space_avail("const", "char", 1)
         return "char"
     else:   
-        scope = existsVar(id, currentClass, currentFunct) # call to previous function
+        scope = existsVar(id, currentClass, currentFunct) # Call to previous function
 
         if scope == None:
             raise Exception("Variable '" + id + "' was not declare.")
         else:
-            #!!! aquí programar para validar que las variables usadas en expresiones sí estén inicializadas
             return direcClasses[currentClass].c_funcs[scope].f_vars[id].v_type
 
 # ---------------------- END CHECKING VARIABLES EXIST ---------------------- #
@@ -529,7 +530,7 @@ def ifCondition():
     expType = typesStack.pop()
 
     if (expType != "bool"):
-        raise Exception("Type mismatch")
+        raise Exception("Type mismatch in if condition")
     else:
         leftOp = operandsStack.pop()
         memLeftOp = getMemoryRef(leftOp, currentClass, currentFunct) # Get the memory reference of the variable
@@ -562,7 +563,7 @@ def elifCondition():
     expType = typesStack.pop()
 
     if (expType != "bool"):
-        raise Exception("Type mismatch")
+        raise Exception("Type mismatch in elif condition")
     else:
         leftOp = operandsStack.pop()
         memLeftOp = getMemoryRef(leftOp, currentClass, currentFunct) # Get the memory reference of the variable
@@ -625,7 +626,7 @@ def whileCondition():
     resultType = typesStack.pop()
 
     if resultType != "bool":
-        raise Exception("Type mismatch. Expecting bool")
+        raise Exception("Type mismatch in while condition")
     else:
         expResult = operandsStack.pop()
         memExpResult = getMemoryRef(expResult, currentClass, currentFunct) # Get the memory reference of the variable
@@ -670,7 +671,7 @@ def forCondition():
     expType = typesStack.pop()
 
     if (expType != "bool"):
-        raise Exception("Type mismatch")
+        raise Exception("Type mismatch in for condition")
     else:
         leftOp = operandsStack.pop()
         memLeftOp = getMemoryRef(leftOp, currentClass, currentFunct) # Get the memory reference of the variable
@@ -721,6 +722,7 @@ def insertParams():
 def returnFunction(variableToReturn):
     global quadCounter, quadList, quadMEM
 
+    globalCurrentFunct = "F" + currentFunct
     functWhereVarExists = existsVar(variableToReturn, currentClass, currentFunct)
     cFunct = direcClasses[currentClass].c_funcs[currentFunct]
 
@@ -734,7 +736,7 @@ def returnFunction(variableToReturn):
 
             memVarToReturn = getMemoryRef(variableToReturn, currentClass, currentFunct)
             # Set the global var for the return function that will be updated with the return result
-            memVarToReturnCurrentFunct = getMemoryRef(currentFunct, currentClass, currentFunct) 
+            memVarToReturnCurrentFunct = getMemoryRef(globalCurrentFunct, currentClass, currentFunct) 
 
             quadList.append(Quadruple("RETURN", currentFunct, None, variableToReturn))
             quadMEM.append(Quadruple(direcOperators["RETURN"], memVarToReturnCurrentFunct, None, memVarToReturn))
@@ -749,7 +751,7 @@ def endFunction():
     global quadCounter, quadList, countOfTemps, quadMEM
 
     # Validates that the function if is a type different than void then has a return
-    if direcClasses[currentClass].c_funcs[currentFunct].f_type != "void" and currentFunct not in direcClasses[currentClass].c_funcs["vG"].f_vars:
+    if direcClasses[currentClass].c_funcs[currentFunct].f_type != "void" and "F"+currentFunct not in direcClasses[currentClass].c_funcs["vG"].f_vars:
         raise Exception("Expected return")
     else:
         quadCounter += 1
@@ -794,7 +796,7 @@ def argFunction():
             quadList.append(Quadruple("PARAM", argument, None, numberOfArgs-1))
             quadMEM.append(Quadruple(direcOperators["PARAM"], memArgument, None, direcClasses[currentClass].c_funcs[functionToCall].f_params_memRefs[numberOfArgs-1]))
         else:
-            raise Exception("Type mismatch")
+            raise Exception("Type mismatch between argument and parameter of function")
     else:
         # If there are more or less arguments sent than parameters recieving in the function generate exception
         raise Exception("Number of arguments mismatch")
@@ -822,7 +824,7 @@ def gosubFunction():
             quadCounter += 1
             result = "TEMP" + str(countOfTemps)
             countOfTemps += 1
-            functType = direcClasses[currentClass].c_funcs["vG"].f_vars[functionToCall].v_type
+            functType = direcClasses[currentClass].c_funcs["vG"].f_vars["F"+functionToCall].v_type
             quadList.append(Quadruple("=", functionToCall, None, result))
 
             # Get the space of the temporal
@@ -830,7 +832,7 @@ def gosubFunction():
             directTemp[result] = tempResult
 
             # Global var that saves "value" of return function 
-            memReturnResult = getMemoryRef(functionToCall, currentClass, currentFunct)
+            memReturnResult = getMemoryRef("F" + functionToCall, currentClass, "vG")
 
             quadMEM.append(Quadruple(direcOperators["="], memReturnResult, None, tempResult))
 
@@ -865,7 +867,7 @@ def accessArray():
     if currentArraySize > 0:
         operatorsStack.append("[")
     else:
-        raise Exception("Type mismatch")
+        raise Exception("Variable is not an array")
 
 # Verify that the index of the array to access is an integer and 
 # creates quadruple to check that the position is accesible
@@ -967,7 +969,7 @@ def accessMatrix():
             operandsStack.append(result)
             typesStack.append(operandsMatch)
         else:
-            raise Exception("Type mismatch") 
+            raise Exception("Variable is not a matrix") 
     else:
             raise Exception("Type mismatch")
 
@@ -1122,7 +1124,7 @@ def argMethod():
             quadMEM.append(Quadruple(direcOperators["PARAM"], memArgument, None, memRefParam))
 
         else:
-            raise Exception("Type mismatch")
+            raise Exception("Type mismatch between argument and parameter of the function")
     else:
         # If there are more arguments sent than parameters recieving in the function generate exception
         raise Exception("Number of arguments mismatch") 
@@ -1152,7 +1154,7 @@ def gosubMethod():
             quadCounter += 1
             result = "TEMP" + str(countOfTemps)
             countOfTemps += 1
-            methodType = direcClasses[classToAccess].c_funcs["vG"].f_vars[methodToCall].v_type
+            methodType = direcClasses[classToAccess].c_funcs["vG"].f_vars["F" + methodToCall].v_type
             quadList.append(Quadruple("=", methodToCall, None, result))
             
             # Get the space of the temporal
@@ -1160,7 +1162,7 @@ def gosubMethod():
             directTemp[result] = tempResult
 
             # Global var that saves "value" of return function 
-            memReturnResult = getMemoryRef(methodToCall, classToAccess, methodToCall)
+            memReturnResult = getMemoryRef("F" + methodToCall, classToAccess, methodToCall)
             
             # we generate the memory reference of the returned value of a function in an object
             memParam = direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentObject].memRef

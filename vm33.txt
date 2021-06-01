@@ -1,0 +1,17 @@
+program charrr :
+
+    main {
+
+        init {
+
+            var char b;
+                int e;
+
+            b = 'e';
+
+            e = 10;
+
+            write(e);
+        }
+    }
+end

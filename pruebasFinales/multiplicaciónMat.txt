@@ -1,0 +1,90 @@
+program multiplicacionMatrices :
+
+    main {
+
+        var int a[2][2], b[2][2], c[2][2];
+
+        funct void fillMatrixA() {
+            var int i, j;
+
+            from (i = 0) until (i < 2) do {
+
+                from (j = 0) until (j < 2) do {
+
+                    read(a[i][j]);
+
+                    j = j + 1;
+                }
+
+                i = i + 1;
+            }
+        }
+
+        funct void fillMatrixB() {
+            var int i, j;
+
+            from (i = 0) until (i < 2) do {
+
+                from (j = 0) until (j < 2) do {
+
+                    read(b[i][j]);
+
+                    j = j + 1;
+                }
+
+                i = i + 1;
+            }
+        }
+
+        funct void multiplyMatrix(int colA, int filA, int colB, int filB) {
+
+            var int i, j, k;
+
+            if (colA == filB) then {
+
+                from (i = 0) until (i < filA) do {
+
+                    from (j = 0) until (j < colB) do {
+                        c[i][j] = 0;
+                        from (k = 0) until (k < colA) do {
+
+                            c[i][j] = c[i][j] + a[i][k] * b[k][j];
+                            k = k + 1;
+                        }
+
+                        j = j + 1;
+                    }
+
+                    i = i + 1;
+                }
+            }
+        }
+
+        funct void printMatrix() {
+
+            var int i, j;
+
+            from (i = 0) until (i < 2) do {
+
+                from (j = 0) until (j < 2) do {
+
+                    write(c[i][j]);
+
+                    j = j + 1;
+                }
+
+                i = i + 1;
+            }
+        }
+
+        init {
+            call fillMatrixA();
+            call fillMatrixB();
+            call multiplyMatrix(2, 2, 2, 2);
+            write("Resultados de la matriz");
+            call printMatrix();
+            
+        }
+    }
+
+end

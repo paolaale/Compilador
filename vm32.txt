@@ -1,0 +1,34 @@
+program charrr :
+
+    main {
+
+        var int getEdad, e;
+        
+        funct int getEdad() {
+            var int i;
+            i = 5;
+            return i; 
+        }
+
+        init {
+
+            var char a, b;
+
+            a = 'd';
+            b = 'p';
+
+            if (a > b) then {
+                write("HOLA");
+            }
+            else {
+                write("ADIOS");
+            }
+
+            getEdad = 10;
+            e = getEdad();
+
+            write(getEdad);
+            write(e);
+        }
+    }
+end

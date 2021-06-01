@@ -79,7 +79,7 @@ def getCorrectMemRef(memRef, stackToCheck):
         else:
             return exeStack[-1].vars[memRef]
 
-
+#!!!! aquí programar para validar que las variables usadas en expresiones sí estén inicializadas
 def getValue(memRef):
     global constDictionary, currentGlobalMemory
     

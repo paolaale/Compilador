@@ -1,0 +1,50 @@
+program find :
+
+    main {
+
+        var int array[8], pos;
+
+        funct int findNumInArray(int n) {
+            var int i, f;
+
+            f = 0;
+
+            from (i = 0) until (i < 8) do {
+                
+                if(n == array[i]) then {
+                    f = 1;
+                    pos = i;
+                }
+
+                i = i + 1;
+            }
+
+            return f;
+        }
+
+        init {
+            
+            var int i, num, founded;
+
+            i = 0;
+
+            write("Escribe los valores del array");
+            while (i < 8) do {
+                read(array[i]);
+                i = i + 1;
+            }
+
+            write("¿Que valor se desea buscar en el array?");
+            read(num);
+
+            founded = findNumInArray(num);
+
+            if (founded == 1) then {
+                write("Valor encontrado en la posición: ", pos);
+            }
+            else {
+                write("Valor no encontrado");
+            }
+        }
+    }
+end
