@@ -1,0 +1,57 @@
+program insertionSort :
+
+    main {
+
+        var int array[5];
+
+        funct void fillArray() {
+            var int i;
+            i = 0;
+            write("Escribe los valores del array");
+            while (i < 5) do {
+                read(array[i]);
+                i = i + 1;
+            }
+            
+        }
+
+        funct void sortArray() {
+            var int i, j, aux;
+                i = 0;
+                
+
+            while (i < 5) do {
+                j = i + 1;
+                while (j < 5) do {
+                    
+                    if (array[i] >= array[j]) then {
+                        aux = array[i];
+                        
+                        array[i] = array[j];
+
+                        array[j] = aux;
+                    } 
+                    j = j + 1;
+                }
+                i = i + 1;
+            }
+        }
+
+        funct void printArray() {
+            var int i;
+            i = 0;
+
+            while (i < 5) do {
+                write(array[i]);
+                i = i + 1;
+            }
+        }
+
+        init {
+            call fillArray();
+            call printArray();
+            call sortArray();
+            call printArray();
+        }
+    }
+end

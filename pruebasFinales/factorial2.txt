@@ -1,0 +1,31 @@
+program factorialRecursivo :
+    
+    main {
+        
+        funct int factorial(int n) {
+            
+            var int nF;
+
+            if (n >= 1) then {
+                nF = n * factorial(n - 1);
+            }
+            else {
+                nF = 1;
+            }
+
+            return nF;
+        }
+        
+        init {
+            var int num, fact;
+
+            write("¿De que numero desea obtener el factorial?");
+            read(num);
+
+            fact = factorial(num);
+            
+            write("El factorial de:", num, "es: ", fact);
+        }
+    }
+
+end

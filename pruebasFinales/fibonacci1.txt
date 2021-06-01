@@ -1,0 +1,34 @@
+program fibonacciIterativo :
+
+    main {
+
+        funct int fibonacci(int n) {
+            var int i, fib1, fib2;
+
+            fib1 = 1;
+            fib2 = 1;
+
+            from (i = 0) until (i < n - 2) do {
+                fib2 = fib1 + fib2;
+                fib1 = fib2 - fib1;
+                i = i + 1;
+            }
+
+            return fib2;
+        }
+
+        init {
+
+            var int num, result;
+
+            write("De que numero desea obtener el fibonacci");
+            read(num);
+
+            result = fibonacci(num);
+
+            write("El resultado es: ", result);
+
+        }
+    }
+
+end

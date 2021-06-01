@@ -1,0 +1,18 @@
+program clases :
+
+    class Perro {
+
+    }
+
+    class Gato {
+
+    }
+
+    main {
+
+        init {
+            
+        }
+    }
+
+end

@@ -1,0 +1,32 @@
+program fibonacciRecursivo :
+
+    main {
+
+        funct int fibonacci(int n) {
+            var int fib;
+
+            if (n == 1 or n == 2) then {
+                fib = 1;
+            }
+            else {
+                fib = fibonacci(n - 1) + fibonacci(n - 2);
+            }
+
+            return fib;
+        }
+
+        init {
+
+            var int num, result;
+
+            write("De que numero desea obtener el fibonacci");
+            read(num);
+
+            result = fibonacci(num);
+
+            write("El resultado es: ", result);
+
+        }
+    }
+
+end

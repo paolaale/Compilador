@@ -1,0 +1,18 @@
+program ejemplo :
+
+    class Perro {
+
+    }
+
+    class Gato {
+
+    }
+
+    main {
+
+        init {
+            
+        }
+    }
+
+end

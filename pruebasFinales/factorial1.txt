@@ -1,0 +1,22 @@
+program factorialIterativo :
+    
+    main {
+        
+        init {
+            var int i, num, fact;
+
+            write("¿De que numero desea obtener el factorial?");
+            read(num);
+
+            fact = 1;
+
+            from (i = num) until (i > 0) do {
+                fact = fact * i;
+                i = i - 1;
+            }
+            
+            write("El factorial de:", num, "es: ", fact);
+        }
+    }
+
+end
