@@ -23,7 +23,7 @@ directConstants = {}
 directInstances = {}
 
 # Helpers to save classes, functions and vars names
-currentClass = ""
+currentClass = "main"
 currentFunct = "vG"
 lastVarType = ""
 
@@ -288,7 +288,7 @@ def existsVar(id, classToCheck, funcToCheck):
 # if found returns the type, if not returns an exception
 def getVarType(id):
     global currentFunct, currentClass, directConstants
-   
+    
     if isInt(id):
         # Added it to the constants if is not already in it
         if id not in directConstants:
@@ -300,8 +300,10 @@ def getVarType(id):
             directConstants[id] = mD.get_space_avail("const", "float", 1)
         return "float"
     elif isChar(id):
+        
         # Added it to the constants if is not already in it
         if id not in directConstants:
+           
             id = id.replace("'", '')
             directConstants[id] = mD.get_space_avail("const", "char", 1)
         return "char"
@@ -442,10 +444,6 @@ def pop_op_assign():
     varToAssign = operandsStack.pop()
     assignationType = typesStack.pop()
     operator = operatorsStack.pop()   
-
-    # Get the memory reference of the operands
-    memRefLeftOp = getVarMemRef(leftOp)
-    memVarToAsign = getVarMemRef(varToAssign)
     
     # Validate that the type of the exp result is the same of the variable to assign
     if assignationType == leftOpType:
@@ -453,6 +451,10 @@ def pop_op_assign():
         # Eliminate the single quotes of the char
         if leftOpType == "char":
             leftOp = leftOp.replace("'", '')
+
+        # Get the memory reference of the operands
+        memRefLeftOp = getVarMemRef(leftOp)
+        memVarToAsign = getVarMemRef(varToAssign)
 
         quadCounter += 1
         quadList.append(Quadruple(operator, leftOp, None, varToAssign))
@@ -773,7 +775,7 @@ def eraSizeFunction():
 
 # Function that recieves the arguments that will be send to the parameters of the function
 def argFunction():
-    global quadCounter, quadList, operandsStack, typesStack, functionToCall, numberOfArgs, quadMEM
+    global quadCounter, quadList, operandsStack, typesStack, functionToCall, numberOfArgs, quadMEM, currentClass
 
     numberOfArgs += 1
     argument = operandsStack.pop()
@@ -782,12 +784,12 @@ def argFunction():
     memArgument = getVarMemRef(argument) # Get the memory reference of the argument
 
     # Checks that the function to be called has parameters
-    if len(direcClasses["main"].c_funcs[functionToCall].f_params_type) >= numberOfArgs:
+    if len(direcClasses[currentClass].c_funcs[functionToCall].f_params_type) >= numberOfArgs:
         # Check the parameter type is equal to the argument type 
-        if direcClasses["main"].c_funcs[functionToCall].f_params_type[numberOfArgs-1] == argumentType:
+        if direcClasses[currentClass].c_funcs[functionToCall].f_params_type[numberOfArgs-1] == argumentType:
             quadCounter += 1
             quadList.append(Quadruple("PARAM", argument, None, numberOfArgs-1))
-            quadMEM.append(Quadruple(direcOperators["PARAM"], memArgument, None, direcClasses["main"].c_funcs[functionToCall].f_params_memRefs[numberOfArgs-1]))
+            quadMEM.append(Quadruple(direcOperators["PARAM"], memArgument, None, direcClasses[currentClass].c_funcs[functionToCall].f_params_memRefs[numberOfArgs-1]))
         else:
             raise Exception("Type mismatch")
     else:
@@ -796,23 +798,23 @@ def argFunction():
 
 # Function that indicates where the code of the function called starts
 def gosubFunction():
-    global quadCounter, quadList, functionToCall, numberOfArgs, quadMEM, countOfTemps, operandsStack
+    global quadCounter, quadList, functionToCall, numberOfArgs, quadMEM, countOfTemps, operandsStack, currentClass
 
     # Get the number of paramets of the function to call
-    nP = direcClasses["main"].c_funcs[functionToCall].f_number_params
+    nP = direcClasses[currentClass].c_funcs[functionToCall].f_number_params
     
     # Check the number of parameters and arguments match
     if numberOfArgs == nP:
 
         quadCounter += 1
         # Gets the number of the quadruple where the function starts
-        functionStart = direcClasses["main"].c_funcs[functionToCall].f_start_quadruple
+        functionStart = direcClasses[currentClass].c_funcs[functionToCall].f_start_quadruple
 
         quadList.append(Quadruple("GOSUB", None, None, functionStart))
         quadMEM.append(Quadruple(direcOperators["GOSUB"], None, None, functionStart))
 
         # If the function isn't a type void then we need to assign the returnable variable
-        if direcClasses["main"].c_funcs[functionToCall].f_type != "void":
+        if direcClasses[currentClass].c_funcs[functionToCall].f_type != "void":
 
             quadCounter += 1
             result = "TEMP" + str(countOfTemps)
@@ -1054,7 +1056,7 @@ def endMatrix():
 
 def getVarMemRef(op):
     global objVarsMemRef
-
+    
     if op == "OBJVAR":
         return objVarsMemRef.pop()
     else:
@@ -1156,8 +1158,13 @@ def gosubMethod():
 
             # Global var that saves "value" of return function 
             memReturnResult = getMemoryRef(methodToCall, classToAccess, methodToCall)
-
-            quadMEM.append(Quadruple(direcOperators["="], memReturnResult, None, tempResult))
+            
+            # we generate the memory reference of the returned value of a function in an object
+            memParam = direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentObject].memRef
+            memRefObjVar = str(memParam) + "/" + str(memReturnResult)
+           
+            # We add the quadruple with the assignation of the result of the return function to a temporal variable
+            quadMEM.append(Quadruple(direcOperators["="], memRefObjVar, None, tempResult))
             operandsStack.append(result)
             typesStack.append(methodType)
 
@@ -1205,7 +1212,7 @@ def getMemoryRef(op, classToCheck, funcToCheck):
     global direcClasses, directConstants, directTemp
 
     scopeOfOp = ""
-
+    
     # First check if is a constant
     if op in directConstants:
         return directConstants[op]

@@ -1,0 +1,58 @@
+program vm27 :
+
+    class Cat {
+        var int bigotes;
+
+        funct void printNumOfBigotes() {
+            bigotes = 113000;
+            write(bigotes);
+        }
+    }
+
+    class Dog {
+        var int edad, peso, estatura, patas;
+
+        funct void printNumOfPatas() {
+            
+            write("Cuantas patas tiene el doggo: ", patas + 100);
+            
+        }
+
+        funct void printDogName(int e) {
+            var Cat cat1;
+            patas = e - 6;
+            write("joe");
+            edad = 15;
+            cat1.bigotes = 15400;
+            write(cat1.bigotes);
+            call cat1.printNumOfBigotes();
+            write(cat1.bigotes);
+            call printNumOfPatas();
+            
+        }
+    }
+
+    main {
+
+        init {
+            var Dog dog1, dog2;
+                int c, b, alan, paola;
+           
+            b = 10;  
+            
+            call dog1.printDogName(b);
+            
+            write("Cuantas patas tiene el doggo2: ", dog1.patas);
+
+            alan = 10;
+            paola = 9;
+
+            c = alan + paola;
+
+            write("alan + paola: ", c);
+
+            
+        }
+    }
+    
+end

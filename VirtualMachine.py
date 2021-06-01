@@ -11,8 +11,11 @@ from copy import copy
 
 exeStack = deque()
 executionStack = dict()
+objMemoryInFuncsStack = deque() 
+objMemoryInFuncsStack.append(0)
 
 currentGlobalMemory = 0
+previousObjInstanceMemory = 0
 currentLocalMemory = ""
 
 globalMemories = dict()
@@ -25,6 +28,7 @@ exeStack.append(initMemory)
 exeGoSubStack = deque()
 
 paramExpression = False
+memRefGoSub = 0
 
 # Save here the previous memory when passing args to a function
 previousMemory = MemoryAllocator()
@@ -60,7 +64,7 @@ def getCorrectMemRef(memRef, stackToCheck):
 
 def getValue(memRef):
     global constDictionary, currentGlobalMemory
-  
+    
     auxCurrentGlobalMemory = currentGlobalMemory # To preserve the currGlobalMem if we need to access the memory of an obj
     memRefString = str(memRef) # We convert to string the Memref
    
@@ -85,6 +89,7 @@ def getValue(memRef):
     elif memRef in exeStack[-1].vars:
         return exeStack[-1].vars[memRef]
     else:
+        
         memRefToReturn = globalMemories[currentGlobalMemory].vars[memRef]
         currentGlobalMemory = auxCurrentGlobalMemory
 
@@ -106,13 +111,10 @@ def assignValue(val1, container):
     
     valToAsign = getValue(val1)
      
-    if (container >= 0 and container < 4000) or (container >= 5000 and container < 8999):
-        print("GLOBAL MEM ", currentGlobalMemory)   
-        print("CONTAINER IN ASSIGNVALUE ", container)   
+    if (container >= 0 and container < 4000) or (container >= 5000 and container < 8999): 
         globalMemories[currentGlobalMemory].vars[container] = valToAsign
     else:
         exeStack[-1].vars[container] = valToAsign
-
     currentGlobalMemory = auxCurrentGlobalMemory
 
 def assignReadValue(container, newValue):
@@ -166,24 +168,32 @@ def getParamValue(memRef):
 
 # Assign argument of a function call to the parameter
 def assignParameter(val1, container):
-    print("ASSIGNPARAMETER val1: ", val1);
-    print("ASSIGNPARAMETER val1: ", container);
+    memRefString = str(container) # We convert to string the Memref
+   
+    # We check if the memRef belongs to an instance of an object and then access to its value
+    if "/" in memRefString:
+       
+        objMemoryInfo = memRefString.split("/")
+        objAttrMemory = objMemoryInfo[1]
+        container = int(objAttrMemory)
+        
     valToAsign = getParamValue(val1)
+
     exeStack[-1].vars[container] = valToAsign
+    print("DALEEE", exeStack[-1].vars);
 
 #---------------------- END FUNCTIONS FOR QUADRUPLES ---------------------- #
 
 #---------------------- EXECUTE ---------------------- #
 
 def execute(quadList):
-    global exeStack, globalMemories, exeGoSubStack, previousMemory, paramExpression
+    global exeStack, globalMemories, exeGoSubStack, previousMemory, paramExpression, memRefGoSub, currentGlobalMemory, objMemoryInFuncsStack, previousObjInstanceMemory
     
     dataInit()
     print(constDictionary)
     i = 0
 
     while True:
-
         if quadList[i].operation == 1:
             if paramExpression:
                 previousMemory.vars[getCorrectMemRef(quadList[i].tResult, "previous")] = getParamValue(getCorrectMemRef(quadList[i].left_op, "previous")) + getParamValue(getCorrectMemRef(quadList[i].right_op, "previous"))
@@ -333,6 +343,11 @@ def execute(quadList):
         elif quadList[i].operation == 23:
             exeStack.pop()
             i = exeGoSubStack.pop()
+            #currentGlobalMemory = 0 # we reset to the AQUII UNA STAAACK
+            
+            if currentGlobalMemory != previousObjInstanceMemory:
+                objMemoryInFuncsStack.pop()
+                currentGlobalMemory = objMemoryInFuncsStack[-1]
             #print("END FUNCTION")
 
         elif quadList[i].operation == 24:
@@ -344,14 +359,36 @@ def execute(quadList):
                 #exeStack[-1].vars[exeStack[-1].vars[quadList[i].tResult]] = -1;
             print("BASEADDRESS")
 
+        # Create the memory for an object instance when found "ERAC" in quadruple
         elif quadList[i].operation == 25:
             globalMemories[quadList[i].tResult] = MemoryAllocator()
+            print("ERAC")
+        
+        # Add the memory to use for the function call of an object and set the currentGlobalMemory to use the correct global context
+        elif quadList[i].operation == 26:
+            previousMemory = copy(exeStack[-1])
+            paramExpression = True
+            exeStack.append(MemoryAllocator())
+            #memRefGoSub = quadList[i].right_op # to know in which memory the function to call needs to be executed
+            previousObjInstanceMemory = objMemoryInFuncsStack[-1]
+            objMemoryInFuncsStack.append(quadList[i].right_op)
 
+            print("ERACM", memRefGoSub)
+
+        elif quadList[i].operation == 27:
+            paramExpression = False # we reset the context to know the parameters assignation ended
+            exeGoSubStack.append(i) # we save where to jump back
+            i = quadList[i].tResult - 1 # We set the index iterator to the quad to jump
+            #currentGlobalMemory = memRefGoSub
+            currentGlobalMemory = objMemoryInFuncsStack[-1]
+            print("GOSUBCM", currentGlobalMemory)
+            
         elif quadList[i].operation == 28:
             print("Direct Local: ", exeStack[-1].vars)
             print("Direct global: ", globalMemories[currentGlobalMemory].vars)
             print("GlobalMemories: ", globalMemories)
             print("FINALCURGLMEMORY", currentGlobalMemory)
+           
 
             print("END PROGRAM")
             break

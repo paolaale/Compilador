@@ -17,7 +17,9 @@ program arrayMatrixParam :
             v[5][7] = 9999;
             read(d[3]);
 
-
+            read(v[5][5]);
+        
+            write("value of matrix in 5,5", v[5][5]);            
 
             d[5] = 34.5;
             i[3] = 12;
