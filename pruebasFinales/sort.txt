@@ -49,8 +49,8 @@ program insertionSort :
 
         init {
             call fillArray();
-            call printArray();
             call sortArray();
+            write("Array sorteado:");
             call printArray();
         }
     }
