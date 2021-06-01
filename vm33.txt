@@ -2,18 +2,15 @@ program charrr :
 
     main {
 
-        var int e;
-
         init {
 
-            var char a, b;
+            var char b;
+                int e;
 
-            a = 'd';
             b = 'e';
 
             e = 10;
 
-            write(b);
             write(e);
         }
     }
