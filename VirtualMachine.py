@@ -212,6 +212,7 @@ def execute(quadList):
     i = 0
 
     while True:
+        
         if quadList[i].operation == 1:
             if paramExpression:
                 previousMemory.vars[getCorrectMemRef(quadList[i].tResult, "previous")] = getParamValue(getCorrectMemRef(quadList[i].left_op, "previous")) + getParamValue(getCorrectMemRef(quadList[i].right_op, "previous"))
