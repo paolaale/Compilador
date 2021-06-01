@@ -1,5 +1,9 @@
 program ejemplo :
 
+    class Animal {
+
+    }
+    
     class Perro {
 
     }
@@ -11,6 +15,7 @@ program ejemplo :
     main {
 
         init {
+            
             
         }
     }

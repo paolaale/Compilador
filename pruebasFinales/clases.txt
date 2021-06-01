@@ -1,17 +1,72 @@
-program clases :
+program ejemplo :
 
     class Perro {
 
-    }
+        var int edad;
+            float peso;
+            char inicial;
+        
+        funct void setEdad(int e) {
+            edad = e;
+        }
 
-    class Gato {
+        funct float getPeso() {
+            return peso;
+        }
 
+        funct void setInicial(int i) {
+            inicial = i;
+        }
+
+        funct char getInicial() {
+            return inicial;
+        }
     }
 
     main {
 
         init {
             
+            var Perro perro1, perro2;
+                int edad1, edad2;
+                char in1, in2;
+            
+            write("Edad del perro 1");
+            read(edad1);
+            write("Edad del perro 2");
+            read(edad2);
+
+            perro1.setEdad(edad1);
+            perro2.edad = edad2;
+
+            write("Las suma de los perros es: ", perro1.edad + perro2.edad);
+
+            write("Peso del perro 1");
+            read(perro1.peso);
+            write("Peso del perro 2");
+            read(perro2.peso);
+
+            if (perro1.getPeso() > perro2.getPeso()) {
+                write("El perro 1 pesa más que el perro 2");
+            }
+            elif (perro1.getPeso() == perro2.getPeso()) {
+                write("Los dos perros pesan igual!");
+            }
+            else {
+                write("El perro 2 pesa más que el perro 1");
+            }
+
+            write("Cual es la inicial de perro 1");
+            read(in1);
+            write("Cual es la inicial de perro 2");
+            read(in2);
+
+            perro1.setInicial(in1);
+            perro2.setInicial(in2);
+
+            write("El nombre del perro 1 empieza con: ", perro1.getInicial());
+            write("El nombre del perro 2 empieza con: ", perro2.inicial);
+
         }
     }
 
