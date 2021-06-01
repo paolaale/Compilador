@@ -1,3 +1,4 @@
+# Class Memory range that contains the lower, upper and current value of a Range of memory addresses
 class MemoryRange:
     def __init__(self, lowerLimit, upperLimit):
 
@@ -5,6 +6,8 @@ class MemoryRange:
         self.lowerLimit = lowerLimit
         self.upperLimit = upperLimit
 
+
+# dictionary of Memory Ranges, that helps to differiante all the scopes and vars types
 memoryDispatcher = {
     "global_int": MemoryRange(0, 3999),
     "global_t_int": MemoryRange(4000, 4999),
@@ -29,9 +32,12 @@ memoryDispatcher = {
 # Counter of classes instances
 countOfInstances = 0
 
+# function to assign the corresponding memory reference to a variable, receiving the scope varType
+# and the space needed for that variable that could be a matrix or array
 def get_space_avail(scope, varType, spaceNeed):
     global memoryDispatcher, countOfInstances
 
+    # First we get the memory range according to the scope
     if scope == "temp":
         memoryRange = getMemoryTemp(varType)
     elif scope == "const":
@@ -39,10 +45,13 @@ def get_space_avail(scope, varType, spaceNeed):
     else:
         memoryRange = getMemoryInDeclaration(scope, varType)
 
+    # if the variable is an object, we specify directly its memory reference
     if memoryRange == "obj_instance":
         countOfInstances += 1
         return countOfInstances
 
+    # if not an object, the memory reference for the variable is returned and the counter of
+    # variables in the corresponding range (currentSpaceVal) is returned
     else: 
         currentSpaceVal = memoryDispatcher[memoryRange].currentVal
         directToReturn = currentSpaceVal + spaceNeed - 1
@@ -54,7 +63,7 @@ def get_space_avail(scope, varType, spaceNeed):
             raise Exception("Too many variables")
 
 
-# Obtenemos el rango al que pertecene la memoria de variables en declaración
+# We obtain the memory range that belongs to the corresponding declared variable
 def getMemoryInDeclaration(scope, varType):
 
     if scope == "vG":
@@ -76,6 +85,7 @@ def getMemoryInDeclaration(scope, varType):
         else:
             return "obj_instance"
 
+# We obtain the memory range that belongs to the corresponding temporal variable
 def getMemoryTemp(varType):
     if varType == "int":
         return "local_t_int"
@@ -84,6 +94,7 @@ def getMemoryTemp(varType):
     else:
         return "local_t_bool"
 
+# We obtain the memory range that belongs to the corresponding constant variable
 def getMemoryConst(varType):
     if varType == "int":
         return "const_int"
@@ -94,6 +105,7 @@ def getMemoryConst(varType):
     else:
         return "const_string"
 
+# Function to reset all the local memory ranges to their initial currentVal
 def reset_local_space():
     global memoryDispatcher
 
@@ -105,6 +117,7 @@ def reset_local_space():
     memoryDispatcher["local_bool"].currentVal = memoryDispatcher["local_bool"].lowerLimit
     memoryDispatcher["local_t_bool"].currentVal = memoryDispatcher["local_t_bool"].lowerLimit
 
+# Function to reset all the global memory ranges to their initial currentVal
 def reset_global_space():
     global memoryDispatcher
     

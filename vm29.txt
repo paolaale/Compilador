@@ -1,0 +1,55 @@
+
+program vm29 :
+
+    class Cat {
+        var int bigotes, edad, matrix[5][5];
+
+        funct int getEdad(int e) {
+        
+            matrix[3][3] = e * 10;
+            edad = matrix[3][3];
+            return edad;
+        }
+    }
+
+    class Dog {
+        var int edad, peso;
+
+        funct int getCatAge() {
+            var Cat cat1;
+                int catAge;
+
+            catAge = cat1.getEdad(4);
+            return catAge;
+        }
+    }
+
+    main {
+
+        init {
+            var Cat cat1, cat2;
+                Dog dog1;
+                int c, b, alan, paola, catAge;
+
+            cat1.edad = 9;
+            write(cat1.edad);
+            b = cat1.getEdad(12);  
+
+            cat2.edad = 99;
+            write(cat2.edad);
+
+            c = cat2.getEdad(14); 
+
+            alan = cat1.getEdad(5) + cat2.getEdad(10);
+            write("EDAD cat1", b);
+            write("EDAD cat2", c);
+
+            write("ALAN", alan);
+
+            catAge = dog1.getCatAge();
+            write("CATDOG", catAge);
+                    
+        }
+    }
+    
+end

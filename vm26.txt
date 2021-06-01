@@ -1,24 +1,36 @@
 program vm26 :
 
     class Dog {
-        var int edad;
+        var int edad, peso;
 
-        funct  void printDogAge(int e) {
-            edad = e;
+        funct void printName() {
+            write("joe");
+        }
+
+        funct void printDogAge() {
+            peso = edad + 16;
+            peso = peso * peso;
+            write(peso);
+            write(edad + 10);
         }
     }
 
     main {
-
+        var int i, j;
         init {
 
             var Dog dog1, dog2;
             
             dog1.edad = 7;
-            dog2.edad = 6;
+            dog2.edad = 88;
+            i = dog1.edad;
+            j = dog2.edad;
+            call dog1.printDogAge();
+            call dog2.printDogAge();
 
-            write(dog1.edad + dog2.edad);
-
+            write(i + j);
+            
+            call dog1.printName();
         }
     }
     

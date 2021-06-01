@@ -23,7 +23,7 @@ program vm8PrintChar :
                 z = 'u';
                 write(z);
             }
-            write(j * 10);
+            write(10);
         }
         
         init {

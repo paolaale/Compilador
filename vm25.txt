@@ -33,11 +33,9 @@ program factorialRecursivo :
                 float harry, potter;
                 Dog dog1;
 
-            dog1.edad = 7;
+            dog1.edad = 8;
         
-            i = 5;
-
-            k = i * testReturn(dog1.edad);
+            k = testReturn(dog1.edad);
             write(k);
         }
     }
