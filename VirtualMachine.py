@@ -9,24 +9,30 @@ from collections import deque
 from MemoryAllocator import MemoryAllocator
 from copy import copy
 
+# Stack that keeps order of the contexts/scopes executions
 exeStack = deque()
-executionStack = dict()
+# Stack that keeps the current global memory context and the order to be executed
 objMemoryInFuncsStack = deque() 
-
+# Variable to access the corresponding global memory, initialize it with the memory of the main class
 currentGlobalMemory = 0
+# Variable to keep the past Obj memory and know in which context the variables need to be used
 previousObjInstanceMemory = 0
 currentLocalMemory = ""
 
+# Dictionary of global memories with the main class memory
 globalMemories = dict()
 globalMemories[0] = MemoryAllocator()
 
+# First local memory to be used
 initMemory = MemoryAllocator()
+# Creation of the dictionary of constants
 constDictionary = dict()
 
+# Stack to do the correct jumps in the quadruples when using functions calls 
 exeGoSubStack = deque()
 
+# Flaf that helps to know if an expression is in function with parameters context
 paramExpression = False
-memRefGoSub = 0
 
 # Save here the previous memory when passing args to a function
 previousMemory = MemoryAllocator()
@@ -35,14 +41,14 @@ previousMemory = MemoryAllocator()
 
 # Function to initialize all global memories that require a first value or modification before reading the quadruples
 def dataInit():
-    global constDictionary, objMemoryInFuncsStack, exeStack
+    global constDictionary, objMemoryInFuncsStack, exeStack, initMemory
 
-    constDictionary = dict((value, key) for key, value in sF.directConstants.items())
-    exeStack.append(initMemory)
-    objMemoryInFuncsStack.append(0)
-    addGlobalObjInstances()
+    constDictionary = dict((value, key) for key, value in sF.directConstants.items()) # set the dictionary of constants with all the ones found in compilation
+    exeStack.append(initMemory) # Add first memory to be used, that is the one for init method of the main class
+    objMemoryInFuncsStack.append(0) # Set firt global memory that is being used
+    addGlobalObjInstances() # Initialize all memories for global objects
 
-
+# Function to initialize all global memories with all the global objects found in compilation
 def addGlobalObjInstances():
     global globalMemories
 
@@ -50,6 +56,7 @@ def addGlobalObjInstances():
     for instance in sF.directObjInstances:
         globalMemories[instance] = MemoryAllocator();
         i += 1
+
 
 def getCorrectMemRef(memRef, stackToCheck):
     memRefString = str(memRef)
@@ -379,7 +386,7 @@ def execute(quadList):
             previousMemory = copy(exeStack[-1])
             paramExpression = True
             exeStack.append(MemoryAllocator())
-            #memRefGoSub = quadList[i].right_op # to know in which memory the function to call needs to be executed
+            # to know in which memory the function to call needs to be executed
             previousObjInstanceMemory = objMemoryInFuncsStack[-1]
             objMemoryInFuncsStack.append(quadList[i].right_op)
 
