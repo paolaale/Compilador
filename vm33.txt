@@ -11,6 +11,7 @@ program charrr :
 
             e = 10;
 
+            write(b);
             write(e);
         }
     }

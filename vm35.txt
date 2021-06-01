@@ -1,0 +1,21 @@
+program charrr :
+
+    main {
+        
+        funct void getEdad() {
+            var int i;
+            i = 5; 
+        }
+
+        init {
+
+            var int i, b;
+            b = 4;
+
+            if(getEdad() * 8 > b) then {
+                write(i);
+            }
+
+        }
+    }
+end
