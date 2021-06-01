@@ -1,13 +1,13 @@
 
-program vm28 :
+program vm29 :
 
     class Cat {
-        var int bigotes, edad;
+        var int bigotes, edad, matrix[5][5];
 
         funct int getEdad(int e) {
         
-            edad = e * 10;
-            
+            matrix[3][3] = e * 10;
+            edad = matrix[3][3];
             return edad;
         }
     }
@@ -48,7 +48,7 @@ program vm28 :
 
             catAge = dog1.getCatAge();
             write("CATDOG", catAge);
-        
+                    
         }
     }
     

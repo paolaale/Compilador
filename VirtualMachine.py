@@ -12,7 +12,6 @@ from copy import copy
 exeStack = deque()
 executionStack = dict()
 objMemoryInFuncsStack = deque() 
-objMemoryInFuncsStack.append(0)
 
 currentGlobalMemory = 0
 previousObjInstanceMemory = 0
@@ -24,7 +23,6 @@ globalMemories[0] = MemoryAllocator()
 initMemory = MemoryAllocator()
 constDictionary = dict()
 
-exeStack.append(initMemory)
 exeGoSubStack = deque()
 
 paramExpression = False
@@ -35,10 +33,23 @@ previousMemory = MemoryAllocator()
 
 #---------------------- FUNCTIONS FOR QUADRUPLES ---------------------- #
 
+# Function to initialize all global memories that require a first value or modification before reading the quadruples
 def dataInit():
-    global constDictionary
+    global constDictionary, objMemoryInFuncsStack, exeStack
 
-    constDictionary = dict((value, key) for key, value in sF.directConstants.items()) 
+    constDictionary = dict((value, key) for key, value in sF.directConstants.items())
+    exeStack.append(initMemory)
+    objMemoryInFuncsStack.append(0)
+    addGlobalObjInstances()
+
+
+def addGlobalObjInstances():
+    global globalMemories
+
+    i = 0
+    for instance in sF.directObjInstances:
+        globalMemories[instance] = MemoryAllocator();
+        i += 1
 
 def getCorrectMemRef(memRef, stackToCheck):
     memRefString = str(memRef)
@@ -180,7 +191,7 @@ def assignParameter(val1, container):
     valToAsign = getParamValue(val1)
 
     exeStack[-1].vars[container] = valToAsign
-    print("DALEEE", exeStack[-1].vars);
+   
 
 #---------------------- END FUNCTIONS FOR QUADRUPLES ---------------------- #
 
@@ -296,7 +307,7 @@ def execute(quadList):
         elif quadList[i].operation == 16:
             print("insert value: ")
             readValue(getCorrectMemRef(quadList[i].tResult, "current"))
-            print("READ")
+            #print("READ")
 
         elif quadList[i].operation == 17:
             i = quadList[i].tResult - 1
@@ -314,8 +325,7 @@ def execute(quadList):
             #print("ERA")
 
         elif quadList[i].operation == 20:
-            print("PARAM Left: ", quadList[i].left_op);
-            print("PARAM tResult: ", quadList[i].tResult);
+            
             assignParameter(getCorrectMemRef(quadList[i].left_op, "previous"), quadList[i].tResult)
             #print("PARAM")
 
@@ -334,7 +344,7 @@ def execute(quadList):
         
             if not(index >= 0 and index < quadList[i].tResult):
                 raise Exception("Array index out of bounds exception", index)
-            print("VERIFY")
+            #print("VERIFY")
 
         elif quadList[i].operation == 22:
             globalMemories[currentGlobalMemory].vars[quadList[i].left_op] =  getValue(quadList[i].tResult)
@@ -357,12 +367,12 @@ def execute(quadList):
             else:
                 exeStack[-1].vars[quadList[i].tResult] = getValue(getCorrectMemRef(quadList[i].left_op, "current")) + getValue(quadList[i].right_op)
                 #exeStack[-1].vars[exeStack[-1].vars[quadList[i].tResult]] = -1;
-            print("BASEADDRESS")
+            #print("BASEADDRESS")
 
         # Create the memory for an object instance when found "ERAC" in quadruple
         elif quadList[i].operation == 25:
             globalMemories[quadList[i].tResult] = MemoryAllocator()
-            print("ERAC")
+            #print("ERAC")
         
         # Add the memory to use for the function call of an object and set the currentGlobalMemory to use the correct global context
         elif quadList[i].operation == 26:
@@ -373,7 +383,7 @@ def execute(quadList):
             previousObjInstanceMemory = objMemoryInFuncsStack[-1]
             objMemoryInFuncsStack.append(quadList[i].right_op)
 
-            print("ERACM", memRefGoSub)
+            #print("ERACM", memRefGoSub)
 
         elif quadList[i].operation == 27:
             paramExpression = False # we reset the context to know the parameters assignation ended
@@ -381,13 +391,14 @@ def execute(quadList):
             i = quadList[i].tResult - 1 # We set the index iterator to the quad to jump
             #currentGlobalMemory = memRefGoSub
             currentGlobalMemory = objMemoryInFuncsStack[-1]
-            print("GOSUBCM", currentGlobalMemory)
+            #print("GOSUBCM", currentGlobalMemory)
             
         elif quadList[i].operation == 28:
             print("Direct Local: ", exeStack[-1].vars)
             print("Direct global: ", globalMemories[currentGlobalMemory].vars)
             print("GlobalMemories: ", globalMemories)
             print("FINALCURGLMEMORY", currentGlobalMemory)
+            print("length of Dictionary ", len(globalMemories))
            
 
             print("END PROGRAM")
@@ -397,4 +408,3 @@ def execute(quadList):
             print("ERROR")
 
         i += 1
-

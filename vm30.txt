@@ -1,0 +1,47 @@
+
+program vm30 :
+
+    class Cat {
+        var int bigotes, edad, matrix[5][5];
+
+        funct int getEdad(int e) {
+        
+            matrix[3][3] = e * 10;
+            edad = matrix[3][3];
+            return edad;
+        }
+    }
+
+    class Dog {
+        var int edad, peso;
+
+        funct int getCatAge() {
+            var Cat cat1;
+                int catAge;
+
+            catAge = cat1.getEdad(4);
+            return catAge;
+        }
+    }
+
+    main {
+
+        funct void print(int number) {
+            write("HOLA:", number);
+        }
+
+        init {
+            var Cat cat1, cat2;
+                Dog dog1;
+                int c, b, alan, paola, catAge;
+                char charMatrix[5][5];
+
+            charMatrix[2][3] = 't';
+            write("CHARMATIX 2,3", charMatrix[2][3]); 
+
+            call print(10);
+                    
+        }
+    }
+    
+end

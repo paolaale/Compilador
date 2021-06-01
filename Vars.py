@@ -1,5 +1,5 @@
-class Vars:  #key = name of the var, value = type of the var, size if is array or matrix 
-
+#key = name of the var, value = type of the var, size if is array or matrix, memRef, and lowerMemRef if is array or matrix
+class Vars:  
     v_type = ""
     memRef = ""
     rows = 0

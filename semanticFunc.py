@@ -20,7 +20,7 @@ directTemp = {}
 # Dictionary of memory addresses of constants temps 
 directConstants = {}
 # Dictionary of memory addresses of objects instances 
-directInstances = {}
+directObjInstances = []
 
 # Helpers to save classes, functions and vars names
 currentClass = "main"
@@ -175,9 +175,12 @@ def addVars(vName, vType, vSize1, vSize2):
         
         # Check the class of the object exist
         if vType in direcClasses:
-            quadCounter += 1
-            quadList.append(Quadruple("ERAC", None, None, vType))
-            quadMEM.append(Quadruple(direcOperators["ERAC"], None, None, memRef))
+            if currentFunct != "vG":
+                quadCounter += 1
+                quadList.append(Quadruple("ERAC", None, None, vType))
+                quadMEM.append(Quadruple(direcOperators["ERAC"], None, None, memRef))
+            else:
+                directObjInstances.append(memRef);
         else:
             raise Exception("Class '" + vType + "' doest not exist")
         

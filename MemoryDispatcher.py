@@ -1,3 +1,4 @@
+# Class Memory range that contains the lower, upper and current value of a Range of memory addresses
 class MemoryRange:
     def __init__(self, lowerLimit, upperLimit):
 
@@ -5,6 +6,8 @@ class MemoryRange:
         self.lowerLimit = lowerLimit
         self.upperLimit = upperLimit
 
+
+# dictionary of Memory Ranges, that helps to differiante all the scopes and vars types
 memoryDispatcher = {
     "global_int": MemoryRange(0, 3999),
     "global_t_int": MemoryRange(4000, 4999),
