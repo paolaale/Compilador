@@ -13,7 +13,7 @@ from collections import deque
 
 import MemoryDispatcher as mD
 import sys
-#sys.tracebacklimit = 0
+sys.tracebacklimit = 0
 
 # Dictionary of classes 
 direcClasses = {} 
@@ -400,9 +400,11 @@ def pop_op_art_n1():
 # Function to generate th corresponding quadruple of an expression
 def generateExpQuad():
     global operatorsStack, operandsStack, quadList, quadMEM, countOfTemps, quadCounter, typesStack, directConstants
-   
+    
+    checkOperandsStack()
     rightOp = operandsStack.pop()
     rightOpType = typesStack.pop()
+    checkOperandsStack()
     leftOp = operandsStack.pop()
     leftOpType = typesStack.pop()
     operator = operatorsStack.pop()
@@ -435,6 +437,11 @@ def generateExpQuad():
     else:
         raise Exception("Type mismatch")
 
+def checkOperandsStack():
+
+    if len(operandsStack) == 0:
+        raise Exception("Call to void function is not allowed in expressions")
+
 # ---------------------- END EXPRESSION SOLVING ---------------------- #
 
 # ---------------------- START LINEAR STATEMENTS (ASSIGN, WRITE, READ) ---------------------- #
@@ -443,8 +450,10 @@ def generateExpQuad():
 def pop_op_assign():
     global operatorsStack, operandsStack, quadList, quadCounter, quadMEM
     
+    checkOperandsStack()
     leftOp = operandsStack.pop()
     leftOpType = typesStack.pop()
+    checkOperandsStack()
     varToAssign = operandsStack.pop()
     assignationType = typesStack.pop()
     operator = operatorsStack.pop()   
@@ -453,9 +462,9 @@ def pop_op_assign():
     if assignationType == leftOpType:
 
         # Eliminate the single quotes of the char
-        if leftOpType == "char":
+        """ if leftOpType == "char":
             leftOp = leftOp.replace("'", '')
-
+        """
         # Get the memory reference of the operands
         memRefLeftOp = getVarMemRef(leftOp)
         memVarToAsign = getVarMemRef(varToAssign)
@@ -1216,16 +1225,33 @@ def endProgram():
 def getMemoryRef(op, classToCheck, funcToCheck):
     global direcClasses, directConstants, directTemp
 
-    scopeOfOp = ""
-    
-    # First check if is a constant
+    #scopeOfOp = ""
+    auxOp = str(op)
+
+    if isChar(auxOp):
+        auxOp = auxOp.replace("'", '')
+        # First check if is a constant
+        if auxOp in directConstants:
+            return directConstants[auxOp]
+
+    """ # First check if is a constant
     if op in directConstants:
         return directConstants[op]
     # Or if is a temp
     elif op in directTemp:
         return directTemp[op]
     else:
-        scopeOfOp = existsVar(op, classToCheck, funcToCheck)
+        scopeOfOp = existsVar(op, classToCheck, funcToCheck) """
+    
+    scopeOfOp = existsVar(op, classToCheck, funcToCheck)
+
+    if scopeOfOp == None:
+        # First check if is a constant
+        if op in directConstants:
+            return directConstants[op]
+        # Or if is a temp
+        elif op in directTemp:
+            return directTemp[op]
 
     return direcClasses[classToCheck].c_funcs[scopeOfOp].f_vars[op].memRef
 
