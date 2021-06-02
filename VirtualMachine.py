@@ -264,7 +264,6 @@ def assignParameter(val1, container):
 
     exeStack[-1].vars[container] = valToAsign
    
-
 #---------------------- END FUNCTIONS FOR QUADRUPLES ---------------------- #
 
 #---------------------- EXECUTE ---------------------- #
@@ -287,7 +286,6 @@ def execute(quadList):
                 previousMemory.vars[getCorrectMemRef(quadList[i].tResult, "previous")] = getParamValue(getCorrectMemRef(quadList[i].left_op, "previous")) + getParamValue(getCorrectMemRef(quadList[i].right_op, "previous"))
             else:
                 exeStack[-1].vars[getCorrectMemRef(quadList[i].tResult, "current")] = getValue(getCorrectMemRef(quadList[i].left_op, "current")) + getValue(getCorrectMemRef(quadList[i].right_op, "current"))
-            #print("SUMA")
 
         # Instruction to substract two variables/values
         elif quadList[i].operation == 2:
@@ -295,7 +293,6 @@ def execute(quadList):
                 previousMemory.vars[getCorrectMemRef(quadList[i].tResult, "previous")] = getParamValue(getCorrectMemRef(quadList[i].left_op, "previous")) - getParamValue(getCorrectMemRef(quadList[i].right_op, "previous"))
             else:
                 exeStack[-1].vars[getCorrectMemRef(quadList[i].tResult, "current")] = getValue(getCorrectMemRef(quadList[i].left_op, "current")) - getValue(getCorrectMemRef(quadList[i].right_op, "current"))
-            #print("RESTA")
 
         # Instruction to multiply two variables/values
         elif quadList[i].operation == 3:
@@ -303,7 +300,6 @@ def execute(quadList):
                 previousMemory.vars[getCorrectMemRef(quadList[i].tResult, "previous")] = getParamValue(getCorrectMemRef(quadList[i].left_op, "previous")) * getParamValue(getCorrectMemRef(quadList[i].right_op, "previous"))
             else:
                 exeStack[-1].vars[getCorrectMemRef(quadList[i].tResult, "current")] = getValue(getCorrectMemRef(quadList[i].left_op, "current")) * getValue(getCorrectMemRef(quadList[i].right_op, "current"))
-            #print("MULTIPLICACIÓN")
 
         # Instruction to divide two variables/values
         elif quadList[i].operation == 4:
@@ -311,7 +307,6 @@ def execute(quadList):
                 previousMemory.vars[getCorrectMemRef(quadList[i].tResult, "previous")] = getParamValue(getCorrectMemRef(quadList[i].left_op, "previous")) / getParamValue(getCorrectMemRef(quadList[i].right_op, "previous"))
             else:
                 exeStack[-1].vars[getCorrectMemRef(quadList[i].tResult, "current")] = getValue(getCorrectMemRef(quadList[i].left_op, "current")) / getValue(getCorrectMemRef(quadList[i].right_op, "current"))
-            #print("DIVISION")
         
         # Instruction to assign a value to a variable
         elif quadList[i].operation == 5:
@@ -323,7 +318,6 @@ def execute(quadList):
                 tResult = getCorrectMemRef(quadList[i].tResult, "current")
             
             assignValue(left_op, tResult) # Call function to assign value to corresponding variable
-            #print("ASSIGN")
 
         # Instruction to validate logical operation "AND" of two values
         elif quadList[i].operation == 6:
@@ -331,7 +325,6 @@ def execute(quadList):
                 exeStack[-1].vars[quadList[i].tResult] = True
             else:
                 exeStack[-1].vars[quadList[i].tResult] = False
-            #print("AND")
 
         # Instruction to validate logical operation "OR" of two values
         elif quadList[i].operation == 7:
@@ -339,7 +332,6 @@ def execute(quadList):
                 exeStack[-1].vars[quadList[i].tResult] = True
             else:
                 exeStack[-1].vars[quadList[i].tResult] = False
-            #print("OR")
 
         # Instruction to validate relationar operation ">" of two values
         elif quadList[i].operation == 8:
@@ -347,7 +339,6 @@ def execute(quadList):
                 exeStack[-1].vars[quadList[i].tResult] = True
             else:
                 exeStack[-1].vars[quadList[i].tResult] = False
-            #print("MAYOR QUE")
 
         # Instruction to validate relationar operation "<" of two values
         elif quadList[i].operation == 10:
@@ -355,7 +346,6 @@ def execute(quadList):
                 exeStack[-1].vars[quadList[i].tResult] = True
             else:
                 exeStack[-1].vars[quadList[i].tResult] = False
-            #print("MENOR QUE")
         
         # Instruction to validate relationar operation ">=" of two values
         elif quadList[i].operation == 9:
@@ -363,7 +353,6 @@ def execute(quadList):
                 exeStack[-1].vars[quadList[i].tResult] = True
             else:
                 exeStack[-1].vars[quadList[i].tResult] = False
-            #print("MAYOR O IGUAL QUE")
 
         # Instruction to validate relationar operation "<=" of two values
         elif quadList[i].operation == 11:
@@ -371,7 +360,6 @@ def execute(quadList):
                 exeStack[-1].vars[quadList[i].tResult] = True
             else:
                 exeStack[-1].vars[quadList[i].tResult] = False
-            #print("MENOR O IGUAL QUE")
 
         # Instruction to validate relationar operation "==" of two values
         elif quadList[i].operation == 12:
@@ -379,7 +367,6 @@ def execute(quadList):
                 exeStack[-1].vars[quadList[i].tResult] = True
             else:
                 exeStack[-1].vars[quadList[i].tResult] = False
-            #print("IGUAL QUE")
 
         # Instruction to validate relationar operation "!=" of two values
         elif quadList[i].operation == 13:
@@ -387,7 +374,6 @@ def execute(quadList):
                 exeStack[-1].vars[quadList[i].tResult] = True
             else:
                 exeStack[-1].vars[quadList[i].tResult] = False
-            #print("DIFERENTE QUE")
 
         # Instruction to verify if a position to be accessed in an array or matrix is in the range of its size
         elif quadList[i].operation == 14:
@@ -398,53 +384,43 @@ def execute(quadList):
         
             if not(index >= 0 and index < quadList[i].tResult):
                 raise Exception("Array index out of bounds exception", index)
-            #print("VERIFY")
         
         # Instruction to print the value of a variable or a constant
         elif quadList[i].operation == 15:
-            print("WRITE: ", getValue(getCorrectMemRef(quadList[i].tResult, "current")))
+            print(getValue(getCorrectMemRef(quadList[i].tResult, "current")))
 
         # Instruction to read a constant and assigned it to a variable
         elif quadList[i].operation == 16:
-            print("insert value: ")
             readValue(getCorrectMemRef(quadList[i].tResult, "current"))
-            #print("READ")
 
         # Instruction to jump to que corresponding quadruple in que quadlist
         elif quadList[i].operation == 17:
             i = quadList[i].tResult - 1
-            #print("GOTO")
 
         # Instruction to jump to que corresponding quadruple in que quadlist
         elif quadList[i].operation == 18:
             if getValue(quadList[i].left_op) == False:
                 i = quadList[i].tResult - 1
-            #print("GOTOF")
 
         # Instruction to append to the exeStack a new memory when a function is called
         elif quadList[i].operation == 19:
             previousMemory = copy(exeStack[-1])
             paramExpression = True
             exeStack.append(MemoryAllocator())
-            #print("ERA")
 
         # Instruction to assign an argument to a parameter
         elif quadList[i].operation == 20:
-            
             assignParameter(getCorrectMemRef(quadList[i].left_op, "previous"), quadList[i].tResult)
-            #print("PARAM")
 
         # Instruction to make iterator go to the quadruples where the function called start
         elif quadList[i].operation == 21:
             paramExpression = False
             exeGoSubStack.append(i) # we save where to jump back
             i = quadList[i].tResult - 1
-            #print("GOSUB")
 
         # Instruction to assign value returned of a function to its corresponding global variable
         elif quadList[i].operation == 22:
             globalMemories[currentGlobalMemory].vars[quadList[i].left_op] =  getValue(quadList[i].tResult)
-            #print("RETURN")
 
         # Instruction to indicate that a function call has ended in order to pop its instance memory from exeStack
         elif quadList[i].operation == 23:
@@ -454,7 +430,6 @@ def execute(quadList):
             if currentGlobalMemory != previousObjInstanceMemory:
                 objMemoryInFuncsStack.pop()
                 currentGlobalMemory = objMemoryInFuncsStack[-1]
-            #print("END FUNCTION")
         
         # Instruction to sum the positional to be index in an array or matrix to its base memory reference
         elif quadList[i].operation == 24:
@@ -462,12 +437,10 @@ def execute(quadList):
                 previousMemory.vars[quadList[i].tResult] = getParamValue(getCorrectMemRef(quadList[i].left_op, "previous")) + getParamValue(quadList[i].right_op)
             else:
                 exeStack[-1].vars[quadList[i].tResult] = getValue(getCorrectMemRef(quadList[i].left_op, "current")) + getValue(quadList[i].right_op)
-            #print("BASEADDRESS")
 
         # Instruction to create the memory for an object instance when found "ERAC" in quadruple
         elif quadList[i].operation == 25:
             globalMemories[quadList[i].tResult] = MemoryAllocator()
-            #print("ERAC")
         
         # Instruction to add the memory to use for the function call of an object and set the currentGlobalMemory to use the correct global context
         elif quadList[i].operation == 26:
@@ -477,7 +450,6 @@ def execute(quadList):
             # to know in which memory the function to call needs to be executed
             previousObjInstanceMemory = objMemoryInFuncsStack[-1]
             objMemoryInFuncsStack.append(quadList[i].right_op)
-            #print("ERACM", memRefGoSub)
         
         # Instruction to make iterator go to the quadruples where the function called start when calling an object method
         elif quadList[i].operation == 27:
@@ -485,17 +457,9 @@ def execute(quadList):
             exeGoSubStack.append(i) # we save where to jump back
             i = quadList[i].tResult - 1 # We set the index iterator to the quad to jump
             currentGlobalMemory = objMemoryInFuncsStack[-1]
-            #print("GOSUBCM", currentGlobalMemory)
         
         # Instruction to indicate that the program has ended and stop the execution of the quadList
         elif quadList[i].operation == 28:
-            print("Direct Local: ", exeStack[-1].vars)
-            print("Direct global: ", globalMemories[currentGlobalMemory].vars)
-            print("GlobalMemories: ", globalMemories)
-            print("FINALCURGLMEMORY", currentGlobalMemory)
-            print("length of Dictionary ", len(globalMemories))
-
-            print("END PROGRAM")
             break
 
         else:

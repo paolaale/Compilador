@@ -515,11 +515,7 @@ if __name__ == '__main__':
             
     if text:
         result = parser.parse(text)
-
-        print("stack of operands: ", sF.operandsStack)
-        print("stack of operators: ", sF.operatorsStack)
-        print("stack of types: ", sF.typesStack)
-        print("stack of jumps: ", sF.jumpsStack)
+        
         sF.printQuadruples()
         print("------------------------------------")
         sF.printMemoryQuadruples()
