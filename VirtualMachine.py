@@ -136,20 +136,49 @@ def assignValue(val1, container):
     currentGlobalMemory = auxCurrentGlobalMemory
 
 def assignReadValue(container, newValue):
+    global exeStack, globalMemories, currentGlobalMemory
+
+    auxCurrentGlobalMemory = currentGlobalMemory
+    memRefString = str(container)
+
+    if "/" in memRefString:
+        objMemoryInfo = memRefString.split("/")
+        objInstanceMemory = objMemoryInfo[0]
+        objAttrMemory = objMemoryInfo[1]
+
+        currentGlobalMemory = int(objInstanceMemory)
+        container = int(objAttrMemory)
 
     if (container >= 0 and container < 4000) or (container >= 5000 and container < 8999):
         globalMemories[currentGlobalMemory].vars[container] = newValue
     else:
         exeStack[-1].vars[container] = newValue
 
+    currentGlobalMemory = auxCurrentGlobalMemory
+
 def readValue(container):
+
+    memRefString = str(container)
+    varOfObject = False
+
+    if "/" in memRefString:
+        varOfObject = True;
+        objMemoryInfo = memRefString.split("/")
+        objAttrMemory = objMemoryInfo[1]
+        auxContainer = container
+        container = int(objAttrMemory)
     
     if (container >= 0 and container < 4000) or (container >= 17000 and container < 22000):
         newValue = int(input())
     elif (container >= 5000 and container < 8999) or (container >= 23000 and container < 27999):
         newValue = float(input())
     else:
-        newValue = input() #!!!! aquí falta implementar bien la lógica para los chars
+        newValue = input() 
+        if len(newValue) != 1:
+            raise Exception("Cannot assign string to a char")
+
+    if varOfObject:
+        container = auxContainer;
 
     assignReadValue(container, newValue)
 

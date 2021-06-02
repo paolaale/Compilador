@@ -8,7 +8,7 @@ program vm34 :
         
             edad = e * 10;
             
-            return edad;
+            return e;
         }
     }
 
@@ -20,6 +20,8 @@ program vm34 :
                 int c, b, alan, paola, catAge;
 
             read(cat1.edad);
+
+            write(cat1.edad * 100);
         
         }
     }
