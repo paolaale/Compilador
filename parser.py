@@ -7,8 +7,7 @@
 import ply.yacc as yacc
 from lexer import tokens # Get the token list from the lexer
 import semanticFunc as sF
-import VirtualMachine as vM
-import MemoryDispatcher as mD 
+
 
 def p_program(p):
     'program : PROGRAM ID TWOPOINTS check_init program_classes MAIN add_class LBRACE program_body init RBRACE END end_program'
@@ -497,33 +496,5 @@ def p_end_program(self):
     'end_program :'
     sF.endProgram()
 
-if __name__ == '__main__':
-    
-    # Build parser
-    parser = yacc.yacc()
-
-    # Read file
-    doc = input()
-    fileData = open(doc,'r')
-
-    text = ""
-
-    for line in fileData:
-        try:
-            text = text + line.strip()
-        except EOFError:
-            break
-            
-    if text:
-        result = parser.parse(text)
-        
-        #sF.printQuadruples()
-        #print("------------------------------------")
-        #sF.printMemoryQuadruples()
-        #print("------------------------------------")
-        vM.execute(sF.quadMEM)
-        
-        if result != None:
-            print("Program accepted")
-        else:
-            print("Program failed")
+# Build parser
+parser = yacc.yacc()
