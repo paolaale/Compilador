@@ -1,22 +1,83 @@
-program ejemplo :
-
-    class Animal {
-
-    }
+program registroAlumno :
     
-    class Perro {
+    class Escuela {
 
-    }
+        var char carrera;
+            int id;
+            float promedio;
 
-    class Gato {
+        funct void setPromedio(float p) {
+            promedio = p;
+        }
 
+        funct char getCarrera() {
+            return carrera;
+        }
+
+        funct int getID() {
+            return id;
+        }
     }
 
     main {
 
+        var Escuela alumno1, alumno2;
+
+        funct void promedioAlumnos() {
+
+            var int i = 0;
+                float prom;
+
+            while(i < 2) {
+                write("Promedio del alumno ", i);
+                read(prom);
+
+                if (i == 0) {
+                    alumno1.setPromedio(prom);
+                }
+                else {
+                    alumno2.setPromedio(prom);
+                }
+            }
+        }
+
+        funct int getID(int alumno) {
+
+            var int id;
+
+            write("ID del alumno ", alumno);
+            read(id);
+
+            return id;
+        }
+
         init {
             
-            
+            var char escuela[2];
+
+            write("Registro de 2 alumnos");
+
+            from (i = 0) until (i < 2) do {
+
+                write("A que escuela pertenece, escribe la letra de la opcion");
+                write("A) Ingieneria");
+                write("B) Ciencias Sociales");
+                write("C) Quimica");
+                write("D) Licenciatura");
+                read(escuela[i]);
+                i = i + 1;
+            }
+
+            alumno1.carrera = escuela[0];
+            alumno2.carrera = escuela[1];
+
+            alumno1.id = getID(1);
+            alumno2.id = getID(2);
+
+            promedioAlumnos();
+
+            write("Alumno 1 pertenece a la carrera ", alumno1.getCarrera(), " tiene un id de ", alumno1.getID(), " y un promedio de " alumno1.promedio);
+            write("Alumno 2 pertenece a la carrera ", alumno2.getCarrera(), " tiene un id de ", alumno2.getID(), " y un promedio de " alumno2.promedio);
         }
     }
 
