@@ -1,0 +1,21 @@
+program cl1 :
+
+    main {
+
+        funct void printNum(int e) {
+            write(e);
+        }
+
+        init {
+            var int h, i, j, k, array[8], matrix[3][3];
+            
+            
+            array[3] = 100;
+
+            call printNum(array[3]);
+        }
+    }
+    
+end
+
+
