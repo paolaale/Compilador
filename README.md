@@ -55,3 +55,11 @@ Alan Zavala Lévaro A01338448
 
 ## Avance 8 (28 mayo)
 * Se crean los cuadruplos de matrices
+* Se crean los cuádruplos de clases
+* Máquina virtual funcional hasta funciones con parámetros, arreglos y matrices
+* Avance en la documentación y manual de usuario 
+
+## Avance 9 (02 junio)
+* Máquina virtual funcional hasta clases
+* Pruebas aprobadas
+* Terminación de la documentación y manual de usuario 

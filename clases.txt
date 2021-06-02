@@ -1,4 +1,4 @@
-program ejemplo :
+program clases :
 
     class Perro {
 
@@ -14,7 +14,7 @@ program ejemplo :
             return peso;
         }
 
-        funct void setInicial(int i) {
+        funct void setInicial(char i) {
             inicial = i;
         }
 
@@ -36,7 +36,7 @@ program ejemplo :
             write("Edad del perro 2");
             read(edad2);
 
-            perro1.setEdad(edad1);
+            call perro1.setEdad(edad1);
             perro2.edad = edad2;
 
             write("Las suma de los perros es: ", perro1.edad + perro2.edad);
@@ -46,14 +46,14 @@ program ejemplo :
             write("Peso del perro 2");
             read(perro2.peso);
 
-            if (perro1.getPeso() > perro2.getPeso()) {
+            if (perro1.getPeso() > perro2.getPeso()) then {
                 write("El perro 1 pesa más que el perro 2");
             }
-            elif (perro1.getPeso() == perro2.getPeso()) {
+            elif (perro1.getPeso() == perro2.getPeso()) then {
                 write("Los dos perros pesan igual!");
             }
             else {
-                write("El perro 2 pesa más que el perro 1");
+                write("El perro 2 pesa mas que el perro 1");
             }
 
             write("Cual es la inicial de perro 1");
@@ -61,8 +61,8 @@ program ejemplo :
             write("Cual es la inicial de perro 2");
             read(in2);
 
-            perro1.setInicial(in1);
-            perro2.setInicial(in2);
+            call perro1.setInicial(in1);
+            call perro2.setInicial(in2);
 
             write("El nombre del perro 1 empieza con: ", perro1.getInicial());
             write("El nombre del perro 2 empieza con: ", perro2.inicial);

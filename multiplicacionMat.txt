@@ -78,7 +78,9 @@ program multiplicacionMatrices :
         }
 
         init {
+            write("Escribe lo datos de la matriz 1");
             call fillMatrixA();
+            write("Escribe lo datos de la matriz 2");
             call fillMatrixB();
             call multiplyMatrix(2, 2, 2, 2);
             write("Resultados de la matriz");

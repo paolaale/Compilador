@@ -108,7 +108,8 @@ def p_body(p):
     '''body : LBRACE start_function dec_vars statutes_aux RBRACE end_function
             | LBRACE start_function statutes_aux RBRACE end_function
             | LBRACE start_function statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function
-            | LBRACE start_function dec_vars statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function'''
+            | LBRACE start_function dec_vars statutes_aux RETURN ID return_function SEMICOLON RBRACE end_function
+            | LBRACE start_function RETURN ID return_function SEMICOLON RBRACE end_function'''
     p[0] = 'program'
 
 def p_statutes(p):

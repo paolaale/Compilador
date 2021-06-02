@@ -25,18 +25,20 @@ program registroAlumno :
 
         funct void promedioAlumnos() {
 
-            var int i = 0;
+            var int i;
                 float prom;
 
-            while(i < 2) {
+            i = 0;
+
+            while(i < 2) do {
                 write("Promedio del alumno ", i);
                 read(prom);
 
-                if (i == 0) {
-                    alumno1.setPromedio(prom);
+                if (i == 0) then {
+                    call alumno1.setPromedio(prom);
                 }
                 else {
-                    alumno2.setPromedio(prom);
+                    call alumno2.setPromedio(prom);
                 }
             }
         }
@@ -54,16 +56,17 @@ program registroAlumno :
         init {
             
             var char escuela[2];
+                int i;
 
             write("Registro de 2 alumnos");
 
             from (i = 0) until (i < 2) do {
 
                 write("A que escuela pertenece, escribe la letra de la opcion");
-                write("A) Ingieneria");
-                write("B) Ciencias Sociales");
-                write("C) Quimica");
-                write("D) Licenciatura");
+                write("A- Ingieneria");
+                write("B- Ciencias Sociales");
+                write("C- Quimica");
+                write("D- Licenciatura");
                 read(escuela[i]);
                 i = i + 1;
             }
@@ -74,7 +77,7 @@ program registroAlumno :
             alumno1.id = getID(1);
             alumno2.id = getID(2);
 
-            promedioAlumnos();
+            call promedioAlumnos();
 
             write("Alumno 1 pertenece a la carrera ", alumno1.getCarrera(), " tiene un id de ", alumno1.getID(), " y un promedio de " alumno1.promedio);
             write("Alumno 2 pertenece a la carrera ", alumno2.getCarrera(), " tiene un id de ", alumno2.getID(), " y un promedio de " alumno2.promedio);
