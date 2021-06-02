@@ -10,5 +10,5 @@ class Vars:
         self.rows = rows
         self.cols = cols
         self.memRef = memRef
-        self.lowerMemRef = memRef - abs(int(rows) * int(cols)) + 1
+        self.lowerMemRef = memRef - abs(int(rows) * int(cols)) + 1 # Obtain the memRef where the array and matrix starts
 

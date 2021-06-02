@@ -13,7 +13,7 @@ from collections import deque
 
 import MemoryDispatcher as mD
 import sys
-#sys.tracebacklimit = 0
+sys.tracebacklimit = 0
 
 # Dictionary of classes 
 direcClasses = {} 

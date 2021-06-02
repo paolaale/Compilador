@@ -69,7 +69,13 @@ program registroAlumno :
                 write("C- Quimica");
                 write("D- Licenciatura");
                 read(escuela[i]);
-                i = i + 1;
+
+                if (escuela[i] != 'A' and escuela[i] != 'B' and escuela[i] != 'C' and escuela[i] != 'D') then {
+                    write("Error en la opcion, escriba una correcta");
+                }
+                else {
+                    i = i + 1;
+                }
             }
 
             alumno1.carrera = escuela[0];
@@ -80,8 +86,21 @@ program registroAlumno :
 
             call promedioAlumnos();
 
-            write("Alumno 1 pertenece a la carrera ", alumno1.getCarrera(), " tiene un id de ", alumno1.getID(), " y un promedio de ", alumno1.promedio);
-            write("Alumno 2 pertenece a la carrera ", alumno2.getCarrera(), " tiene un id de ", alumno2.getID(), " y un promedio de ", alumno2.promedio);
+            if (alumno1.getCarrera() == 'A') then {
+                write("Alumno 1 pertenece a la carrera de Ingieneria");
+            }
+            elif (alumno1.getCarrera() == 'B') then {
+                write("Alumno 1 pertenece a la carrera de Ciencias Sociales");
+            }
+            elif (alumno1.getCarrera() == 'C') then {
+                write("Alumno 1 pertenece a la carrera de Quimica");
+            }   
+            else {
+                write("Alumno 1 pertenece a la carrera de Licenciatura");
+            }
+
+            write("tiene un id de ", alumno1.getID(), "y un promedio de ", alumno1.promedio);
+            write("Alumno 2 pertenece a la carrera ", alumno2.getCarrera(), "tiene un id de ", alumno2.getID(), "y un promedio de ", alumno2.promedio);
         }
     }
 

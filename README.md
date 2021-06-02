@@ -1,10 +1,12 @@
-# Compilador
+# Compilador RALLY
 
 Febrero - Junio 2021
 
 ### Integrantes: 
 Paola Villarreal García A00821971 -
 Alan Zavala Lévaro A01338448
+
+Para conocer el uso de este programa por favor ver el pdf llamado "MANUAL DE USUARIO"
 
 ## Avance 1 (09 abril)
 * Creación de lexer y parser, donde se incluye:
