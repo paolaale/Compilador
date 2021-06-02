@@ -68,7 +68,6 @@ def getCorrectMemRef(memRef, stackToCheck):
     memRefString = str(memRef)
   
     if "/" in memRefString:
-        
         return memRef
 
     if memRef >= 0:
@@ -113,8 +112,10 @@ def getValue(memRef):
     elif memRef in exeStack[-1].vars:
         return exeStack[-1].vars[memRef]
     else:
-        
-        memRefToReturn = globalMemories[currentGlobalMemory].vars[memRef]
+        try:
+            memRefToReturn = globalMemories[currentGlobalMemory].vars[memRef]
+        except:
+            raise Exception("Variable has not been initialized")
         currentGlobalMemory = auxCurrentGlobalMemory
 
         return memRefToReturn
@@ -214,7 +215,10 @@ def getParamValue(memRef):
     elif memRef in previousMemory.vars:
         return previousMemory.vars[memRef]
     else:
-        memRefToReturn = globalMemories[currentGlobalMemory].vars[memRef]
+        try:
+            memRefToReturn = globalMemories[currentGlobalMemory].vars[memRef]
+        except:
+            raise Exception("Variable has not been initialized")
         currentGlobalMemory = auxCurrentGlobalMemory
 
         return memRefToReturn
