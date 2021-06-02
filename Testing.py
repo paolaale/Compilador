@@ -5,7 +5,7 @@ import semanticFunc as sF
 
 # Function to get the memory reference assigned to a variable
 def printMemoryInDeclaration():
-    print("insert num of vals to test memory: ");
+    print("insert num of vals to test memory: ")
     numOfVars = int(input())
     i = 0
 

@@ -2,7 +2,7 @@
 # Equipo 23, orientado a objetos
 # Paola Villarreal - A00821971
 # Alan Zavala - A01338448
-# Fecha: 21/05/2021
+# Fecha: 02/06/2021
 
 import ply.yacc as yacc
 from lexer import tokens # Get the token list from the lexer
@@ -517,10 +517,10 @@ if __name__ == '__main__':
     if text:
         result = parser.parse(text)
         
-        sF.printQuadruples()
-        print("------------------------------------")
-        sF.printMemoryQuadruples()
-        print("------------------------------------")
+        #sF.printQuadruples()
+        #print("------------------------------------")
+        #sF.printMemoryQuadruples()
+        #print("------------------------------------")
         vM.execute(sF.quadMEM)
         
         if result != None:

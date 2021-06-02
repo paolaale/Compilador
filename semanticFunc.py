@@ -2,7 +2,7 @@
 # Equipo 23, orientado a objetos
 # Paola Villarreal - A00821971
 # Alan Zavala - A01338448
-# Fecha: 21/05/2021
+# Fecha: 02/06/2021
 
 from Classes import Classes
 from Functions import Functions

@@ -2,6 +2,7 @@
 # Equipo 23, orientado a objetos
 # Paola Villarreal - A00821971
 # Alan Zavala - A01338448
+# Fecha: 02/06/2021
 
 import ply.lex as lex
 
