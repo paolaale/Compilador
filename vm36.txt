@@ -1,0 +1,18 @@
+program vm36 :
+
+    main {
+
+        init {
+            var int c, b, alan, paola, catAge;
+                char a;
+
+                read(a);
+
+                write(a);
+
+            
+        
+        }
+    }
+    
+end

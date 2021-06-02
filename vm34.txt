@@ -1,0 +1,29 @@
+
+program vm34 :
+
+    class Cat {
+        var int bigotes, edad;
+
+        funct int getEdad(int e) {
+        
+            edad = e * 10;
+            
+            return e;
+        }
+    }
+
+
+    main {
+
+        init {
+            var Cat cat1, cat2;
+                int c, b, alan, paola, catAge;
+
+            read(cat1.edad);
+
+            write(cat1.edad * 100);
+        
+        }
+    }
+    
+end

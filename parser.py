@@ -8,8 +8,7 @@ import ply.yacc as yacc
 from lexer import tokens # Get the token list from the lexer
 import semanticFunc as sF
 import VirtualMachine as vM
-import MemoryDispatcher as mD # solo para probar
-import Testing as test
+import MemoryDispatcher as mD 
 
 def p_program(p):
     'program : PROGRAM ID TWOPOINTS check_init program_classes MAIN add_class LBRACE program_body init RBRACE END end_program'
@@ -526,7 +525,6 @@ if __name__ == '__main__':
         sF.printMemoryQuadruples()
         print("------------------------------------")
         vM.execute(sF.quadMEM)
-        #test.printMemoryInDeclaration()
         
         if result != None:
             print("Program accepted")

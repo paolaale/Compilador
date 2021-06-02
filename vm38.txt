@@ -1,0 +1,16 @@
+
+program vm38 :
+
+    main {
+        var int c, b;
+        init {
+            
+            
+            while (c < 8) do {
+                write("hola");
+            }
+        
+        }
+    }
+    
+end

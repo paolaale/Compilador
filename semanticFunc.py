@@ -401,10 +401,10 @@ def pop_op_art_n1():
 def generateExpQuad():
     global operatorsStack, operandsStack, quadList, quadMEM, countOfTemps, quadCounter, typesStack, directConstants
     
-    checkOperandsStack()
+    checkOperandsStack() # Check that a void function is not called in an expression
     rightOp = operandsStack.pop()
     rightOpType = typesStack.pop()
-    checkOperandsStack()
+    checkOperandsStack() # Check that a void function is not called in an expression
     leftOp = operandsStack.pop()
     leftOpType = typesStack.pop()
     operator = operatorsStack.pop()
@@ -437,6 +437,7 @@ def generateExpQuad():
     else:
         raise Exception("Type mismatch")
 
+# Function to throw exception if bad use of void functions
 def checkOperandsStack():
 
     if len(operandsStack) == 0:
@@ -461,10 +462,6 @@ def pop_op_assign():
     # Validate that the type of the exp result is the same of the variable to assign
     if assignationType == leftOpType:
 
-        # Eliminate the single quotes of the char
-        """ if leftOpType == "char":
-            leftOp = leftOp.replace("'", '')
-        """
         # Get the memory reference of the operands
         memRefLeftOp = getVarMemRef(leftOp)
         memVarToAsign = getVarMemRef(varToAssign)
@@ -483,7 +480,7 @@ def saveString(s):
 
 # Function that generates the write quad
 def generateWrite():
-    global operandsStack, quadList, stringToWrite, quadCounter, typeStack, quadMEM
+    global operandsStack, quadList, stringToWrite, quadCounter, quadMEM
 
     # If there is a string to write gets it from helper 
     if (stringToWrite != None):
@@ -1068,6 +1065,7 @@ def endMatrix():
 
 # ---------------------- START CLASSES ---------------------- #
 
+# Function to return the corresponding memory reference of a variable
 def getVarMemRef(op):
     global objVarsMemRef
     
@@ -1225,7 +1223,6 @@ def endProgram():
 def getMemoryRef(op, classToCheck, funcToCheck):
     global direcClasses, directConstants, directTemp
 
-    #scopeOfOp = ""
     auxOp = str(op)
 
     if isChar(auxOp):
@@ -1233,15 +1230,6 @@ def getMemoryRef(op, classToCheck, funcToCheck):
         # First check if is a constant
         if auxOp in directConstants:
             return directConstants[auxOp]
-
-    """ # First check if is a constant
-    if op in directConstants:
-        return directConstants[op]
-    # Or if is a temp
-    elif op in directTemp:
-        return directTemp[op]
-    else:
-        scopeOfOp = existsVar(op, classToCheck, funcToCheck) """
     
     scopeOfOp = existsVar(op, classToCheck, funcToCheck)
 
