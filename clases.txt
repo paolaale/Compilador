@@ -24,7 +24,7 @@ program clases :
     }
 
     main {
-
+        var Perro perro1, perro2;
         init {
             
             var Perro perro1, perro2;

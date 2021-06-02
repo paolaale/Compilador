@@ -152,7 +152,7 @@ def assignValue(val1, container):
     valToAsign = getValue(val1)
      
     # Check if the container is a global memory through its range or if it is local
-    if (container >= 0 and container < 4000) or (container >= 5000 and container < 8999): 
+    if (container >= 0 and container < 4000) or (container >= 5000 and container < 9000) or (container >= 10000 and container < 13000): 
         globalMemories[currentGlobalMemory].vars[container] = valToAsign
     else:
         exeStack[-1].vars[container] = valToAsign
@@ -175,7 +175,7 @@ def assignReadValue(container, newValue):
         container = int(objAttrMemory)
 
     # Check if the container is a global memory through its range or if it is local
-    if (container >= 0 and container < 4000) or (container >= 5000 and container < 8999):
+    if (container >= 0 and container < 4000) or (container >= 5000 and container < 9000) or (container >= 10000 and container < 13000):
         globalMemories[currentGlobalMemory].vars[container] = newValue
     else:
         exeStack[-1].vars[container] = newValue

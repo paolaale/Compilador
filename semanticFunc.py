@@ -1172,7 +1172,8 @@ def gosubMethod():
             memReturnResult = getMemoryRef("F" + methodToCall, classToAccess, methodToCall)
             
             # we generate the memory reference of the returned value of a function in an object
-            memParam = direcClasses[currentClass].c_funcs[currentFunct].f_vars[currentObject].memRef
+            scopeOfVar = existsVar(currentObject, currentClass, currentFunct)
+            memParam = direcClasses[currentClass].c_funcs[scopeOfVar].f_vars[currentObject].memRef
             memRefObjVar = str(memParam) + "/" + str(memReturnResult)
            
             # We add the quadruple with the assignation of the result of the return function to a temporal variable

@@ -28,18 +28,19 @@ program registroAlumno :
             var int i;
                 float prom;
 
-            i = 0;
+            i = 1;
 
-            while(i < 2) do {
+            while(i < 3) do {
                 write("Promedio del alumno ", i);
                 read(prom);
 
-                if (i == 0) then {
+                if (i == 1) then {
                     call alumno1.setPromedio(prom);
                 }
                 else {
                     call alumno2.setPromedio(prom);
                 }
+                i = i + 1;
             }
         }
 
@@ -79,8 +80,8 @@ program registroAlumno :
 
             call promedioAlumnos();
 
-            write("Alumno 1 pertenece a la carrera ", alumno1.getCarrera(), " tiene un id de ", alumno1.getID(), " y un promedio de " alumno1.promedio);
-            write("Alumno 2 pertenece a la carrera ", alumno2.getCarrera(), " tiene un id de ", alumno2.getID(), " y un promedio de " alumno2.promedio);
+            write("Alumno 1 pertenece a la carrera ", alumno1.getCarrera(), " tiene un id de ", alumno1.getID(), " y un promedio de ", alumno1.promedio);
+            write("Alumno 2 pertenece a la carrera ", alumno2.getCarrera(), " tiene un id de ", alumno2.getID(), " y un promedio de ", alumno2.promedio);
         }
     }
 
