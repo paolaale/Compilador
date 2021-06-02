@@ -1,0 +1,23 @@
+
+program vm37StackOverFlow :
+
+    main {
+
+        funct void getEdad(int e) {
+        
+            call getEdad(e);
+        }
+
+        init {
+            var int c, b, alan, paola, catAge;
+
+            read(c);
+
+            write(c * 100);
+
+            call getEdad(3);
+        
+        }
+    }
+    
+end

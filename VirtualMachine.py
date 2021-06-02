@@ -57,6 +57,12 @@ def addGlobalObjInstances():
         globalMemories[instance] = MemoryAllocator();
         i += 1
 
+# Function to verify that the code doesn´t generate and StackOverFlowError
+def checkStackMemory():
+    global exeStack
+
+    if len(exeStack) > 2500:
+        raise Exception("Exception: StackOverFlowError")
 
 def getCorrectMemRef(memRef, stackToCheck):
     memRefString = str(memRef)
@@ -242,6 +248,8 @@ def execute(quadList):
 
     while True:
         
+        checkStackMemory()
+
         if quadList[i].operation == 1:
             if paramExpression:
                 previousMemory.vars[getCorrectMemRef(quadList[i].tResult, "previous")] = getParamValue(getCorrectMemRef(quadList[i].left_op, "previous")) + getParamValue(getCorrectMemRef(quadList[i].right_op, "previous"))
