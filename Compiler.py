@@ -1,3 +1,9 @@
+# Proyecto compiladores, Grupo 02
+# Equipo 23, orientado a objetos
+# Paola Villarreal - A00821971
+# Alan Zavala - A01338448
+# Fecha: 02/06/2021
+
 import parser as parserOfCompiler
 import semanticFunc as sF
 import VirtualMachine as vM

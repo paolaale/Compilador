@@ -8,7 +8,6 @@ import ply.yacc as yacc
 from lexer import tokens # Get the token list from the lexer
 import semanticFunc as sF
 
-
 def p_program(p):
     'program : PROGRAM ID TWOPOINTS check_init program_classes MAIN add_class LBRACE program_body init RBRACE END end_program'
     p[0] = 'program'
